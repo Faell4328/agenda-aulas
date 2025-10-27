@@ -18,3 +18,15 @@ Um projeto simples desenvolvido para praticar Angular.js e PHP, executado em con
 **Ingresso na Aula (Aluno)**
 - O aluno não pode ingressar em uma aula lotada.
 - O aluno não pode participar de duas aulas no mesmo horário.
+
+---
+
+## Especificações do sistema
+
+**Front-end:** Desenvolvido em Angular.js com Angular Material.
+
+**Back-end:** Implementado em PHP.
+
+**Banco de Dados:** Utiliza MongoDB.
+
+**Infraestrutura (CI):** Todos os serviços executam em containers Docker.
