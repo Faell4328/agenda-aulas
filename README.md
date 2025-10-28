@@ -21,7 +21,7 @@ Um projeto simples desenvolvido para praticar Angular.js e PHP, executado em con
 
 ---
 
-## Especificações do sistema
+## Especificações técnicas
 
 **Front-end:** Desenvolvido em Angular.js com Angular Material.
 
