@@ -1,0 +1,37 @@
+#container{
+    min-height: 100dvh;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+
+    background: linear-gradient(to top left, #4A90E2, #50C9CE);
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    border: 1px solid #aaa;
+    border-radius: 10px;
+    padding: 60px 30px;
+    margin: 10px;
+
+    background-color: #eee;
+}
+
+h3{
+    text-align: center;
+}
+
+.input-form{
+    margin-bottom: 20px;
+}
+
+#btn-submit{
+    background-color: #aaa;
+    border-radius: 10px;
+}

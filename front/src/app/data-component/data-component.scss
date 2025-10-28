@@ -1,0 +1,37 @@
+#container{
+    min-height: 100dvh;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+
+    background: linear-gradient(to top left, #4A90E2, #50C9CE);
+}
+
+.datas{
+    width: 150px;
+    height: 200px;
+
+    border: 1px solid #aaa;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px;
+
+    background-color: #eee;
+}
+
+.status{
+    font-size: 12px;
+    padding: 4px;
+    border: 1px solid #000;
+    border-radius: 10px;
+    background-color: #afa;
+}
+
+.dia{
+    font-size: 18px;
+    text-align: center;
+    margin-top: 5px;
+}
