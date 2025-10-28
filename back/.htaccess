@@ -1,0 +1,23 @@
+RewriteEngine on
+
+Options -Indexes
+
+# Bloqueando arquivos
+<FilesMatch "^Dockerfile$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "^.*\.ht*">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "\.config$">
+    Require all denied
+</FilesMatch>
+
+# Redirecionando qualquer arquivo PHP para o index.php
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^.*\.php$ src/index.php
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ src/index.php [L]
