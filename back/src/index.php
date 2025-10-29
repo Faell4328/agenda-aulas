@@ -1,20 +1,12 @@
 <?php
 
-header('Content-type: application/json; charset=utf-8');
+require __DIR__.'/../vendor/autoload.php';
 
-require_once("router.php");
+use App\Router;
 
-$method = $_SERVER["REQUEST_METHOD"];
-$uri = $_SERVER["REQUEST_URI"];
+$method_req = $_SERVER["REQUEST_METHOD"];
+$rota_req = $_SERVER["REQUEST_URI"];
 
-if(in_array($uri, $routes)){
-}
-
-$data = [
-    "status" => "ok",
-    "mensagem" => "Teste"
-];
-
-echo(json_encode($data));
+$route = new Router($rota_req, $method_req);
 
 ?>

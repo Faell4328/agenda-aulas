@@ -6,8 +6,10 @@ services:
     restart: unless-stopped
     ports:
       - "8080:80"
+    networks:
+      - rede_1
     volumes:
-      - ./back:/var/www/html
+      - ./back/src:/var/www/html/src
     depends_on:
       - mongo_db
 
@@ -16,6 +18,8 @@ services:
     restart: unless-stopped
     ports:
       - "27017:27017"
+    networks:
+      - rede_1
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: senha123
@@ -24,3 +28,7 @@ services:
 
 volumes:
   mongo-data:
+
+networks:
+  rede_1:
+    driver: bridge

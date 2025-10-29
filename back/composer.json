@@ -1,0 +1,11 @@
+{
+    "name": "falel/agenda-aula",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "require": {
+        "mongodb/mongodb": "^2.1"
+    }
+}
