@@ -1,26 +1,36 @@
 <?php
 
 namespace App;
+use App\Middleware;
 
 class Router{
-    private $routes = ['/' => ["GET", "POST"], '/login' => ["POST"], '/cadastrar' => ["POST"]];
-    private $rota_atual;
-    private $method_atual;
+    private $accepted_routes_and_methods = ['/' => ["GET", "POST"], '/login' => ["POST"], '/cadastrar' => ["POST"]];
 
-    private function acessarRota(){
-        if($this->rota_atual == "/cadastrar"){
-            new \App\Controller\Cadastrar();
+    private function route($route, $method){
+        $middleware = new Middleware;
+
+        if($route == "/cadastrar"){
+            $middleware->routeWithoutLogin();
+            
+            $register_controller = new \App\Controller\SignUp;
+            $register_controller -> registerUser();
         }
-        else if($this->rota_atual == "/login"){
-            new \App\Controller\Login();
+        else if($route == "/login"){
+            $middleware->routeWithoutLogin();
+
+            $login_controller = new \App\Controller\SignIn;
+            $login_controller -> logInUser();
+        }
+        else if($route == "/"){
+            $middleware->routeWithLogin();
+
+            echo "oi";
         }
     }
 
     public function __construct($rota_req, $method_req){
-        if(array_key_exists($rota_req, $this->routes) && in_array($method_req, $this->routes[$rota_req])){
-            $this->rota_atual = $rota_req;
-            $this->method_atual = $method_req;
-            $this->acessarRota();
+        if(array_key_exists($rota_req, $this->accepted_routes_and_methods) && in_array($method_req, $this->accepted_routes_and_methods[$rota_req])){
+            $this->route($rota_req, $method_req);
         }
         else{
             echo "404";

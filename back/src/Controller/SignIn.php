@@ -4,13 +4,17 @@ namespace App\Controller;
 
 use App\Tools\Validation;
 
-class Login{
-    public function __construct(){
+class SignIn{
+    public function logInUser(){
         $validation = new Validation;
         $validation -> inputForm("email");
         $validation -> inputForm("senha");
 
-        new \App\Model\Login();
+        $login_service = new \App\Model\SignIn;
+        $login_service -> logInUser();
+    }
+
+    public function logOutUser(){
     }
 }
 

@@ -18,6 +18,9 @@ class MongoDB{
         $this->collection = $this->database -> selectCollection($collection);
     }
 
+    private function loginTokenGenerator(){
+    }
+
     public function registerUser($nome, $email, $senha){
         $this -> chooseCollection("user");
         $is_exist_user = $this->collection -> countDocuments(["email" => $email]);
@@ -38,6 +41,11 @@ class MongoDB{
         $is_exist_user = $this->collection -> countDocuments(["email" => $email, "senha" => $senha]);
 
         if($is_exist_user){
+            $this -> chooseCollection("token");
+            $token = bin2hex(random_bytes(32));
+            $expiration_date = strtotime("+ 30 days");
+            $this->collection -> insertOne(["token" => $token, "expiration_date" => $expiration_date, "email_user" => $email]);
+            setcookie("token", $token, $expiration_date, "/");
             echo "Logado";
             exit;
         }
