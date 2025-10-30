@@ -21,6 +21,17 @@ class Router{
             $login_controller = new \App\Controller\SignIn;
             $login_controller -> logInUser();
         }
+        else if($route == "/aula"){
+            $middleware->routeForTeachersOnly();
+
+            $lesson_controller = new \App\Controller\Lesson;
+            if($method == "POST"){
+                $lesson_controller -> createLesson();
+            }
+            else{
+                $lesson_controller -> updateLesson();
+            }
+        }
         else if($route == "/"){
             $middleware->routeWithLogin();
 

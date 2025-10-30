@@ -11,7 +11,8 @@ Um projeto simples desenvolvido para praticar Angular.js e PHP, executado em con
 
 **Criação de Aula (Professor)**
 - É necessário informar:
-    - Horário de início (cada aula tem duração fixa de 50 minutos);
+    - Nome da aula.
+    - Horário de início (cada aula tem duração fixa de 50 minutos).
     - Quantidade máxima de alunos permitida.
 
 **Ingresso na Aula (Aluno)**

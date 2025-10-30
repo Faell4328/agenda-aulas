@@ -30,14 +30,14 @@ class MongoDB{
         $this -> chooseCollection("token");
         $token_information = $this->collection -> findOne(["token" => $token]);
         if($token_information){
-            return $token_information->expiration_date;
+            return $token_information;
         }
         else{
             return false;
         }
     }
 
-    public function registerUser($nome, $role, $email, $senha){
+    public function registerUser($name, $role, $email, $password){
         $this -> chooseCollection("user");
         $is_exist_user = $this->collection -> countDocuments(["email" => $email]);
 
@@ -46,7 +46,7 @@ class MongoDB{
             exit;
         }
 
-        $this->collection -> insertOne(["name" => $nome, "role" => $role, "email" => $email, "password" => $senha]);
+        $this->collection -> insertOne(["name" => $name, "role" => $role, "email" => $email, "password" => $password]);
         echo "Usuário criado";
         exit;
     }
@@ -69,6 +69,18 @@ class MongoDB{
             echo "Usuário não cadastrado";
             exit;
         }
+    }
+
+    public function userInformationWithCookie($email){
+        $this -> chooseCollection("user");
+        return $this->collection -> findOne(["email" => $email]);
+    }
+    
+    public function createLesson($name, $start_time, $quantity){
+        $this -> chooseCollection("aula");
+        $this->collection -> insertOne(["name" => $name, "start_time" => $start_time, "quantity" => $quantity]);
+        echo "Aula cadastrada";
+        exit;
     }
 }
 
