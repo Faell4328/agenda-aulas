@@ -8,7 +8,7 @@ class SignIn{
     public function logInUser(){
         $validation = new Validation;
         $validation -> inputForm("email");
-        $validation -> inputForm("senha");
+        $validation -> inputForm("password");
 
         $login_service = new \App\Model\SignIn;
         $login_service -> logInUser();

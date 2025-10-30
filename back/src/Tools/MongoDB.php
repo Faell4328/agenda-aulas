@@ -37,7 +37,7 @@ class MongoDB{
         }
     }
 
-    public function registerUser($nome, $email, $senha){
+    public function registerUser($nome, $role, $email, $senha){
         $this -> chooseCollection("user");
         $is_exist_user = $this->collection -> countDocuments(["email" => $email]);
 
@@ -46,15 +46,15 @@ class MongoDB{
             exit;
         }
 
-        $this->collection -> insertOne(["nome" => $nome, "email" => $email, "senha" => $senha]);
+        $this->collection -> insertOne(["name" => $nome, "role" => $role, "email" => $email, "password" => $senha]);
         echo "Usuário criado";
         exit;
     }
 
-    public function loginUser($email, $senha){
+    public function loginUser($email, $password){
         $this -> chooseCollection("user");
         $is_exist_email = $this->collection -> countDocuments(["email" => $email]);
-        $is_exist_user = $this->collection -> countDocuments(["email" => $email, "senha" => $senha]);
+        $is_exist_user = $this->collection -> countDocuments(["email" => $email, "password" => $password]);
 
         if($is_exist_user){
             $this->createLoginToken($email);

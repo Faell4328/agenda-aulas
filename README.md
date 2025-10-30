@@ -2,12 +2,11 @@ Um projeto simples desenvolvido para praticar Angular.js e PHP, executado em con
 
 ## Funcionalidades
 
-**Cadastro (Professor)**
-- Informar nome completo, e-mail e senha para realizar o cadastro.
+**Cadastro**
+- Informar nome completo, cargo (professor ou aluno), e-mail e senha para realizar o cadastro.
 - E-mails duplicados não são permitidos.
-- O professor é responsável por criar o login do aluno.
 
-**Login (Professor e Aluno)**
+**Login**
 - É necessário informar e-mail e senha corretos para acessar o sistema.
 
 **Criação de Aula (Professor)**

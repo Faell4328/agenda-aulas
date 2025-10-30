@@ -4,7 +4,7 @@ namespace App;
 use App\Middleware;
 
 class Router{
-    private $accepted_routes_and_methods = ['/' => ["GET", "POST"], '/login' => ["POST"], '/cadastrar' => ["POST"]];
+    private $accepted_routes_and_methods = ['/' => ["GET"], '/login' => ["POST"], '/cadastrar' => ["POST"], '/aula' =>["POST", "PUT"]];
 
     private function route($route, $method){
         $middleware = new Middleware;
