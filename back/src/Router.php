@@ -39,10 +39,11 @@ class Router{
             $lesson_controller = new \App\Controller\Lesson;
             $lesson_controller -> updateLesson();
         }
-        else if($route == "/"){
-            $middleware -> routeWithLogin();
+        else if($route == "/aula/update"){
+            $middleware -> routeForTeachersOnly();
 
-            echo "oi";
+            $lesson_controller = new \App\Controller\Lesson;
+            $lesson_controller -> updateLesson();
         }
     }
 

@@ -12,7 +12,8 @@ class Lesson{
         foreach($lessons as $lesson){
             echo "ID: ".$lesson["_id"]."<br />";
             echo "Nome aula: ".$lesson["name"]."<br />";
-            echo "Horário de início: ".$lesson["start_time"]."<br />";
+            echo "Horário de início: ".date("d-m-Y H:i", $lesson["start_time"])."<br />";
+            echo "Horário de finalização: ".date("d-m-Y H:i", $lesson["finish_time"])."<br />";
             echo "Quantidade atual: ".$lesson["current_quantity"]."<br />";
             echo "Quantidade total: ".$lesson["max_quantity"]."<br />";
             echo "<hr />";
@@ -22,6 +23,7 @@ class Lesson{
     public function createLesson(){
         $validation = new Validation;
         $validation -> inputForm("name");
+        $validation -> inputForm("date");
         $validation -> inputForm("start_time");
         $validation -> inputForm("quantity");
 
@@ -33,6 +35,7 @@ class Lesson{
         $validation = new Validation;
         $validation -> inputForm("id");
         $validation -> inputForm("name");
+        $validation -> inputForm("date");
         $validation -> inputForm("start_time");
         $validation -> inputForm("quantity");
 

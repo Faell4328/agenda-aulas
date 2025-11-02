@@ -89,17 +89,17 @@ class MongoDB{
         }
     }
     
-    public function createLesson($name, $start_time, $quantity){
+    public function createLesson($name, $timestamp_start_time, $timestamp_finish_time, $quantity){
         $this -> chooseCollection("aula");
-        $this->collection -> insertOne(["name" => $name, "start_time" => $start_time, "current_quantity" => 0, "max_quantity" => (int) $quantity]);
+        $this->collection -> insertOne(["name" => $name, "start_time" => $timestamp_start_time, "finish_time" => $timestamp_finish_time, "current_quantity" => 0, "max_quantity" => (int) $quantity]);
         echo "Aula cadastrada";
         exit;
     }
 
-    public function updateLesson($id, $name, $start_time, $quantity){
+    public function updateLesson($id, $name, $timestamp_start_time, $timestamp_finish_time, $quantity){
         $this -> chooseCollection("aula");
         $id = new ObjectId($id);
-        $this->collection -> updateOne(["_id" => $id], ['$set' => ["name" => $name, "start_time" => $start_time, "max_quantity" => (int) $quantity]]);
+        $this->collection -> updateOne(["_id" => $id], ['$set' => ["name" => $name, "start_time" => $timestamp_start_time, "finish_time" => $timestamp_finish_time, "max_quantity" => (int) $quantity]]);
         echo "Aula atualizada";
         exit;
     }
