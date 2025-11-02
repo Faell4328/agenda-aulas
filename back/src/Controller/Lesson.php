@@ -42,4 +42,12 @@ class Lesson{
         $lesson_service = new \App\Service\Lesson;
         $lesson_service -> updateLesson();
     }
+
+    public function joinLesson(){
+        $validation = new Validation;
+        $validation -> inputForm("id");
+
+        $lesson_service = new \App\Service\Lesson;
+        $lesson_service -> joinLesson();
+    }
 }

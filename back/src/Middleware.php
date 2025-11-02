@@ -21,6 +21,14 @@ class Middleware{
         }
     }
 
+    function routeForStudentOnly(){
+        $cookie = new Cookie;
+        if(!($cookie->checkStudentCookie())){
+            echo "Você não é um aluno para acessar essa rota";
+            exit;
+        }
+    }
+
     function routeForTeachersOnly(){
         $cookie = new Cookie;
         if(!($cookie->checkTeacherCookie())){

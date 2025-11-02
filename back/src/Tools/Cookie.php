@@ -29,6 +29,19 @@ class Cookie{
         }
     }
 
+    public function checkStudentCookie(){
+        $token_information = $this->checkValidityCookie(true);
+        $mongodb = new MongoDB();
+        $userInformation = $mongodb -> userInformationWithCookie($token_information -> email_user);
+        if($userInformation->role == "student"){
+            return true;
+        }
+        else{
+            return false;
+        }
+
+    }
+
     public function checkTeacherCookie(){
         $token_information = $this->checkValidityCookie(true);
         $mongodb = new MongoDB();

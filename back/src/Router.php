@@ -4,7 +4,7 @@ namespace App;
 use App\Middleware;
 
 class Router{
-    private $accepted_routes_and_methods = ['/' => ["GET"], '/login' => ["POST"], '/cadastrar' => ["POST"], '/aula' =>["GET"], '/aula/add' => ["POST"], '/aula/update' => ["POST"]];
+    private $accepted_routes_and_methods = ['/' => ["GET"], '/login' => ["POST"], '/cadastrar' => ["POST"], '/aula' =>["GET"], '/aula/add' => ["POST"], '/aula/update' => ["POST"], '/aula/ingressar' => ["POST"]];
 
     private function route($route, $method){
         $middleware = new Middleware;
@@ -27,23 +27,23 @@ class Router{
             $lesson_controller = new \App\Controller\Lesson;
             $lesson_controller -> listAllLessons();
         }
-        else if($route == "/aula/add"){
+        else if($route == "/aula/adicionar"){
             $middleware -> routeForTeachersOnly();
 
             $lesson_controller = new \App\Controller\Lesson;
             $lesson_controller -> createLesson();
         }
-        else if($route == "/aula/update"){
+        else if($route == "/aula/atualizar"){
             $middleware -> routeForTeachersOnly();
 
             $lesson_controller = new \App\Controller\Lesson;
             $lesson_controller -> updateLesson();
         }
-        else if($route == "/aula/update"){
-            $middleware -> routeForTeachersOnly();
+        else if($route == "/aula/ingressar"){
+            $middleware -> routeForStudentOnly();
 
             $lesson_controller = new \App\Controller\Lesson;
-            $lesson_controller -> updateLesson();
+            $lesson_controller -> joinLesson();
         }
     }
 
