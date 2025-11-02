@@ -75,10 +75,22 @@ class MongoDB{
         $this -> chooseCollection("user");
         return $this->collection -> findOne(["email" => $email]);
     }
+
+    public function listAllLessons(){
+        $this -> chooseCollection("aula");
+        $lessons = iterator_to_array($this->collection -> find());
+        if(!empty($lessons)){
+            return $lessons;
+        }
+        else{
+            echo "Nenhuma aula criada";
+            exit;
+        }
+    }
     
     public function createLesson($name, $start_time, $quantity){
         $this -> chooseCollection("aula");
-        $this->collection -> insertOne(["name" => $name, "start_time" => $start_time, "quantity" => $quantity]);
+        $this->collection -> insertOne(["name" => $name, "start_time" => $start_time, "current_quantity" => 0, "max_quantity" => (int) $quantity]);
         echo "Aula cadastrada";
         exit;
     }

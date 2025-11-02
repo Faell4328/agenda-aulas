@@ -17,7 +17,7 @@ class SignUp{
             exit;
         }
 
-        $register_user_service = new \App\Model\SignUp;
+        $register_user_service = new \App\Service\SignUp;
         $register_user_service -> registerUser();
     }
 }

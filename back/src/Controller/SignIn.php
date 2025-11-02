@@ -10,7 +10,7 @@ class SignIn{
         $validation -> inputForm("email");
         $validation -> inputForm("password");
 
-        $login_service = new \App\Model\SignIn;
+        $login_service = new \App\Service\SignIn;
         $login_service -> logInUser();
     }
 

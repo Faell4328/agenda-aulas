@@ -4,7 +4,7 @@ namespace App;
 use App\Middleware;
 
 class Router{
-    private $accepted_routes_and_methods = ['/' => ["GET"], '/login' => ["POST"], '/cadastrar' => ["POST"], '/aula' =>["POST", "PUT"]];
+    private $accepted_routes_and_methods = ['/' => ["GET"], '/login' => ["POST"], '/cadastrar' => ["POST"], '/aula' =>["GET", "POST", "PUT"]];
 
     private function route($route, $method){
         $middleware = new Middleware;
@@ -28,8 +28,12 @@ class Router{
             if($method == "POST"){
                 $lesson_controller -> createLesson();
             }
+            else if($method == "POST"){
+                echo "Fazendo";
+                exit;
+            }
             else{
-                $lesson_controller -> updateLesson();
+                $lesson_controller -> listAllLessons();
             }
         }
         else if($route == "/"){
