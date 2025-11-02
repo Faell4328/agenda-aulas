@@ -14,6 +14,11 @@ class Lesson{
         $mongodb = new MongoDB();
         $mongodb -> createLesson($_POST["name"], $_POST["start_time"], $_POST["quantity"]);
     }
+
+    public function updateLesson(){
+        $mongodb = new MongoDB();
+        $mongodb -> updateLesson($_POST["id"], $_POST["name"], $_POST["start_time"], $_POST["quantity"]);
+    }
 }
 
 ?>

@@ -3,6 +3,7 @@
 namespace App\Tools;
 
 use MongoDB\Client;
+use MongoDB\BSON\ObjectId;
 
 class MongoDB{
     private $client;
@@ -92,6 +93,14 @@ class MongoDB{
         $this -> chooseCollection("aula");
         $this->collection -> insertOne(["name" => $name, "start_time" => $start_time, "current_quantity" => 0, "max_quantity" => (int) $quantity]);
         echo "Aula cadastrada";
+        exit;
+    }
+
+    public function updateLesson($id, $name, $start_time, $quantity){
+        $this -> chooseCollection("aula");
+        $id = new ObjectId($id);
+        $this->collection -> updateOne(["_id" => $id], ['$set' => ["name" => $name, "start_time" => $start_time, "max_quantity" => (int) $quantity]]);
+        echo "Aula atualizada";
         exit;
     }
 }

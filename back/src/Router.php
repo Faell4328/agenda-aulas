@@ -4,7 +4,7 @@ namespace App;
 use App\Middleware;
 
 class Router{
-    private $accepted_routes_and_methods = ['/' => ["GET"], '/login' => ["POST"], '/cadastrar' => ["POST"], '/aula' =>["GET", "POST", "PUT"]];
+    private $accepted_routes_and_methods = ['/' => ["GET"], '/login' => ["POST"], '/cadastrar' => ["POST"], '/aula' =>["GET"], '/aula/add' => ["POST"], '/aula/update' => ["POST"]];
 
     private function route($route, $method){
         $middleware = new Middleware;
@@ -16,28 +16,31 @@ class Router{
             $register_controller -> registerUser();
         }
         else if($route == "/login"){
-            $middleware->routeWithoutLogin();
+            $middleware -> routeWithoutLogin();
 
             $login_controller = new \App\Controller\SignIn;
             $login_controller -> logInUser();
         }
         else if($route == "/aula"){
-            $middleware->routeForTeachersOnly();
+            $middleware -> routeForTeachersOnly();
 
             $lesson_controller = new \App\Controller\Lesson;
-            if($method == "POST"){
-                $lesson_controller -> createLesson();
-            }
-            else if($method == "POST"){
-                echo "Fazendo";
-                exit;
-            }
-            else{
-                $lesson_controller -> listAllLessons();
-            }
+            $lesson_controller -> listAllLessons();
+        }
+        else if($route == "/aula/add"){
+            $middleware -> routeForTeachersOnly();
+
+            $lesson_controller = new \App\Controller\Lesson;
+            $lesson_controller -> createLesson();
+        }
+        else if($route == "/aula/update"){
+            $middleware -> routeForTeachersOnly();
+
+            $lesson_controller = new \App\Controller\Lesson;
+            $lesson_controller -> updateLesson();
         }
         else if($route == "/"){
-            $middleware->routeWithLogin();
+            $middleware -> routeWithLogin();
 
             echo "oi";
         }

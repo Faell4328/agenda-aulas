@@ -10,6 +10,7 @@ class Lesson{
         $lessons = $lesson_service -> listAllLessons();
 
         foreach($lessons as $lesson){
+            echo "ID: ".$lesson["_id"]."<br />";
             echo "Nome aula: ".$lesson["name"]."<br />";
             echo "Horário de início: ".$lesson["start_time"]."<br />";
             echo "Quantidade atual: ".$lesson["current_quantity"]."<br />";
@@ -29,5 +30,13 @@ class Lesson{
     }
 
     public function updateLesson(){
+        $validation = new Validation;
+        $validation -> inputForm("id");
+        $validation -> inputForm("name");
+        $validation -> inputForm("start_time");
+        $validation -> inputForm("quantity");
+
+        $lesson_service = new \App\Service\Lesson;
+        $lesson_service -> updateLesson();
     }
 }
