@@ -5,52 +5,29 @@ namespace App\Tools;
 use App\Tools\MongoDB;
 
 class Cookie{
-    public function checkValidityCookie($return_cookie_data = false){
-        if(!isset($_COOKIE["token"])){
-            return false;
-        }
+    public function getUserInformation(){
         $mongodb = new MongoDB();
         $token_information = $mongodb -> checkValidityCookie($_COOKIE["token"]);
 
         if($token_information == false){
-            return false;
+            return null;
         }
         else{
             if($token_information->expiration_date <= time()){
-                return false;
+                return null;
             }
         }
+
+        $user_information = $mongodb -> userInformationWithCookie($token_information -> email_user);
         
-        if($return_cookie_data == false){
-            return true;
-        }
-        else{
-            return $token_information;
-        }
+        return $user_information;
     }
 
-    public function checkStudentCookie(){
-        $token_information = $this->checkValidityCookie(true);
+    public function createLoginToken($email){
         $mongodb = new MongoDB();
-        $userInformation = $mongodb -> userInformationWithCookie($token_information -> email_user);
-        if($userInformation->role == "student"){
-            return true;
-        }
-        else{
-            return false;
-        }
-
-    }
-
-    public function checkTeacherCookie(){
-        $token_information = $this->checkValidityCookie(true);
-        $mongodb = new MongoDB();
-        $userInformation = $mongodb -> userInformationWithCookie($token_information -> email_user);
-        if($userInformation->role == "teacher"){
-            return true;
-        }
-        else{
-            return false;
-        }
+        $token = bin2hex(random_bytes(32));
+        $expiration_date = strtotime("+ 30 days");
+        $mongodb -> createLoginToken($email, $token, $expiration_date);
+        setcookie("token", $token, $expiration_date, "/");
     }
 }

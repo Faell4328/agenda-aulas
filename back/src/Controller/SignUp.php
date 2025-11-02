@@ -13,7 +13,7 @@ class SignUp{
         $validation -> inputForm("password");
 
         if(!($_POST["role"] == "teacher") && !($_POST["role"] == "student")){
-            echo "Sua função está incorreta";
+            echo "So é permitido as funções \"professor\" (teacher) e \"estudante\" (student)";
             exit;
         }
 

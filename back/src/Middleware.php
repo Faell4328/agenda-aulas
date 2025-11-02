@@ -2,36 +2,30 @@
 
 namespace App;
 
-use App\Tools\Cookie;
-
 class Middleware{
-    function routeWithLogin(){
-        $cookie = new Cookie;
-        if(!$cookie->checkValidityCookie()){
+    function routeWithLogin($user_information){
+        if($user_information == null){
             echo "Você deve estar logado para acessar essa rota";
             exit;
         }
     }
 
-    function routeWithoutLogin(){
-        $cookie = new Cookie;
-        if($cookie->checkValidityCookie()){
+    function routeWithoutLogin($user_information){
+        if($user_information !== null){
             echo "Você não pode estar logado para acessar essa rota";
             exit;
         }
     }
 
-    function routeForStudentOnly(){
-        $cookie = new Cookie;
-        if(!($cookie->checkStudentCookie())){
+    function routeForStudentOnly($user_information){
+        if($user_information -> role !== "student"){
             echo "Você não é um aluno para acessar essa rota";
             exit;
         }
     }
 
-    function routeForTeachersOnly(){
-        $cookie = new Cookie;
-        if(!($cookie->checkTeacherCookie())){
+    function routeForTeachersOnly($user_information){
+        if($user_information -> role !== "teacher"){
             echo "Você não é um professor para acessar essa rota";
             exit;
         }

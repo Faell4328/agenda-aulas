@@ -19,12 +19,9 @@ class MongoDB{
         $this->collection = $this->database -> selectCollection($collection);
     }
 
-    private function createLoginToken($email){
+    public function createLoginToken($email, $token, $expiration_date){
         $this -> chooseCollection("token");
-        $token = bin2hex(random_bytes(32));
-        $expiration_date = strtotime("+ 30 days");
         $this->collection -> insertOne(["token" => $token, "expiration_date" => $expiration_date, "email_user" => $email]);
-        setcookie("token", $token, $expiration_date, "/");
     }
 
     public function checkValidityCookie($token){
@@ -36,6 +33,11 @@ class MongoDB{
         else{
             return false;
         }
+    }
+
+    public function userInformationWithCookie($email){
+        $this -> chooseCollection("user");
+        return $this->collection -> findOne(["email" => $email]);
     }
 
     public function registerUser($name, $role, $email, $password){
@@ -57,24 +59,14 @@ class MongoDB{
         $is_exist_email = $this->collection -> countDocuments(["email" => $email]);
         $is_exist_user = $this->collection -> countDocuments(["email" => $email, "password" => $password]);
 
-        if($is_exist_user){
-            $this->createLoginToken($email);
-            echo "Logado";
-            exit;
+        if($is_exist_email == 0){
+            return "Usuário não cadastrado";
         }
         else if($is_exist_email && !$is_exist_user){
-            echo "Senha incorreta";
-            exit;
+            return "Senha incorreta";
         }
-        else{
-            echo "Usuário não cadastrado";
-            exit;
-        }
-    }
 
-    public function userInformationWithCookie($email){
-        $this -> chooseCollection("user");
-        return $this->collection -> findOne(["email" => $email]);
+        return true;
     }
 
     public function listOfSpecificLessons($id){
