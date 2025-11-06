@@ -4,9 +4,9 @@ require __DIR__.'/../vendor/autoload.php';
 
 use App\Router;
 
-$method_req = $_SERVER["REQUEST_METHOD"];
-$rota_req = $_SERVER["REQUEST_URI"];
+$req_method = $_SERVER["REQUEST_METHOD"];
+$req_route_path = parse_url($_SERVER["REQUEST_URI"])["path"];
 
-$route = new Router($rota_req, $method_req);
+$route = new Router($req_route_path, $req_method);
 
 ?>

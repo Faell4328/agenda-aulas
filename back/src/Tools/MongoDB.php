@@ -70,7 +70,7 @@ class MongoDB{
     }
 
     public function listOfSpecificLessons($id){
-        $id = new ObjectId($_POST["id"]);
+        $id = new ObjectId($_GET["id"]);
 
         $this -> chooseCollection("aula");
         return $this->collection -> findOne(["_id" => $id]);
@@ -96,7 +96,7 @@ class MongoDB{
     }
     
     public function updateLesson($id, $name, $timestamp_start_time, $timestamp_finish_time, $quantity){
-        $id = new ObjectId($_POST["id"]);
+        $id = new ObjectId($_GET["id"]);
 
         $this -> chooseCollection("aula");
         $this->collection -> updateOne(["_id" => $id], ['$set' => ["name" => $name, "start_time" => $timestamp_start_time, "finish_time" => $timestamp_finish_time, "max_quantity" => (int) $quantity]]);

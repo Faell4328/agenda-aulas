@@ -7,10 +7,10 @@ use App\Tools\Validation;
 class SignUp{
     public function registerUser(){
         $validation = new Validation;
-        $validation -> inputForm("name");
-        $validation -> inputForm("role");
-        $validation -> inputForm("email");
-        $validation -> inputForm("password");
+        $validation -> formInput("name");
+        $validation -> formInput("role");
+        $validation -> formInput("email");
+        $validation -> formInput("password");
 
         if(!($_POST["role"] == "teacher") && !($_POST["role"] == "student")){
             echo "So é permitido as funções \"professor\" (teacher) e \"estudante\" (student)";

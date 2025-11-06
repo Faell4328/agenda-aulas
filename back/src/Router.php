@@ -5,14 +5,24 @@ use App\Middleware;
 use App\Tools\Cookie;
 
 class Router{
-    private $accepted_routes_and_methods = ['/' => ["GET"], '/login' => ["POST"], '/cadastrar' => ["POST"], '/aula' =>["GET"], '/aula/adicionar' => ["POST"], '/aula/update' => ["POST"], '/aula/ingressar' => ["POST"]];
+    private $accepted_routes_path_and_methods = [
+        '/' => ["GET"],
+        '/login' => ["POST"],
+        '/cadastrar' => ["POST"],
+        '/aula' =>["GET"],
+        '/aula/adicionar' => ["POST"],
+        '/aula/atualizar' => ["POST"],
+        '/aula/ingressar' => ["POST"],
+        '/aula/ingressadas' => ["GET"]
+    ];
     
-    public function __construct($rota_req, $method_req){
-        if(array_key_exists($rota_req, $this->accepted_routes_and_methods) && in_array($method_req, $this->accepted_routes_and_methods[$rota_req])){
-            $this->route($rota_req, $method_req);
+    public function __construct($req_route_path, $req_method){
+        if(array_key_exists($req_route_path, $this->accepted_routes_path_and_methods) && in_array($req_method, $this->accepted_routes_path_and_methods[$req_route_path])){
+            $this->route($req_route_path, $req_method);
         }
         else{
             echo "404";
+            exit;
         }
     }
 
@@ -47,19 +57,19 @@ class Router{
         }
         else if($route == "/aula/adicionar"){
             $middleware -> routeForTeachersOnly($user_information);
-
+            
             $lesson_controller = new \App\Controller\Lesson;
             $lesson_controller -> createLesson();
         }
         else if($route == "/aula/atualizar"){
             $middleware -> routeForTeachersOnly($user_information);
-
+            
             $lesson_controller = new \App\Controller\Lesson;
             $lesson_controller -> updateLesson();
         }
         else if($route == "/aula/ingressar"){
             $middleware -> routeForStudentOnly($user_information);
-
+            
             $lesson_controller = new \App\Controller\Lesson;
             $lesson_controller -> joinLesson();
         }

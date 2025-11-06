@@ -22,10 +22,10 @@ class Lesson{
 
     public function createLesson(){
         $validation = new Validation;
-        $validation -> inputForm("name");
-        $validation -> inputForm("date");
-        $validation -> inputForm("start_time");
-        $validation -> inputForm("quantity");
+        $validation -> formInput("name");
+        $validation -> formInput("date");
+        $validation -> formInput("start_time");
+        $validation -> formInput("quantity");
 
         $lesson_service = new \App\Service\Lesson;
         $lesson_service -> createLesson();
@@ -33,11 +33,11 @@ class Lesson{
 
     public function updateLesson(){
         $validation = new Validation;
-        $validation -> inputForm("id");
-        $validation -> inputForm("name");
-        $validation -> inputForm("date");
-        $validation -> inputForm("start_time");
-        $validation -> inputForm("quantity");
+        $validation -> queryString("id");
+        $validation -> formInput("name");
+        $validation -> formInput("date");
+        $validation -> formInput("start_time");
+        $validation -> formInput("quantity");
 
         $lesson_service = new \App\Service\Lesson;
         $lesson_service -> updateLesson();
@@ -45,7 +45,7 @@ class Lesson{
 
     public function joinLesson(){
         $validation = new Validation;
-        $validation -> inputForm("id");
+        $validation -> queryString("id");
 
         $lesson_service = new \App\Service\Lesson;
         $lesson_service -> joinLesson();

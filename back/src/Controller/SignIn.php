@@ -7,8 +7,8 @@ use App\Tools\Validation;
 class SignIn{
     public function logInUser(){
         $validation = new Validation;
-        $validation -> inputForm("email");
-        $validation -> inputForm("password");
+        $validation -> formInput("email");
+        $validation -> formInput("password");
 
         $login_service = new \App\Service\SignIn;
         $login_service -> logInUser();
