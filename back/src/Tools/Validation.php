@@ -5,22 +5,19 @@ namespace App\Tools;
 class Validation{
     public function queryString($query){
         if(!isset($_GET[$query])){
-            echo "Campo \"$query\" não enviado";
-            exit;
+            new \App\Controller\SendingPattern(400, "Campo \"$query\" não enviado");
         }
         else if($_GET[$query] == ""){
-            echo "Campo \"$query\" está vazio";
-            exit;
+            new \App\Controller\SendingPattern(400, "Campo \"$query\" está vazio");
         }
     }
 
     public function formInput($input){
         if(!isset($_POST[$input])){
-            echo "Campo \"$input\" não enviado";
-            exit;
+            new \App\Controller\SendingPattern(400, "Campo \"$input\" não enviados");
         }
         else if($_POST[$input] == ""){
-            echo "Campo \"$input\" está vazio";
+            new \App\Controller\SendingPattern(400, "Campo \"$input\" está vazio");
             exit;
         }
     }

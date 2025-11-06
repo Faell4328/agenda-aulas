@@ -1,6 +1,7 @@
 <?php
 
 namespace App;
+
 use App\Middleware;
 use App\Tools\Cookie;
 
@@ -21,8 +22,7 @@ class Router{
             $this->route($req_route_path, $req_method);
         }
         else{
-            echo "404";
-            exit;
+            new \App\Controller\SendingPattern(404, "Not Found");
         }
     }
 

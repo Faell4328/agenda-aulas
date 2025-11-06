@@ -13,12 +13,13 @@ class SignUp{
         $validation -> formInput("password");
 
         if(!($_POST["role"] == "teacher") && !($_POST["role"] == "student")){
-            echo "So é permitido as funções \"professor\" (teacher) e \"estudante\" (student)";
-            exit;
+            new \App\Controller\SendingPattern("error", "So é permitido as funções \"professor\" ou \"estudante\"");
         }
 
-        $register_user_service = new \App\Service\SignUp;
-        $register_user_service -> registerUser();
+        $service = new \App\Service\SignUp;
+        $return_service = $service -> registerUser();
+            
+        new \App\Controller\SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
 }
 

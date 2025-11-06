@@ -42,35 +42,24 @@ class MongoDB{
         return $this->collection -> findOne(["_id" => $user_id]);
     }
 
+    public function checkEmailExist($email){
+        $this -> chooseCollection("user");
+        if($this->collection -> countDocuments(["email" => $email]) !== 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     public function registerUser($name, $role, $email, $password){
         $this -> chooseCollection("user");
-        $is_exist_user = $this->collection -> countDocuments(["email" => $email]);
-
-        if($is_exist_user){
-            echo "Email já sendo usado";
-            exit;
-        }
-
         $this->collection -> insertOne(["name" => $name, "role" => $role, "email" => $email, "password" => $password]);
-        echo "Usuário criado";
-        exit;
     }
 
     public function loginUser($email, $password){
         $this -> chooseCollection("user");
-        $is_exist_email = $this->collection -> countDocuments(["email" => $email]);
-        $user_information = $this->collection -> findOne(["email" => $email, "password" => $password]);
-
-        if($is_exist_email == 0){
-            echo "Usuário não cadastrado";
-            exit;
-        }
-        else if($is_exist_email && !$user_information){
-            echo "Senha incorreta";
-            exit;
-        }
-
-        return $user_information;
+        return $this->collection -> findOne(["email" => $email, "password" => $password]);
     }
 
     public function listOfSpecificLessons($id){
@@ -80,21 +69,26 @@ class MongoDB{
         return $this->collection -> findOne(["_id" => $id]);
     }
 
-    public function listAllLessons(){
+    public function checkLessonExist($lesson_id){
+        $lesson_id = new ObjectId($lesson_id);
+        
         $this -> chooseCollection("lessons");
-        $lessons = iterator_to_array($this->collection -> find());
-        if(!empty($lessons)){
-            return $lessons;
+        if($this->collection -> countDocuments(["_id" => $lesson_id]) !== 0){
+            return true;
         }
         else{
-            echo "Nenhuma aula cadastrada";
-            exit;
+            return false;
         }
+    }
+
+    public function listAllLessons(){
+        $this -> chooseCollection("lessons");
+        return iterator_to_array($this->collection -> find());
     }
 
     public function listYourLessons($user_id){
         $this -> chooseCollection("join_lesson");
-        $list_your_lessons = iterator_to_array($this->collection -> aggregate([
+        return iterator_to_array($this->collection -> aggregate([
             [
                 '$match' => [
                     'id_student' => $user_id
@@ -112,21 +106,11 @@ class MongoDB{
                 '$unwind' => '$lessons'
             ]
         ]));
-
-        if(!$list_your_lessons){
-            echo "Você não tem nenhuma aula ingressada";
-            exit;
-        }
-        else{
-            return $list_your_lessons;
-        }
     }
 
     public function createLesson($name, $timestamp_start_time, $timestamp_finish_time, $quantity){
         $this -> chooseCollection("lessons");
         $this->collection -> insertOne(["name" => $name, "start_time" => $timestamp_start_time, "finish_time" => $timestamp_finish_time, "current_quantity" => 0, "max_quantity" => (int) $quantity]);
-        echo "Aula cadastrada";
-        exit;
     }
     
     public function updateLesson($id, $name, $timestamp_start_time, $timestamp_finish_time, $quantity){
@@ -134,8 +118,6 @@ class MongoDB{
 
         $this -> chooseCollection("lessons");
         $this->collection -> updateOne(["_id" => $id], ['$set' => ["name" => $name, "start_time" => $timestamp_start_time, "finish_time" => $timestamp_finish_time, "max_quantity" => (int) $quantity]]);
-        echo "Aula atualizada";
-        exit;
     }
 
     # ------------------------
@@ -155,8 +137,6 @@ class MongoDB{
 
         $this -> chooseCollection("join_lesson");
         $this->collection -> insertOne(["id_student" => $id_student, "id_lesson" => $id_lesson]);
-        echo "Ingressou na aula";
-        exit;
     }
 }
 

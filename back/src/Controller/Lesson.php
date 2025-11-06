@@ -6,33 +6,17 @@ use App\Tools\Validation;
 
 class Lesson{
     public function listAllLessons(){
-        $lesson_service = new \App\Service\Lesson;
-        $lessons = $lesson_service -> listAllLessons();
+        $service = new \App\Service\Lesson;
+        $return_service = $service -> listAllLessons();
 
-        foreach($lessons as $lesson){
-            echo "ID: ".$lesson["_id"]."<br />";
-            echo "Nome aula: ".$lesson["name"]."<br />";
-            echo "Horário de início: ".date("d-m-Y H:i", $lesson["start_time"])."<br />";
-            echo "Horário de finalização: ".date("d-m-Y H:i", $lesson["finish_time"])."<br />";
-            echo "Quantidade atual: ".$lesson["current_quantity"]."<br />";
-            echo "Quantidade total: ".$lesson["max_quantity"]."<br />";
-            echo "<hr />";
-        }
+        new \App\Controller\SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
 
     public function listYourLessons(){
-        $lesson_service = new \App\Service\Lesson;
-        $yourLessons = $lesson_service -> listYourLessons();
+        $service = new \App\Service\Lesson;
+        $return_service = $service -> listYourLessons();
 
-        foreach($yourLessons as $lesson){
-            echo "ID: ".$lesson["lessons"]["_id"]."<br />";
-            echo "Nome aula: ".$lesson["lessons"]["name"]."<br />";
-            echo "Horário de início: ".date("d-m-Y H:i", $lesson["lessons"]["start_time"])."<br />";
-            echo "Horário de finalização: ".date("d-m-Y H:i", $lesson["lessons"]["finish_time"])."<br />";
-            echo "Quantidade atual: ".$lesson["lessons"]["current_quantity"]."<br />";
-            echo "Quantidade total: ".$lesson["lessons"]["max_quantity"]."<br />";
-            echo "<hr />";
-        }
+        new \App\Controller\SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
 
     public function createLesson(){
@@ -42,8 +26,10 @@ class Lesson{
         $validation -> formInput("start_time");
         $validation -> formInput("quantity");
 
-        $lesson_service = new \App\Service\Lesson;
-        $lesson_service -> createLesson();
+        $service = new \App\Service\Lesson;
+        $return_service = $service -> createLesson();
+
+        new \App\Controller\SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
 
     public function updateLesson(){
@@ -54,15 +40,19 @@ class Lesson{
         $validation -> formInput("start_time");
         $validation -> formInput("quantity");
 
-        $lesson_service = new \App\Service\Lesson;
-        $lesson_service -> updateLesson();
+        $service = new \App\Service\Lesson;
+        $return_service = $service -> updateLesson();
+        
+        new \App\Controller\SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
 
     public function joinLesson(){
         $validation = new Validation;
         $validation -> queryString("id");
 
-        $lesson_service = new \App\Service\Lesson;
-        $lesson_service -> joinLesson();
+        $service = new \App\Service\Lesson;
+        $return_service = $service -> joinLesson();
+
+        new \App\Controller\SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
 }
