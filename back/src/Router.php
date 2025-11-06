@@ -9,11 +9,11 @@ class Router{
         '/' => ["GET"],
         '/login' => ["POST"],
         '/cadastrar' => ["POST"],
-        '/aula' =>["GET"],
-        '/aula/adicionar' => ["POST"],
-        '/aula/atualizar' => ["POST"],
-        '/aula/ingressar' => ["POST"],
-        '/aula/ingressadas' => ["GET"]
+        '/aulas' =>["GET"],
+        '/aulas/adicionar' => ["POST"],
+        '/aulas/atualizar' => ["POST"],
+        '/aulas/ingressar' => ["POST"],
+        '/aulas/ingressadas' => ["GET"]
     ];
     
     public function __construct($req_route_path, $req_method){
@@ -49,29 +49,35 @@ class Router{
             $login_controller = new \App\Controller\SignIn;
             $login_controller -> logInUser();
         }
-        else if($route == "/aula"){
-            $middleware -> routeForTeachersOnly($user_information);
+        else if($route == "/aulas"){
+            $middleware -> routeWithLogin($user_information);
 
             $lesson_controller = new \App\Controller\Lesson;
             $lesson_controller -> listAllLessons();
         }
-        else if($route == "/aula/adicionar"){
+        else if($route == "/aulas/adicionar"){
             $middleware -> routeForTeachersOnly($user_information);
             
             $lesson_controller = new \App\Controller\Lesson;
             $lesson_controller -> createLesson();
         }
-        else if($route == "/aula/atualizar"){
+        else if($route == "/aulas/atualizar"){
             $middleware -> routeForTeachersOnly($user_information);
             
             $lesson_controller = new \App\Controller\Lesson;
             $lesson_controller -> updateLesson();
         }
-        else if($route == "/aula/ingressar"){
+        else if($route == "/aulas/ingressar"){
             $middleware -> routeForStudentOnly($user_information);
             
             $lesson_controller = new \App\Controller\Lesson;
             $lesson_controller -> joinLesson();
+        }
+        else if($route == "/aulas/ingressadas"){
+            $middleware -> routeForStudentOnly($user_information);
+            
+            $lesson_controller = new \App\Controller\Lesson;
+            $lesson_controller -> listYourLessons();
         }
     }
 }

@@ -20,6 +20,21 @@ class Lesson{
         }
     }
 
+    public function listYourLessons(){
+        $lesson_service = new \App\Service\Lesson;
+        $yourLessons = $lesson_service -> listYourLessons();
+
+        foreach($yourLessons as $lesson){
+            echo "ID: ".$lesson["lessons"]["_id"]."<br />";
+            echo "Nome aula: ".$lesson["lessons"]["name"]."<br />";
+            echo "Horário de início: ".date("d-m-Y H:i", $lesson["lessons"]["start_time"])."<br />";
+            echo "Horário de finalização: ".date("d-m-Y H:i", $lesson["lessons"]["finish_time"])."<br />";
+            echo "Quantidade atual: ".$lesson["lessons"]["current_quantity"]."<br />";
+            echo "Quantidade total: ".$lesson["lessons"]["max_quantity"]."<br />";
+            echo "<hr />";
+        }
+    }
+
     public function createLesson(){
         $validation = new Validation;
         $validation -> formInput("name");

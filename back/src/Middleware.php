@@ -18,6 +18,7 @@ class Middleware{
     }
 
     function routeForStudentOnly($user_information){
+        $this -> routeWithLogin($user_information);
         if($user_information -> role !== "student"){
             echo "Você não é um aluno para acessar essa rota";
             exit;
@@ -25,6 +26,7 @@ class Middleware{
     }
 
     function routeForTeachersOnly($user_information){
+        $this -> routeWithLogin($user_information);
         if($user_information -> role !== "teacher"){
             echo "Você não é um professor para acessar essa rota";
             exit;

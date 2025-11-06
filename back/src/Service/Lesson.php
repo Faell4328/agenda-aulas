@@ -10,6 +10,13 @@ class Lesson{
         return $mongodb -> listAllLessons();
     }
 
+    public function listYourLessons(){
+        $mongodb = new MongoDB();
+
+        $token_information = $mongodb -> checkValidityCookie($_COOKIE["token"]);
+        return $mongodb -> listYourLessons($token_information["user_id"]);
+    }
+
     public function createLesson(){
         $mongodb = new MongoDB();
         $timestamp_lessons_start = strtotime($_POST["date"]." ".$_POST["start_time"]);
@@ -29,18 +36,22 @@ class Lesson{
         $mongodb = new MongoDB();
 
         $specificLesson = $mongodb -> listOfSpecificLessons($_GET["id"]);
-        if($specificLesson -> current_quantity >= $specificLesson -> max_quantity ){
+        if(!$specificLesson){
+            echo "Aula não encontrada";
+            exit;
+        }
+        else if($specificLesson -> current_quantity >= $specificLesson -> max_quantity ){
             echo "Aula já está cheia";
             exit;
         }
 
-        $user_information = $mongodb -> checkValidityCookie($_COOKIE["token"]);
-        if($mongodb -> checkIfYouAreAlreadyJoin($user_information["_id"]) != 0){
+        $token_information = $mongodb -> checkValidityCookie($_COOKIE["token"]);
+        if($mongodb -> checkIfYouAreAlreadyJoin($token_information["user_id"], $_GET["id"]) !== 0){
             echo "Já está ingressado na aula";
             exit;
         }
 
-        $mongodb -> joinLesson($_GET["id"], $user_information["_id"], $specificLesson -> current_quantity);
+        $mongodb -> joinLesson($_GET["id"], $token_information["user_id"], $specificLesson -> current_quantity);
     }
 }
 

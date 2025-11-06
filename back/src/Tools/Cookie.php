@@ -18,16 +18,16 @@ class Cookie{
             }
         }
 
-        $user_information = $mongodb -> userInformationWithCookie($token_information -> email_user);
+        $user_information = $mongodb -> userInformationWithCookie($token_information["user_id"]);
         
         return $user_information;
     }
 
-    public function createLoginToken($email){
+    public function createLoginToken($user_id){
         $mongodb = new MongoDB();
         $token = bin2hex(random_bytes(32));
         $expiration_date = strtotime("+ 30 days");
-        $mongodb -> createLoginToken($email, $token, $expiration_date);
+        $mongodb -> createLoginToken($user_id, $token, $expiration_date);
         setcookie("token", $token, $expiration_date, "/");
     }
 }
