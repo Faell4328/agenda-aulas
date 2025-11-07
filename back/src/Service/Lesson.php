@@ -16,6 +16,9 @@ class Lesson{
                     array_push($data, [
                         "id" => (string) $lesson["_id"],
                         "name" => $lesson["name"],
+                        "day" => $lesson["day"],
+                        "month" => $lesson["month"],
+                        "year" => $lesson["year"],
                         "start_time" => $lesson["start_time"],
                         "finish_time" => $lesson["finish_time"],
                         "current_quantity" => $lesson["current_quantity"],
@@ -50,6 +53,9 @@ class Lesson{
                     array_push($data, [
                         "id" => (string) $lesson["id_lesson"],
                         "name" => $lesson["lessons"]["name"],
+                        "day" => $lesson["lessons"]["day"],
+                        "month" => $lesson["lessons"]["month"],
+                        "year" => $lesson["lessons"]["year"],
                         "start_time" => $lesson["lessons"]["start_time"],
                         "finish_time" => $lesson["lessons"]["finish_time"],
                         "current_quantity" => $lesson["lessons"]["current_quantity"],
@@ -72,11 +78,18 @@ class Lesson{
 
     public function createLesson(){
         $mongodb = new MongoDB();
+
         $timestamp_lessons_start = strtotime($_POST["date"]." ".$_POST["start_time"]);
         $timestamp_lessons_finish = strtotime("+ 50 minutes", $timestamp_lessons_start);
-        
+
+        $day = (int) date("d", $timestamp_lessons_start);
+        $month = (int) date("m", $timestamp_lessons_start);
+        $year = (int) date("y", $timestamp_lessons_start);
+        $lesson_start= (int) date("hi", $timestamp_lessons_start);
+        $lesson_finish = (int) date("hi", $timestamp_lessons_finish);
+
         try{
-            $mongodb -> createLesson($_POST["name"], $timestamp_lessons_start, $timestamp_lessons_finish, $_POST["quantity"]);
+            $mongodb -> createLesson($_POST["name"], $day, $month, $year, $lesson_start, $lesson_finish, $_POST["quantity"]);
         }
         catch(\Exception $ex){
             if($ex -> getPrevious() != ""){
@@ -89,12 +102,19 @@ class Lesson{
 
     public function updateLesson(){
         $mongodb = new MongoDB();
+
         $timestamp_lessons_start = strtotime($_POST["date"]." ".$_POST["start_time"]);
         $timestamp_lessons_finish = strtotime("+ 50 minutes", $timestamp_lessons_start);
 
+        $day = (int) date("d", $timestamp_lessons_start);
+        $month = (int) date("m", $timestamp_lessons_start);
+        $year = (int) date("y", $timestamp_lessons_start);
+        $lesson_start= (int) date("hi", $timestamp_lessons_start);
+        $lesson_finish = (int) date("hi", $timestamp_lessons_finish);
+
         try{
             if($mongodb -> checkLessonExist($_GET["id"]) == true){
-                $mongodb -> updateLesson($_GET["id"], $_POST["name"], $timestamp_lessons_start, $timestamp_lessons_finish, $_POST["quantity"]);
+                $mongodb -> updateLesson($_POST["name"], $day, $month, $year, $lesson_start, $lesson_finish, $_POST["quantity"]);
             }
             else{
                 throw new \Exception("Aula não existe");

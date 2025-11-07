@@ -50,7 +50,7 @@ class Router{
             $login_controller -> logInUser();
         }
         else if($route == "/aulas"){
-            $middleware -> routeWithLogin($user_information);
+            #$middleware -> routeWithLogin($user_information);
 
             $lesson_controller = new \App\Controller\Lesson;
             $lesson_controller -> listAllLessons();
