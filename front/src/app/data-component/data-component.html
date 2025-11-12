@@ -1,8 +1,15 @@
 <div id="container">
-    @for(dia of dias_atual; track dia){
-        <div class="datas">
-            <span class="status">disponível</span>
-            <div class="dia">{{dia}}</div>
-        </div>
-    }
+    <div class="datas" *ngFor="let element_information of elements_information">
+        <span class="status-ok" *ngIf="element_information.name !== undefined">Tem aula</span>
+        <span class="status-no" *ngIf="element_information.name == undefined">Não tem aula</span>
+        <div class="dia">{{element_information.day}}</div>
+            <div style="max-height: 70%; overflow-x :auto"> 
+                <div *ngFor="let information of element_information.name">
+                    <div class="lesson-name">
+                        <span class="status-ok">Inscrito</span>
+                        <span>{{information.name}}</span>
+                    </div>
+                </div>
+            </div>
+    </div>
 </div>

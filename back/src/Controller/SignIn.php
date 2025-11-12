@@ -7,6 +7,7 @@ use App\Tools\Validation;
 class SignIn{
     public function loginUser(){
         $validation = new Validation;
+
         $validation -> formInput("email");
         $validation -> formInput("password");
 

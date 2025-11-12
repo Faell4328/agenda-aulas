@@ -28,6 +28,6 @@ class Cookie{
         $token = bin2hex(random_bytes(32));
         $expiration_date = strtotime("+ 30 days");
         $mongodb -> createLoginToken($user_id, $token, $expiration_date);
-        setcookie("token", $token, $expiration_date, "/");
+        setcookie("token", $token, $expiration_date, "/", "localhost");
     }
 }

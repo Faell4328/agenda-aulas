@@ -1,14 +1,14 @@
 <div id="container">
-    <form>
+    <form #frm="ngForm">
         <h3>Login</h3>
         <hr />
         <mat-form-field class="input-form">
             <mat-label>Email</mat-label>
-            <input type="email" matInput>
+            <input [(ngModel)]="email" type="email" name='email' matInput>
         </mat-form-field>
         <mat-form-field class="input-form">
             <mat-label>Senha</mat-label>
-            <input matInput [type]="hide() ? 'password' : 'text'" />
+            <input [(ngModel)]="password" matInput [type]="hide() ? 'password' : 'text'" name="password" />
             <button
                 matIconButton
                 matSuffix
@@ -20,6 +20,6 @@
                 <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
         </mat-form-field>
-        <button id="btn-submit" mat-raised-button color="primary">Logar</button>
+        <button id="btn-submit" (click)="formSubmit()" mat-raised-button color="primary">Logar</button>
     </form>
 </div>

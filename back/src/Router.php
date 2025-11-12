@@ -21,7 +21,7 @@ class Router{
         if(array_key_exists($req_route_path, $this->accepted_routes_path_and_methods) && in_array($req_method, $this->accepted_routes_path_and_methods[$req_route_path])){
             $this->route($req_route_path, $req_method);
         }
-        else{
+        else{stet;
             new \App\Controller\SendingPattern(404, "Not Found");
         }
     }
