@@ -3,7 +3,7 @@
 namespace App\Tools;
 
 class Validation{
-    public function queryString($query){
+    public function queryExists($query){
         if(!isset($_GET[$query])){
             new \App\Controller\SendingPattern(400, "Campo \"$query\" não enviado");
         }
@@ -12,12 +12,12 @@ class Validation{
         }
     }
 
-    public function formInput($input){
-        if(!isset($_POST[$input])){
-            new \App\Controller\SendingPattern(400, "Campo \"$input\" não enviados");
+    public function fieldExists($body_json, $name_field){
+        if(!isset($body_json->$name_field)){
+            new \App\Controller\SendingPattern(400, "Campo \"$name_field\" não enviados");
         }
-        else if($_POST[$input] == ""){
-            new \App\Controller\SendingPattern(400, "Campo \"$input\" está vazio");
+        else if($body_json->$name_field == ""){
+            new \App\Controller\SendingPattern(400, "Campo \"$name_field\" está vazio");
             exit;
         }
     }

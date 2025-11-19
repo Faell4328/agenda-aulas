@@ -76,10 +76,10 @@ class Lesson{
         return ["status" => 200, "message" => null, "redirect" => null, "data" => $data];
     }
 
-    public function createLesson(){
+    public function createLesson($name, $date, $start_time, $quantity){
         $mongodb = new MongoDB();
 
-        $timestamp_lessons_start = strtotime($_POST["date"]." ".$_POST["start_time"]);
+        $timestamp_lessons_start = strtotime($date." ".$start_time);
         $timestamp_lessons_finish = strtotime("+ 50 minutes", $timestamp_lessons_start);
 
         $day = (int) date("d", $timestamp_lessons_start);
@@ -89,7 +89,7 @@ class Lesson{
         $lesson_finish = (int) date("hi", $timestamp_lessons_finish);
 
         try{
-            $mongodb -> createLesson($_POST["name"], $day, $month, $year, $lesson_start, $lesson_finish, $_POST["quantity"]);
+            $mongodb -> createLesson($name, $day, $month, $year, $lesson_start, $lesson_finish, $quantity);
         }
         catch(\Exception $ex){
             if($ex -> getPrevious() != ""){
@@ -100,10 +100,10 @@ class Lesson{
         return ["status" => 201, "message" => "Aula cadastrada", "redirect" => null, "data" => null];
     }
 
-    public function updateLesson(){
+    public function updateLesson($name, $date, $start_time, $quantity){
         $mongodb = new MongoDB();
 
-        $timestamp_lessons_start = strtotime($_POST["date"]." ".$_POST["start_time"]);
+        $timestamp_lessons_start = strtotime($date." ".$start_time);
         $timestamp_lessons_finish = strtotime("+ 50 minutes", $timestamp_lessons_start);
 
         $day = (int) date("d", $timestamp_lessons_start);
@@ -114,7 +114,7 @@ class Lesson{
 
         try{
             if($mongodb -> checkLessonExist($_GET["id"]) == true){
-                $mongodb -> updateLesson($_POST["name"], $day, $month, $year, $lesson_start, $lesson_finish, $_POST["quantity"]);
+                $mongodb -> updateLesson($name, $day, $month, $year, $lesson_start, $lesson_finish, $quantity);
             }
             else{
                 throw new \Exception("Aula não existe");

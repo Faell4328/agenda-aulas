@@ -5,12 +5,12 @@ namespace App\Service;
 use App\Tools\MongoDB;
 
 class SignUp{
-    public function registerUser(){
+    public function registerUser($name, $role, $email, $password){
         $mongodb = new MongoDB();
 
         try{
-            if($mongodb -> checkEmailExist($_POST["email"]) == false){
-                $mongodb -> registerUser($_POST["name"], $_POST["role"], $_POST["email"], $_POST["password"]);
+            if($mongodb -> checkEmailExist($email) == false){
+                $mongodb -> registerUser($name, $role, $email, $password);
             }
             else{
                 throw new \Exception("Email já cadastrado");

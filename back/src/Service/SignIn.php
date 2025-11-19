@@ -6,13 +6,13 @@ use App\Tools\MongoDB;
 use App\Tools\Cookie;
 
 class SignIn{
-    public function logInUser(){
+    public function logInUser($email, $password){
         $mongodb = new MongoDB();
         $user_information = null;
         $cookie = new Cookie();
 
         try{
-            $user_information = $mongodb -> loginUser($_POST["email"], $_POST["password"]);
+            $user_information = $mongodb -> loginUser($email, $password);
 
             if($user_information){
                 $cookie -> createLoginToken($user_information["_id"]);

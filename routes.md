@@ -1,5 +1,7 @@
 ## Rotas:
 
+As informações tem que ser enviado no formato JSON para o back end.
+
 ### Front
 
 `GET /` - Consultar o calendário de aulas.
@@ -31,7 +33,7 @@
 `POST /aula/adicionar` - Adicionar aula.
 - Campos: `name`, `data`, `start_time` e `quantity` (quantidade máxima de alunos).
 
-`POST /aula/atualizar?id=id_aula` - Atualizar aula especifica.
+`PUT /aula/atualizar?id=id_aula` - Atualizar aula especifica.
 - Campos: `name`, `data`, `start_time` e `quantity` (quantidade máxima de alunos).
 
 **Somente alunos:**

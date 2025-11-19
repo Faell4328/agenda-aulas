@@ -11,7 +11,8 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-W
 
 $req_method = $_SERVER["REQUEST_METHOD"];
 $req_route_path = parse_url($_SERVER["REQUEST_URI"])["path"];
+$req_body_json = json_decode(file_get_contents("php://input"));
 
-$route = new Router($req_route_path, $req_method);
+$route = new Router($req_route_path, $req_method, $req_body_json);
 
 ?>

@@ -19,36 +19,37 @@ class Lesson{
         new \App\Controller\SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
 
-    public function createLesson(){
+    public function createLesson($req_body_json){
         $validation = new Validation;
-        $validation -> formInput("name");
-        $validation -> formInput("date");
-        $validation -> formInput("start_time");
-        $validation -> formInput("quantity");
+        $validation -> fieldExists($req_body_json, "name");
+        $validation -> fieldExists($req_body_json, "date");
+        $validation -> fieldExists($req_body_json, "date");
+        $validation -> fieldExists($req_body_json, "start_time");
+        $validation -> fieldExists($req_body_json, "quantity");
 
         $service = new \App\Service\Lesson;
-        $return_service = $service -> createLesson();
+        $return_service = $service -> createLesson($req_body_json->name, $req_body_json->date, $req_body_json->start_time, $req_body_json->quantity);
 
         new \App\Controller\SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
 
-    public function updateLesson(){
+    public function updateLesson($req_body_json){
         $validation = new Validation;
-        $validation -> queryString("id");
-        $validation -> formInput("name");
-        $validation -> formInput("date");
-        $validation -> formInput("start_time");
-        $validation -> formInput("quantity");
+        $validation -> queryExists($req_body_json, "id");
+        $validation -> fieldExists($req_body_json, "name");
+        $validation -> fieldExists($req_body_json, "date");
+        $validation -> fieldExists($req_body_json, "start_time");
+        $validation -> fieldExists($req_body_json, "quantity");
 
         $service = new \App\Service\Lesson;
-        $return_service = $service -> updateLesson();
+        $return_service = $service -> updateLesson($req_body_json->name, $req_body_json->date, $req_body_json->start_time, $req_body_json->quantity);
         
         new \App\Controller\SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
 
     public function joinLesson(){
         $validation = new Validation;
-        $validation -> queryString("id");
+        $validation -> queryExists("id");
 
         $service = new \App\Service\Lesson;
         $return_service = $service -> joinLesson();
