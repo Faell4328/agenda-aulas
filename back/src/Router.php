@@ -47,6 +47,10 @@ class Router{
             $register_controller = new \App\Controller\Auth;
             $register_controller -> registerUser($req_body_json);
         }
+        else if($route == "/"){
+            echo "Sauble";
+            exit;
+        }
         else if($route == "/login"){
             $middleware -> routeWithoutLogin($user_information);
 
@@ -60,7 +64,7 @@ class Router{
             $login_controller -> logOut();
         }
         else if($route == "/aulas"){
-            #$middleware -> routeWithLogin($user_information);
+            $middleware -> routeWithLogin($user_information);
 
             $lesson_controller = new \App\Controller\Lesson;
             $lesson_controller -> listAllLessons();

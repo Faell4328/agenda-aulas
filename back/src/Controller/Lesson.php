@@ -35,7 +35,7 @@ class Lesson{
 
     public function updateLesson($req_body_json){
         $validation = new Validation;
-        $validation -> queryExists($req_body_json, "id");
+        $validation -> queryExists("id");
         $validation -> fieldExists($req_body_json, "name");
         $validation -> fieldExists($req_body_json, "date");
         $validation -> fieldExists($req_body_json, "start_time");
