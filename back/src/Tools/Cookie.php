@@ -30,4 +30,11 @@ class Cookie{
         $mongodb -> createLoginToken($user_id, $token, $expiration_date);
         setcookie("token", $token, $expiration_date, "/", "localhost");
     }
+
+    public function deleteLoginToken($token){
+        $mongodb = new MongoDB();
+        $expiration_date = strtotime("- 30 days");
+        $mongodb -> deleteLoginToken($token);
+        setcookie("token", "", $expiration_date, "/", "localhost");
+    }
 }

@@ -44,14 +44,20 @@ class Router{
         if($route == "/cadastrar"){
             $middleware -> routeWithoutLogin($user_information);
             
-            $register_controller = new \App\Controller\SignUp;
+            $register_controller = new \App\Controller\Auth;
             $register_controller -> registerUser($req_body_json);
         }
         else if($route == "/login"){
             $middleware -> routeWithoutLogin($user_information);
 
-            $login_controller = new \App\Controller\SignIn;
+            $login_controller = new \App\Controller\Auth;
             $login_controller -> logInUser($req_body_json);
+        }
+        else if($route == "/logout"){
+            $middleware -> routeWithLogin($user_information);
+
+            $login_controller = new \App\Controller\Auth;
+            $login_controller -> logOut();
         }
         else if($route == "/aulas"){
             #$middleware -> routeWithLogin($user_information);

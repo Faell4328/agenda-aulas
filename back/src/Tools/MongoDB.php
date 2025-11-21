@@ -24,6 +24,11 @@ class MongoDB{
         $this->collection -> insertOne(["token" => $token, "expiration_date" => $expiration_date, "user_id" => $user_id]);
     }
 
+    public function deleteLoginToken($token){
+        $this -> chooseCollection("tokens");
+        $this->collection -> deleteOne(["token" => $token]);
+    }
+
     public function checkValidityCookie($token){
         $this -> chooseCollection("tokens");
         $token_information = $this->collection -> findOne(["token" => $token]);
