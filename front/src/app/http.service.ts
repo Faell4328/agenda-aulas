@@ -14,10 +14,10 @@ export class Http {
   constructor(private http: HttpClient){} 
 
   post(path: string = "/", body: any | null): Observable<returnApi>{
-    return this.http.post<returnApi>(this.baseURL + path, body, { withCredentials: true });
+    return this.http.post<returnApi>(this.baseURL + path, JSON.stringify(body), { withCredentials: true });
   }
 
   get(path: string = "/"): Observable<returnApi>{
-    return this.http.get<returnApi>(this.baseURL + path);
+    return this.http.get<returnApi>(this.baseURL + path, { withCredentials: true });
   }
 }

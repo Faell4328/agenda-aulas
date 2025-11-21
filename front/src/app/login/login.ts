@@ -20,20 +20,23 @@ export class Login {
   constructor(private http: Http, private router: Router){}
 
   formSubmit(){
-    const form = new FormData();
-    form.append('email', this.email);
-    form.append('password', this.password);
+    const data = {
+      "email": this.email,
+      "password": this.password
+    }
 
-    this.http.post("/login", form).subscribe({
+    this.http.post("/login", data).subscribe({
       next: (ok) => {
+        console.log("OK")
         alert(ok.message);
         this.router.navigate([ok.redirect]);
         console.log(ok.data);
       },
       error: (erro) => {
-        console.log("Erro");
+        console.log("Erro")
         alert(erro.error.message);
-        this.router.navigate([erro.error.redirect]);
+        console.log(erro);
+        //this.router.navigate([erro.error.redirect]);
       }
     });
   }

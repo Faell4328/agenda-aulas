@@ -16,29 +16,32 @@ import { MatSelectModule } from '@angular/material/select';
 })
 export class Cadastrar {
   name: string = '';
-  cargo: string = '';
+  role: string = '';
   email: string = '';
   password: string = '';
 
   constructor(private http: Http, private router: Router){}
 
   formSubmit(){
-    const form = new FormData();
-    form.append('name', this.name);
-    form.append('cargo', this.cargo);
-    form.append('email', this.email);
-    form.append('password', this.password);
+    const data = {
+      "name": this.name,
+      "role": this.role,
+      "email": this.email,
+      "password": this.password
+    }
 
-    this.http.post("/cadastrar", form).subscribe({
+    this.http.post("/cadastrar", data).subscribe({
       next: (ok) => {
+        console.log("OK")
         alert(ok.message);
         this.router.navigate([ok.redirect]);
         console.log(ok.data);
       },
       error: (erro) => {
-        console.log("Erro");
+        console.log("Erro")
         alert(erro.error.message);
-        this.router.navigate([erro.error.redirect]);
+        console.log(erro);
+        //this.router.navigate([erro.error.redirect]);
       }
     });
   }

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { lesson } from '../interfaces';
 import { Http } from '../http.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-data-component',
@@ -19,7 +20,7 @@ export class DataComponent implements OnInit{
   ano_atual: number = new Date().getFullYear();
   quantidade: number = 0;
 
-  constructor(private http: Http){}
+  constructor(private http: Http, private router: Router){}
 
   getAllLessons(){
     this.http.get("/aulas").subscribe({
@@ -50,7 +51,12 @@ export class DataComponent implements OnInit{
 
         }
       },
-      error: erro => console.log(erro)
+      error: erro => {
+        console.log("Erro")
+        alert(erro.error.message);
+        console.log(erro);
+        this.router.navigate([erro.error.redirect]);
+      }
     });
   }
   

@@ -4,15 +4,16 @@
         <hr />
         <mat-form-field class="input-form">
             <mat-label>Nome</mat-label>
-            <input [(ngModel)]="name" type="name" name='name' matInput>
+            <input [(ngModel)]="name" type="text" name='name' matInput>
         </mat-form-field>
         <mat-form-field>
-            <mat-label>Função</mat-label>
-            <mat-select>
-                <mat-option value="teacher">Professor</mat-option>
-                <mat-option value="student">Estudante</mat-option>
-            </mat-select>
+        <mat-label>Função</mat-label>
+            <select [(ngModel)]="role" name="role" matNativeControl>
+                <option value="teacher">Professor</option>
+                <option value="student">Estudante</option>
+            </select>
         </mat-form-field>
+
         <mat-form-field class="input-form">
             <mat-label>Email</mat-label>
             <input [(ngModel)]="email" type="email" name='email' matInput>
@@ -31,6 +32,6 @@
                 <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
         </mat-form-field>
-        <button id="btn-submit" (click)="formSubmit()" mat-raised-button color="primary">Logar</button>
+        <button id="btn-submit" (click)="formSubmit()" mat-raised-button color="primary">Cadastrar</button>
     </form>
 </div>
