@@ -16,11 +16,8 @@ class Lesson{
                     array_push($data, [
                         "id" => (string) $lesson["_id"],
                         "name" => $lesson["name"],
-                        "day" => $lesson["day"],
-                        "month" => $lesson["month"],
-                        "year" => $lesson["year"],
-                        "start_time" => $lesson["start_time"],
-                        "finish_time" => $lesson["finish_time"],
+                        "timestamp_lesson_start" => $lesson["timestamp_lesson_start"],
+                        "timestamp_lesson_finish" => $lesson["timestamp_lesson_finish"],
                         "current_quantity" => $lesson["current_quantity"],
                         "max_quantity" => $lesson["max_quantity"],
                     ]);
@@ -47,17 +44,15 @@ class Lesson{
         
         try{
             $token_information = $mongodb -> checkValidityCookie($_COOKIE["token"]);
-            $yourLessons = $mongodb -> listYourLessons($token_information["user_id"]);
-            if($yourLessons){
-                foreach($yourLessons as $lesson){
+            $your_lessons = $mongodb -> listYourLessons($token_information["user_id"]);
+
+            if($your_lessons){
+                foreach($your_lessons as $lesson){
                     array_push($data, [
-                        "id" => (string) $lesson["id_lesson"],
+                        "id" => (string) $lesson["_id"],
                         "name" => $lesson["lessons"]["name"],
-                        "day" => $lesson["lessons"]["day"],
-                        "month" => $lesson["lessons"]["month"],
-                        "year" => $lesson["lessons"]["year"],
-                        "start_time" => $lesson["lessons"]["start_time"],
-                        "finish_time" => $lesson["lessons"]["finish_time"],
+                        "timestamp_lesson_start" => $lesson["lessons"]["timestamp_lesson_start"],
+                        "timestamp_lesson_finish" => $lesson["lessons"]["timestamp_lesson_finish"],
                         "current_quantity" => $lesson["lessons"]["current_quantity"],
                         "max_quantity" => $lesson["lessons"]["max_quantity"],
                     ]);
@@ -76,20 +71,14 @@ class Lesson{
         return ["status" => 200, "message" => null, "redirect" => null, "data" => $data];
     }
 
-    public function createLesson($name, $date, $start_time, $quantity){
+    public function createLesson($name, $timestamp_lesson_start, $quantity){
         $mongodb = new MongoDB();
 
-        $timestamp_lessons_start = strtotime($date." ".$start_time);
-        $timestamp_lessons_finish = strtotime("+ 50 minutes", $timestamp_lessons_start);
-
-        $day = (int) date("d", $timestamp_lessons_start);
-        $month = (int) date("m", $timestamp_lessons_start);
-        $year = (int) date("y", $timestamp_lessons_start);
-        $lesson_start= (int) date("hi", $timestamp_lessons_start);
-        $lesson_finish = (int) date("hi", $timestamp_lessons_finish);
+        // adding 50 minutes to the current time
+        $timestamp_lesson_finish = $timestamp_lesson_start+(3000*1000);
 
         try{
-            $mongodb -> createLesson($name, $day, $month, $year, $lesson_start, $lesson_finish, $quantity);
+            $mongodb -> createLesson($name, $timestamp_lesson_start, $timestamp_lesson_finish, $quantity);
         }
         catch(\Exception $ex){
             if($ex -> getPrevious() != ""){
@@ -100,21 +89,15 @@ class Lesson{
         return ["status" => 201, "message" => "Aula cadastrada", "redirect" => null, "data" => null];
     }
 
-    public function updateLesson($name, $date, $start_time, $quantity){
+    public function updateLesson($name, $timestamp_lesson_start, $quantity){
         $mongodb = new MongoDB();
 
-        $timestamp_lessons_start = strtotime($date." ".$start_time);
-        $timestamp_lessons_finish = strtotime("+ 50 minutes", $timestamp_lessons_start);
-
-        $day = (int) date("d", $timestamp_lessons_start);
-        $month = (int) date("m", $timestamp_lessons_start);
-        $year = (int) date("y", $timestamp_lessons_start);
-        $lesson_start= (int) date("hi", $timestamp_lessons_start);
-        $lesson_finish = (int) date("hi", $timestamp_lessons_finish);
+        // adding 50 minutes to the current time
+        $timestamp_lesson_finish = $timestamp_lesson_start+(3000*1000);
 
         try{
             if($mongodb -> checkLessonExist($_GET["id"]) == true){
-                $mongodb -> updateLesson($name, $day, $month, $year, $lesson_start, $lesson_finish, $quantity);
+                $mongodb -> updateLesson($name, $timestamp_lesson_start, $timestamp_lesson_finish, $quantity);
             }
             else{
                 throw new \Exception("Aula não existe");
@@ -122,7 +105,7 @@ class Lesson{
         }
         catch(\Exception $ex){
             if($ex -> getPrevious() == ""){
-                return ["status" => 200, "message" => $ex -> getMessage(), "redirect" => null, "data" => null];
+                return ["status" => 400, "message" => $ex -> getMessage(), "redirect" => null, "data" => null];
             }
             else{
                 return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];

@@ -24,26 +24,32 @@ export class DataComponent implements OnInit{
 
   getAllLessons(){
     this.http.get("/aulas").subscribe({
-      next: (ok) => {
-        if(ok.data !== null){
-
+      next: (return_api) => {
+        if(return_api.data !== null){
           // ex: 30
           this.quantidade_dias_mes = new Date(this.ano_atual, this.mes_atual, 0).getDate();
 
-          for(let cont = 1; cont <= this.quantidade_dias_mes; cont++){
+          let current_index = 0;
+          for(let present_day = 1; present_day <= this.quantidade_dias_mes; present_day++){
 
-            const lessons = ok.data.filter((lesson: any) => {
-              if(lesson.day == cont){
-                return lesson;
+            let lessons: any = []
+
+            while(current_index < return_api.data.length){
+              if((new Date(return_api.data[current_index].timestamp_lesson_start)).getDate() == present_day){
+                lessons.push(return_api.data[current_index]);
+                current_index++;
               }
-            });
+              else{
+                break;
+              }
+            }
 
             let elemento: any = null;
             if(lessons[0] != undefined){
-              elemento = { "day": cont, "name": lessons }
+              elemento = { "day": present_day, "name":  lessons }
             }
             else{
-              elemento = { "day": cont }
+              elemento = { "day": present_day }
             }
 
             this.elements_information.push(elemento);

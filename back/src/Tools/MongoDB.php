@@ -88,7 +88,7 @@ class MongoDB{
 
     public function listAllLessons(){
         $this -> chooseCollection("lessons");
-        return iterator_to_array($this->collection -> find());
+        return iterator_to_array($this->collection -> find([], ['sort' => ['timestamp_lesson_start' => 1]]));
     }
 
     public function listYourLessons($user_id){
@@ -113,16 +113,16 @@ class MongoDB{
         ]));
     }
 
-    public function createLesson($name, $day, $month, $year, $lesson_start, $lesson_finish, $quantity){
+    public function createLesson($name, $timestamp_lesson_start, $timestamp_lesson_finish, $quantity){
         $this -> chooseCollection("lessons");
-        $this->collection -> insertOne(["name" => $name, "day" => $day, "month" => $month, "year" => $year, "start_time" => $lesson_start, "finish_time" => $lesson_finish, "current_quantity" => 0, "max_quantity" => (int) $quantity]);
+        $this->collection -> insertOne(["name" => $name, "timestamp_lesson_start" => $timestamp_lesson_start, "timestamp_lesson_finish" => $timestamp_lesson_finish, "current_quantity" => 0, "max_quantity" => (int) $quantity]);
     }
     
-    public function updateLesson($name, $day, $month, $year, $lesson_start, $lesson_finish, $quantity){
+    public function updateLesson($name, $timestamp_lesson_start, $timestamp_lesson_finish, $quantity){
         $id = new ObjectId($_GET["id"]);
 
         $this -> chooseCollection("lessons");
-        $this->collection -> updateOne(["_id" => $id], ['$set' => ["name" => $name, "day" => $day, "month" => $month, "year" => $year, "start_time" => $lesson_start, "finish_time" => $lesson_finish, "max_quantity" => (int) $quantity]]);
+        $this->collection -> updateOne(["_id" => $id], ['$set' => ["name" => $name, "timestamp_lesson_start" => $timestamp_lesson_start, "timestamp_lesson_finish" => $timestamp_lesson_finish, "current_quantity" => 0, "max_quantity" => (int) $quantity]]);
     }
 
     # ------------------------
