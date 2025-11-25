@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { lesson } from '../../interfaces';
 import { Router } from '@angular/router';
 import { Http } from '../../service/http.service';
 import { Role } from '../../service/role.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogLesson } from '../../component/dialog-lesson/dialog';
 
 @Component({
   selector: 'app-data-component',
@@ -22,6 +24,33 @@ export class Index implements OnInit{
   quantidade: number = 0;
 
   constructor(private http: Http, private router: Router, private role: Role){}
+
+  readonly dialog = inject(MatDialog);
+
+  joinLesson(element_id: any){
+    const dialogRef = this.dialog.open(DialogLesson);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result == true){
+        this.http.post(`/aulas/ingressar?id=${element_id}`, null).subscribe({
+          next: (return_api) => {
+            console.log("OK");
+            this.getYourLessons();
+            if(return_api.message != null){
+              alert(return_api.message);
+            }
+          },
+          error: (error) => {
+            console.log("ERROR");
+            console.log(error);
+            if(error.error.message != null){
+              alert(error.error.message);
+            }
+          }
+        });
+      }
+    });
+  }
 
   getAllLessons(){
     this.http.get("/aulas").subscribe({

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router, RouterLink } from '@angular/router';
-import { Dialog } from '../dialog/dialog';
+import { DialogAuth } from '../dialog-auth/dialog';
 import { Role } from '../../service/role.service';
 import { Http } from '../../service/http.service';
 
@@ -19,7 +19,7 @@ export class Header {
 
   check(){
     if(this.role.get() != "off"){
-      const dialogRef = this.dialog.open(Dialog);
+      const dialogRef = this.dialog.open(DialogAuth);
       
       dialogRef.afterClosed().subscribe(result => {
         if(result == true){
