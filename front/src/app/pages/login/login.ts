@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterLink } from '@angular/router';
 import { Http } from '../../service/http.service';
+import { Role } from '../../service/role.service';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +18,7 @@ export class Login {
   email: string = '';
   password: string = '';
 
-  constructor(private http: Http, private router: Router){}
+  constructor(private http: Http, private router: Router, private role: Role){}
 
   formSubmit(){
     const data = {
@@ -33,6 +34,7 @@ export class Login {
         alert(ok.message);
         this.router.navigate([ok.redirect]);
         console.log(ok.data);
+        this.role.check();
       },
       error: (erro) => {
         console.log("Erro")

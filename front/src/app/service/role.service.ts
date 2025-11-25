@@ -8,19 +8,14 @@ import { Router } from '@angular/router';
 export class Role {
 
   constructor(private http: Http, private router: Router){}
-  
-  private set(role: string): void{
-    sessionStorage.setItem("role", role);
-  }
+
+  private role: string = "off";
 
   check(): void{
     this.http.get("/").subscribe({
       next: (return_api: any) => {
         if(return_api != null && return_api?.role !== null){
-          this.set(return_api.role);
-        }
-        else{
-          this.set("off");
+          this.role = return_api.role;
         }
       },
       error: erro => {
@@ -28,12 +23,11 @@ export class Role {
         alert(erro.error.message);
         console.log(erro);
         this.router.navigate([erro.error.redirect]);
-        this.set("off");
       }
     })
   }
 
   get(): string{
-    return sessionStorage.getItem("role") as string;
+    return this.role;
   }
 }

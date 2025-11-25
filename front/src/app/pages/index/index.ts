@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { lesson } from '../../interfaces';
 import { Router } from '@angular/router';
 import { Http } from '../../service/http.service';
+import { Role } from '../../service/role.service';
 
 @Component({
   selector: 'app-data-component',
@@ -20,7 +21,7 @@ export class Index implements OnInit{
   ano_atual: number = new Date().getFullYear();
   quantidade: number = 0;
 
-  constructor(private http: Http, private router: Router){}
+  constructor(private http: Http, private router: Router, private role: Role){}
 
   getAllLessons(){
     this.http.get("/aulas").subscribe({
@@ -55,7 +56,10 @@ export class Index implements OnInit{
             this.elements_information.push(elemento);
           }
 
-          this.getYourLessons();
+          const returned_rule = this.role.get();
+          if(returned_rule != "off" && returned_rule != "teacher"){
+            this.getYourLessons();
+          }
         }
       },
       error: erro => {

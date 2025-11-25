@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Header } from './component/header/header';
-import { Role } from './service/role';
+import { Role } from './service/role.service';
 
 @Component({
   selector: 'app-root',

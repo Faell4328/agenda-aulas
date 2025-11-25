@@ -65,7 +65,7 @@ class Lesson{
             }
         }
 
-        return ["status" => 200, "message" => null, "redirect" => null, "data" => null];
+        return ["status" => 200, "message" => null, "redirect" => null, "data" => $data];
     }
 
     public function createLesson($name, $timestamp_lesson_start, $quantity){
