@@ -28,6 +28,11 @@ export class Index implements OnInit{
   readonly dialog = inject(MatDialog);
 
   joinLesson(element_id: any){
+
+    if(this.role.get() != "student"){
+      return;
+    }
+    
     const dialogRef = this.dialog.open(DialogLesson);
 
     dialogRef.afterClosed().subscribe(result => {
