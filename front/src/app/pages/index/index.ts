@@ -33,26 +33,74 @@ export class Index implements OnInit{
       return;
     }
     
-    const dialogRef = this.dialog.open(DialogLesson);
+    let is_join:boolean = (document.getElementById(element_id)?.dataset["join"] == "true");
+
+    console.log(is_join);
+    
+    const dialogRef = this.dialog.open(DialogLesson, {
+      data: {
+        message: (is_join == true) ? "Deseja sair da aula?" : "Você deseja ingressar na aula?",
+        message_buttom: (is_join == true) ? "Sair" : "Ingressar",
+      }
+    });
 
     dialogRef.afterClosed().subscribe(result => {
       if(result == true){
-        this.http.post(`/aulas/ingressar?id=${element_id}`, null).subscribe({
-          next: (return_api) => {
-            console.log("OK");
-            this.getYourLessons();
-            if(return_api.message != null){
-              alert(return_api.message);
+        if(is_join == true){
+          this.http.delete(`/aulas/sair?id=${element_id}`).subscribe({
+            next: (return_api) => {
+              console.log("OK");
+
+              let element = document.getElementById(element_id) as HTMLElement;
+              element.dataset["join"] = "false";
+
+              element = element.childNodes[0] as HTMLElement;
+              
+              element.classList.remove("status-ok");
+              element.classList.add("status-no");
+              element.innerHTML = "Não inscrito";
+
+              if(return_api.message != null){
+                alert(return_api.message);
+              }
+            },
+            error: (error) => {
+              console.log("ERROR");
+              console.log(error);
+              if(error.error.message != null){
+                alert(error.error.message);
+              }
             }
-          },
-          error: (error) => {
-            console.log("ERROR");
-            console.log(error);
-            if(error.error.message != null){
-              alert(error.error.message);
+          });
+        }
+        else{
+          this.http.post(`/aulas/ingressar?id=${element_id}`, null).subscribe({
+            next: (return_api) => {
+              console.log("OK");
+
+              let element = document.getElementById(element_id) as HTMLElement;
+              element.dataset["join"] = "false";
+
+              element = element.childNodes[0] as HTMLElement;
+
+              element.classList.remove("status-no");
+              element.classList.add("status-ok");
+              element.innerHTML = "Inscrito";
+
+              if(return_api.message != null){
+                alert(return_api.message);
+              }
+
+            },
+            error: (error) => {
+              console.log("ERROR");
+              console.log(error);
+              if(error.error.message != null){
+                alert(error.error.message);
+              }
             }
-          }
-        });
+          });
+        }
       }
     });
   }
@@ -111,6 +159,8 @@ export class Index implements OnInit{
         if(return_api.data !== null){
           return_api.data.map((yourLesson: any) => {
             let element = document.getElementById(yourLesson.id) as HTMLElement;
+            element.dataset["join"] = "true";
+
             element = element.childNodes[0] as HTMLElement;
 
             element.classList.remove("status-no");

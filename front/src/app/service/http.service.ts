@@ -13,11 +13,15 @@ export class Http {
 
   constructor(private http: HttpClient){} 
 
+  get(path: string = "/"): Observable<returnApi>{
+    return this.http.get<returnApi>(this.baseURL + path, { withCredentials: true });
+  }
+  
   post(path: string = "/", body: any | null): Observable<returnApi>{
     return this.http.post<returnApi>(this.baseURL + path, JSON.stringify(body), { withCredentials: true });
   }
 
-  get(path: string = "/"): Observable<returnApi>{
-    return this.http.get<returnApi>(this.baseURL + path, { withCredentials: true });
+  delete(path: string = "/"): Observable<returnApi>{
+    return this.http.delete<returnApi>(this.baseURL + path, { withCredentials: true });
   }
 }

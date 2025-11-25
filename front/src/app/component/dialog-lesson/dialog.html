@@ -1,7 +1,7 @@
 <mat-dialog-content class="mat-typography">
-  <p style="color: #000">Você deseja ingressar na aula?</p>
+  <p style="color: #000">{{message}}</p>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button matButton mat-dialog-close>Cancel</button>
-  <button matButton [mat-dialog-close]="true" cdkFocusInitial>Ingressar</button>
+  <button matButton [mat-dialog-close]="true" cdkFocusInitial>{{message_buttom}}</button>
 </mat-dialog-actions>
