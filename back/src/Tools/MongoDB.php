@@ -143,6 +143,15 @@ class MongoDB{
         $this -> chooseCollection("join_lesson");
         $this->collection -> insertOne(["id_student" => $id_student, "id_lesson" => $id_lesson]);
     }
+
+    public function leaveLesson($id_lesson, $id_student, $current_quantity){
+        $id_lesson = new ObjectId($id_lesson);
+        $this -> chooseCollection("lessons");
+        $this->collection -> updateOne(["_id" => $id_lesson], ['$set' => ["current_quantity" => (--$current_quantity)]]);
+
+        $this -> chooseCollection("join_lesson");
+        $this->collection -> deleteOne(["id_student" => $id_student, "id_lesson" => $id_lesson]);
+    }
 }
 
 ?>

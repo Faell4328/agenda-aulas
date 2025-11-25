@@ -112,12 +112,11 @@ class Lesson{
         return ["status" => 200, "message" => "Aula atualizada", "redirect" => null, "data" => null];
     }
 
-    public function joinLesson(){
+    public function joinLesson($user_id){
         $mongodb = new MongoDB();
 
         try{
-            $token_information = $mongodb -> checkValidityCookie($_COOKIE["token"]);
-            if($mongodb -> checkIfYouAreAlreadyJoin($token_information["user_id"], $_GET["id"]) !== 0){
+            if($mongodb -> checkIfYouAreAlreadyJoin($user_id, $_GET["id"]) !== 0){
                 throw new \Exception("Já está ingressado na aula");
             }
 
@@ -131,7 +130,7 @@ class Lesson{
                 throw new \Exception("Aula não encontrada");
             }
 
-            $mongodb -> joinLesson($_GET["id"], $token_information["user_id"], $specific_lesson -> current_quantity);
+            $mongodb -> joinLesson($_GET["id"], $user_id, $specific_lesson -> current_quantity);
         }
         catch(\Exception $ex){
             if($ex -> getPrevious() == ""){
@@ -143,6 +142,36 @@ class Lesson{
         }
 
         return ["status" => 201, "message" => "Ingressou na aula", "redirect" => null, "data" => null];
+
+    }
+
+    public function leaveLesson($user_id){
+        $mongodb = new MongoDB();
+
+        try{
+            if($mongodb -> checkIfYouAreAlreadyJoin($user_id, $_GET["id"]) != 1){
+                throw new \Exception("Não está ingressado na aula");
+            }
+
+            if($mongodb -> checkLessonExist($_GET["id"]) == true){
+                $specific_lesson = $mongodb -> listOfSpecificLessons($_GET["id"]);
+            }
+            else{
+                throw new \Exception("Aula não encontrada");
+            }
+
+            $mongodb -> leaveLesson($_GET["id"], $user_id, $specific_lesson -> current_quantity);
+        }
+        catch(\Exception $ex){
+            if($ex -> getPrevious() == ""){
+                return ["status" => 400, "message" => $ex -> getMessage(), "redirect" => null, "data" => null];
+            }
+            else{
+                return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
+            }
+        }
+
+        return ["status" => 202, "message" => "Saiu da aula", "redirect" => null, "data" => null];
 
     }
 }

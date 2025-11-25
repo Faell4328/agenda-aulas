@@ -44,12 +44,22 @@ class Lesson{
         new \App\Controller\SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
 
-    public function joinLesson(){
+    public function joinLesson($user_information){
         $validation = new Validation;
         $validation -> queryExists("id");
 
         $service = new \App\Service\Lesson;
-        $return_service = $service -> joinLesson();
+        $return_service = $service -> joinLesson($user_information["_id"]);
+
+        new \App\Controller\SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
+    }
+
+    public function leaveLesson($user_information){
+        $validation = new Validation;
+        $validation -> queryExists("id");
+
+        $service = new \App\Service\Lesson;
+        $return_service = $service -> leaveLesson($user_information["_id"]);
 
         new \App\Controller\SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }

@@ -15,6 +15,7 @@ class Router{
         
         '/aulas' =>["GET"],
         '/aulas/ingressadas' => ["GET"],
+        '/aulas/sair' => ["DELETE"],
 
         '/aulas/adicionar' => ["POST"],
         '/aulas/atualizar' => ["PUT"],
@@ -66,8 +67,8 @@ class Router{
         else if($route == "/logout"){
             $middleware -> routeWithLogin($user_information);
 
-            $login_controller = new \App\Controller\Auth;
-            $login_controller -> logOut();
+            $loginout_controller = new \App\Controller\Auth;
+            $loginout_controller -> logOut();
         }
         else if($route == "/aulas"){
             $lesson_controller = new \App\Controller\Lesson;
@@ -89,7 +90,13 @@ class Router{
             $middleware -> routeForStudentOnly($user_information);
             
             $lesson_controller = new \App\Controller\Lesson;
-            $lesson_controller -> joinLesson();
+            $lesson_controller -> joinLesson($user_information);
+        }
+        else if($route == "/aulas/sair"){
+            $middleware -> routeForStudentOnly($user_information);
+            
+            $lesson_controller = new \App\Controller\Lesson;
+            $lesson_controller -> leaveLesson($user_information);
         }
         else if($route == "/aulas/ingressadas"){
             $middleware -> routeForStudentOnly($user_information);
