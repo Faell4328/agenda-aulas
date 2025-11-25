@@ -1,1 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
+
+*{
+    padding: 0px;
+    margin: 0px;
+}
+
+#root{
+    min-height: 100dvh;
+    width: 100%;
+
+    background: linear-gradient(to top left, #4A90E2, #50C9CE);
+}

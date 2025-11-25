@@ -1,15 +1,11 @@
 #container{
-    min-height: 100dvh;
-    width: 100%;
-
     display: flex;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
 
-    background: linear-gradient(to top left, #4A90E2, #50C9CE);
+    padding: 30px;
 }
-
 .datas{
     width: 200px;
     height: 250px;

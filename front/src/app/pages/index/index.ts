@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { lesson } from '../interfaces';
-import { Http } from '../http.service';
+import { lesson } from '../../interfaces';
 import { Router } from '@angular/router';
+import { Http } from '../../service/http.service';
 
 @Component({
   selector: 'app-data-component',
   imports: [CommonModule],
-  templateUrl: './data-component.html',
-  styleUrl: './data-component.scss',
+  templateUrl: './index.html',
+  styleUrl: './index.scss',
 })
-export class DataComponent implements OnInit{
+export class Index implements OnInit{
   lessons: lesson[] | null = null;
   quantidade_dias_mes: number = 0;
   elements_information: any = [];
@@ -55,6 +55,7 @@ export class DataComponent implements OnInit{
             this.elements_information.push(elemento);
           }
 
+          this.getYourLessons();
         }
       },
       error: erro => {
@@ -65,7 +66,30 @@ export class DataComponent implements OnInit{
       }
     });
   }
-  
+
+  getYourLessons(){
+    this.http.get("/aulas/ingressadas").subscribe({
+      next: (return_api) => {
+        if(return_api.data !== null){
+          return_api.data.map((yourLesson: any) => {
+            let element = document.getElementById(yourLesson.id) as HTMLElement;
+            element = element.childNodes[0] as HTMLElement;
+
+            element.classList.remove("status-no");
+            element.classList.add("status-ok");
+            element.innerHTML="Inscrito";
+          })
+        }
+      },
+      error: erro => {
+        console.log("Erro")
+        alert(erro.error.message);
+        console.log(erro);
+        this.router.navigate([erro.error.redirect]);
+      }
+    });
+  }
+
   ngOnInit(): void{
     this.getAllLessons();
   }

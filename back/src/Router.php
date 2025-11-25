@@ -48,7 +48,13 @@ class Router{
             $register_controller -> registerUser($req_body_json);
         }
         else if($route == "/"){
-            echo "Sauble";
+            if(isset($user_information->role)){
+                $role = $user_information->role;
+                echo json_encode(["role" => $role]);
+            }
+            else{
+                echo json_encode(["role" => "off"]);
+            }
             exit;
         }
         else if($route == "/login"){

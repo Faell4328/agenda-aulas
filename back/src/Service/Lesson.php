@@ -49,7 +49,7 @@ class Lesson{
             if($your_lessons){
                 foreach($your_lessons as $lesson){
                     array_push($data, [
-                        "id" => (string) $lesson["_id"],
+                        "id" => (string) $lesson["lessons"]["_id"],
                         "name" => $lesson["lessons"]["name"],
                         "timestamp_lesson_start" => $lesson["lessons"]["timestamp_lesson_start"],
                         "timestamp_lesson_finish" => $lesson["lessons"]["timestamp_lesson_finish"],
@@ -58,9 +58,6 @@ class Lesson{
                     ]);
                 }
             }
-            else{
-                $data = "Você não tem nenhuma aula ingressada";
-            }
         }
         catch(\Exception $ex){
             if($ex -> getPrevious() != ""){
@@ -68,7 +65,7 @@ class Lesson{
             }
         }
 
-        return ["status" => 200, "message" => null, "redirect" => null, "data" => $data];
+        return ["status" => 200, "message" => null, "redirect" => null, "data" => null];
     }
 
     public function createLesson($name, $timestamp_lesson_start, $quantity){

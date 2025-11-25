@@ -1,13 +1,19 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Http } from './http.service';
-import { lesson } from './interfaces';
+import { Header } from './component/header/header';
+import { Role } from './service/role';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, Header],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App {
+export class App implements OnInit{
+
+  constructor(private role: Role){}
+
+  ngOnInit(): void {
+    this.role.check();
+  }
 }

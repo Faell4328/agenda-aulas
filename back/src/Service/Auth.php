@@ -30,7 +30,7 @@ class Auth{
             }
         }
 
-        return ["status" => 200, "message" => "Logado com sucesso", "redirect" => "/", "data" => null];
+        return ["status" => 200, "message" => "Logado com sucesso", "redirect" => "/", "data" => $user_information["role"]];
     }
 
     public function registerUser($name, $role, $email, $password){

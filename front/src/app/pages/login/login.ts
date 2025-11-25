@@ -4,12 +4,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { Http } from '../http.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { Http } from '../../service/http.service';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatIconModule, MatButtonModule],
+  imports: [FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatIconModule, MatButtonModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
@@ -27,6 +27,8 @@ export class Login {
 
     this.http.post("/login", data).subscribe({
       next: (ok) => {
+        console.log(ok)
+        localStorage.setItem("role", ok.data);
         console.log("OK")
         alert(ok.message);
         this.router.navigate([ok.redirect]);
