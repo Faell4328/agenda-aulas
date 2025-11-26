@@ -15,11 +15,11 @@ class Router{
         
         '/aulas' =>["GET"],
         '/aulas/ingressadas' => ["GET"],
+        '/aulas/ingressar' => ["POST"],
         '/aulas/sair' => ["DELETE"],
 
         '/aulas/adicionar' => ["POST"],
         '/aulas/atualizar' => ["PUT"],
-        '/aulas/ingressar' => ["POST"],
     ];
     
     public function __construct($req_route_path, $req_method, $req_body_json){
