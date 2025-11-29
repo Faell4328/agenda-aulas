@@ -50,11 +50,18 @@ class Router{
         }
         else if($route == "/"){
             if(isset($user_information->role)){
-                $role = $user_information->role;
-                echo json_encode(["role" => $role]);
+                echo json_encode([
+                    "message" => null,
+                    "redirect" => null,
+                    "data" => $user_information -> role
+                ]);
             }
             else{
-                echo json_encode(["role" => "off"]);
+                echo json_encode([
+                    "message" => null,
+                    "redirect" => null,
+                    "data" => "off"
+                ]);
             }
             exit;
         }

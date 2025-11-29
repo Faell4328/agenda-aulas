@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterLink } from '@angular/router';
 import { Http } from '../../service/http.service';
 import { Role } from '../../service/role.service';
+import { HotToastService } from '@ngxpert/hot-toast';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,7 @@ export class Login {
   email: string = '';
   password: string = '';
 
-  constructor(private http: Http, private router: Router, private role: Role){}
+  constructor(private http: Http, private router: Router, private role: Role, private toast: HotToastService){}
 
   formSubmit(){
     const data = {
@@ -27,20 +28,21 @@ export class Login {
     }
 
     this.http.post("/login", data).subscribe({
-      next: (ok) => {
-        console.log(ok)
-        localStorage.setItem("role", ok.data);
-        console.log("OK")
-        alert(ok.message);
-        this.router.navigate([ok.redirect]);
-        console.log(ok.data);
+      next: (return_api: ReturnApi) => {
+        if(return_api?.message != null){
+          this.toast.success(return_api.message);
+        }
+
+        if(return_api?.redirect != null){
+          this.router.navigate([return_api.redirect]);
+        }
+
         this.role.check();
       },
-      error: (erro) => {
-        console.log("Erro")
-        alert(erro.error.message);
-        console.log(erro);
-        //this.router.navigate([erro.error.redirect]);
+      error: (error) => {
+        if(error.error.message != null){
+          this.toast.error(error.error.message);
+        }
       }
     });
   }

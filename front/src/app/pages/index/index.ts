@@ -7,6 +7,7 @@ import { Http } from '../../service/http.service';
 import { Role } from '../../service/role.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Dialog } from '../../component/dialog-confirmation/dialog';
+import { HotToastService } from '@ngxpert/hot-toast';
 
 @Component({
   selector: 'app-data-component',
@@ -23,7 +24,7 @@ export class Index implements OnInit{
   ano_atual: number = new Date().getFullYear();
   quantidade: number = 0;
 
-  constructor(private http: Http, private router: Router, private role: Role){}
+  constructor(private http: Http, private router: Router, private role: Role, private toast: HotToastService){}
 
   readonly dialog = inject(MatDialog);
 
@@ -57,15 +58,13 @@ export class Index implements OnInit{
               element.classList.add("status-no");
               element.innerHTML = "Não inscrito";
 
-              if(return_api.message != null){
-                alert(return_api.message);
+              if((typeof return_api.message) == "string"){
+                this.toast.success(return_api.message);
               }
             },
             error: (error) => {
-              console.log("ERROR");
-              console.log(error);
-              if(error.error.message != null){
-                alert(error.error.message);
+              if((typeof error.error.message) == "string"){
+                this.toast.error(error.error.message);
               }
             }
           });
@@ -84,16 +83,14 @@ export class Index implements OnInit{
               element.classList.add("status-ok");
               element.innerHTML = "Inscrito";
 
-              if(return_api.message != null){
-                alert(return_api.message);
+              if((typeof return_api.message) == "string"){
+                this.toast.success(return_api.message);
               }
 
             },
             error: (error) => {
-              console.log("ERROR");
-              console.log(error);
-              if(error.error.message != null){
-                alert(error.error.message);
+              if((typeof error.error.message) == "string"){
+                this.toast.error(error.error.message);
               }
             }
           });
@@ -104,7 +101,7 @@ export class Index implements OnInit{
 
   getAllLessons(){
     this.http.get("/aulas").subscribe({
-      next: (return_api) => {
+      next: (return_api: ReturnApi) => {
         if(return_api.data !== null){
           // ex: 30
           this.quantidade_dias_mes = new Date(this.ano_atual, this.mes_atual, 0).getDate();
@@ -141,19 +138,22 @@ export class Index implements OnInit{
           }
         }
       },
-      error: erro => {
-        console.log("Erro")
-        alert(erro.error.message);
-        console.log(erro);
-        this.router.navigate([erro.error.redirect]);
+      error: error => {
+        if(error.error.message != null){
+          this.toast.success(error.error.message);
+        }
+
+        if(error.errror.redirect !== null){
+          this.router.navigate([error.error.redirect]);
+        }
       }
     });
   }
 
   getYourLessons(){
     this.http.get("/aulas/ingressadas").subscribe({
-      next: (return_api) => {
-        if(return_api.data !== null){
+      next: (return_api: ReturnApi) => {
+        if(return_api.data != null){
           return_api.data.map((yourLesson: any) => {
             let element = document.getElementById(yourLesson.id) as HTMLElement;
             element.dataset["join"] = "true";
@@ -166,11 +166,10 @@ export class Index implements OnInit{
           })
         }
       },
-      error: erro => {
-        console.log("Erro")
-        alert(erro.error.message);
-        console.log(erro);
-        this.router.navigate([erro.error.redirect]);
+      error: error => {
+        if(error.error.message != null){
+          this.toast.success(error.error.message);
+        }
       }
     });
   }

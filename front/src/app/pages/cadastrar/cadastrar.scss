@@ -1,3 +1,5 @@
+@use '../../../variables' as variable;
+
 #container{
     min-height: calc(100dvh - 122px);
     width: 100%;
@@ -7,7 +9,7 @@
     align-items: center;
     flex-wrap: wrap;
 
-    background: linear-gradient(to top left, #4A90E2, #50C9CE);
+    background: variable.$background-color;
 }
 
 form{

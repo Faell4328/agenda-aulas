@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { Role } from '../../service/role.service';
 import { Http } from '../../service/http.service';
 import { Dialog } from '../dialog-confirmation/dialog';
+import { HotToastService } from '@ngxpert/hot-toast';
 
 @Component({
   selector: 'header',
@@ -13,7 +14,7 @@ import { Dialog } from '../dialog-confirmation/dialog';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Header {
-  constructor(private router: Router, private role: Role, private http: Http){}
+  constructor(private router: Router, private role: Role, private http: Http, private toast: HotToastService){}
 
   readonly dialog = inject(MatDialog);
 
@@ -30,16 +31,16 @@ export class Header {
         if(result == true){
           this.http.post("/logout", null).subscribe({
             next: (return_api) => {
-              console.log("OK");
-              console.log(return_api);
-              this.role.check();
-              if(return_api){
-                alert(return_api.message);
+              if((typeof return_api.message) == "string"){
+                this.toast.success(return_api.message);
               }
+
+              this.role.check();
             },
             error: (error) => {
-              console.log("ERROR");
-              console.log(error.message);
+              if(error.error.message != null){
+                this.toast.error(error.error.message);
+              }
             }
           });
         }

@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { Router, RouterLink } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
 import { Http } from '../../service/http.service';
+import { HotToastService } from '@ngxpert/hot-toast';
 
 @Component({
   selector: 'app-cadastrar',
@@ -20,7 +21,7 @@ export class Cadastrar {
   email: string = '';
   password: string = '';
 
-  constructor(private http: Http, private router: Router){}
+  constructor(private http: Http, private router: Router, private toast: HotToastService){}
 
   formSubmit(){
     const data = {
@@ -31,16 +32,16 @@ export class Cadastrar {
     }
 
     this.http.post("/cadastrar", data).subscribe({
-      next: (ok) => {
-        console.log("OK")
-        alert(ok.message);
-        this.router.navigate([ok.redirect]);
-        console.log(ok.data);
+      next: (return_api) => {
+        if((typeof return_api.message) == "string"){
+          this.toast.success(return_api.message);
+        }
+        this.router.navigate([return_api.redirect]);
       },
-      error: (erro) => {
-        console.log("Erro")
-        alert(erro.error.message);
-        console.log(erro);
+      error: (error) => {
+        if((typeof error.error.message) == "string"){
+          this.toast.error(error.error.message);
+        }
         //this.router.navigate([erro.error.redirect]);
       }
     });
