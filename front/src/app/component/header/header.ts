@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router, RouterLink } from '@angular/router';
-import { DialogAuth } from '../dialog-auth/dialog';
 import { Role } from '../../service/role.service';
 import { Http } from '../../service/http.service';
+import { Dialog } from '../dialog-confirmation/dialog';
 
 @Component({
   selector: 'header',
@@ -19,7 +19,12 @@ export class Header {
 
   check(){
     if(this.role.get() != "off"){
-      const dialogRef = this.dialog.open(DialogAuth);
+
+    const dialogRef = this.dialog.open(Dialog, {
+      data: {
+        dialog: "deslogar",
+      }
+    });
       
       dialogRef.afterClosed().subscribe(result => {
         if(result == true){

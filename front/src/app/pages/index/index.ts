@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { Http } from '../../service/http.service';
 import { Role } from '../../service/role.service';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogLesson } from '../../component/dialog-lesson/dialog';
+import { Dialog } from '../../component/dialog-confirmation/dialog';
 
 @Component({
   selector: 'app-data-component',
@@ -35,12 +35,9 @@ export class Index implements OnInit{
     
     let is_join:boolean = (document.getElementById(element_id)?.dataset["join"] == "true");
 
-    console.log(is_join);
-    
-    const dialogRef = this.dialog.open(DialogLesson, {
+    const dialogRef = this.dialog.open(Dialog, {
       data: {
-        message: (is_join == true) ? "Deseja sair da aula?" : "Você deseja ingressar na aula?",
-        message_buttom: (is_join == true) ? "Sair" : "Ingressar",
+        dialog: (is_join == true) ? "sair" : "ingressar",
       }
     });
 
@@ -79,7 +76,7 @@ export class Index implements OnInit{
               console.log("OK");
 
               let element = document.getElementById(element_id) as HTMLElement;
-              element.dataset["join"] = "false";
+              element.dataset["join"] = "true";
 
               element = element.childNodes[0] as HTMLElement;
 

@@ -1,0 +1,11 @@
+<mat-dialog-content class="mat-typography">
+  <div *ngIf='dialog == "deslogar"'>Deseja deslogar?</div>
+  <div *ngIf='dialog == "ingressar"'>Deseja ingressar na aula?</div>
+  <div *ngIf='dialog == "sair"'>Deseja sair da aula?</div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <div>
+    <button matButton mat-dialog-close>Cancel</button>
+    <button matButton [mat-dialog-close]="true" cdkFocusInitial>Confirmar</button>
+  </div>
+</mat-dialog-actions>
