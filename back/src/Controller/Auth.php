@@ -23,8 +23,8 @@ class Auth{
         $validation -> fieldExists($req_body_json, "email");
         $validation -> fieldExists($req_body_json, "password");
 
-        if(!($req_body_json->role == "teacher") && !($req_body_json->role == "student")){
-            new \App\Controller\SendingPattern("error", "So é permitido as funções \"professor\" ou \"estudante\"");
+        if(!($req_body_json->role == "teacher" || $req_body_json->role == "student")){
+            new \App\Controller\SendingPattern(400, "So é permitido as funções \"professor\" ou \"estudante\"");
         }
 
         $service = new \App\Service\Auth;

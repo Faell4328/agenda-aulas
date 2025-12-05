@@ -12,7 +12,7 @@ class Middleware{
 
     function routeWithoutLogin($user_information){
         if($user_information !== null){
-            new \App\Controller\SendingPattern(401, "Você não pode estar logado para acessar essa rota", "/");
+            new \App\Controller\SendingPattern(403, "Você não pode estar logado para acessar essa rota", "/");
             exit;
         }
     }
@@ -20,7 +20,8 @@ class Middleware{
     function routeForStudentOnly($user_information){
         $this -> routeWithLogin($user_information);
         if($user_information -> role !== "student"){
-            new \App\Controller\SendingPattern(401, "Você não é um aluno para acessar essa rota", "/");
+            $status = ($user_information -> role == "off") ? 401 : 403;
+            new \App\Controller\SendingPattern($status, "Você não é um aluno para acessar essa rota", "/");
             exit;
         }
     }
@@ -28,7 +29,8 @@ class Middleware{
     function routeForTeachersOnly($user_information){
         $this -> routeWithLogin($user_information);
         if($user_information -> role !== "teacher"){
-            new \App\Controller\SendingPattern(401, "Você não é um professor para acessar essa rota", "/");
+            $status = ($user_information -> role == "off") ? 401 : 403;
+            new \App\Controller\SendingPattern($status, "Você não é um professor para acessar essa rota", "/");
             exit;
         }
     }

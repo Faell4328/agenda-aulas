@@ -42,13 +42,7 @@ class Router{
             $user_information = null;
         }
 
-        if($route == "/cadastrar"){
-            $middleware -> routeWithoutLogin($user_information);
-            
-            $register_controller = new \App\Controller\Auth;
-            $register_controller -> registerUser($req_body_json);
-        }
-        else if($route == "/"){
+        if($route == "/"){
             if(isset($user_information->role)){
                 echo json_encode([
                     "message" => null,
@@ -64,6 +58,12 @@ class Router{
                 ]);
             }
             exit;
+        }
+        else if($route == "/cadastrar"){
+            $middleware -> routeWithoutLogin($user_information);
+            
+            $register_controller = new \App\Controller\Auth;
+            $register_controller -> registerUser($req_body_json);
         }
         else if($route == "/login"){
             $middleware -> routeWithoutLogin($user_information);
