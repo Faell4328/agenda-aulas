@@ -14,6 +14,7 @@ class Router{
         '/logout' => ["POST"],
         
         '/aulas' =>["GET"],
+        '/aulas/cadastradas' => ["GET"],
         '/aulas/ingressadas' => ["GET"],
         '/aulas/ingressar' => ["POST"],
         '/aulas/sair' => ["DELETE"],
@@ -81,11 +82,23 @@ class Router{
             $lesson_controller = new \App\Controller\Lesson;
             $lesson_controller -> listAllLessons();
         }
+        else if($route == "/aulas/cadastradas"){
+            $middleware -> routeForTeachersOnly($user_information);
+            
+            $lesson_controller = new \App\Controller\Lesson;
+            $lesson_controller -> listCreatedLessons($user_information -> _id);
+        }
+        else if($route == "/aulas/ingressadas"){
+            $middleware -> routeForStudentOnly($user_information);
+            
+            $lesson_controller = new \App\Controller\Lesson;
+            $lesson_controller -> listEnrolledLessons($user_information -> _id);
+        }
         else if($route == "/aulas/adicionar"){
             $middleware -> routeForTeachersOnly($user_information);
             
             $lesson_controller = new \App\Controller\Lesson;
-            $lesson_controller -> createLesson($req_body_json);
+            $lesson_controller -> createLesson($req_body_json, $user_information["_id"]);
         }
         else if($route == "/aulas/atualizar"){
             $middleware -> routeForTeachersOnly($user_information);
@@ -104,12 +117,6 @@ class Router{
             
             $lesson_controller = new \App\Controller\Lesson;
             $lesson_controller -> leaveLesson($user_information);
-        }
-        else if($route == "/aulas/ingressadas"){
-            $middleware -> routeForStudentOnly($user_information);
-            
-            $lesson_controller = new \App\Controller\Lesson;
-            $lesson_controller -> listYourLessons();
         }
     }
 }

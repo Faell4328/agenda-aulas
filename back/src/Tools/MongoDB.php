@@ -91,7 +91,12 @@ class MongoDB{
         return iterator_to_array($this->collection -> find([], ['sort' => ['timestamp_lesson_start' => 1]]));
     }
 
-    public function listYourLessons($user_id){
+    public function listCreatedLessons($user_id){
+        $this -> chooseCollection("lessons");
+        return iterator_to_array($this -> collection -> find(['teacher_id' => ['$eq' => $user_id]]));
+    }
+
+    public function listEnrolledLessons($user_id){
         $this -> chooseCollection("join_lesson");
         return iterator_to_array($this->collection -> aggregate([
             [
@@ -113,9 +118,11 @@ class MongoDB{
         ]));
     }
 
-    public function createLesson($name, $timestamp_lesson_start, $timestamp_lesson_finish, $quantity){
+    public function createLesson($name, $timestamp_lesson_start, $timestamp_lesson_finish, $quantity, $teacher_id){
+        $teacher_id = new ObjectId($teacher_id);
+
         $this -> chooseCollection("lessons");
-        $this->collection -> insertOne(["name" => $name, "timestamp_lesson_start" => $timestamp_lesson_start, "timestamp_lesson_finish" => $timestamp_lesson_finish, "current_quantity" => 0, "max_quantity" => (int) $quantity]);
+        $this->collection -> insertOne(["name" => $name, "timestamp_lesson_start" => $timestamp_lesson_start, "timestamp_lesson_finish" => $timestamp_lesson_finish, "current_quantity" => 0, "max_quantity" => (int) $quantity, "teacher_id" => $teacher_id]);
     }
     
     public function updateLesson($name, $timestamp_lesson_start, $timestamp_lesson_finish, $quantity){

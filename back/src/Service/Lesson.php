@@ -36,27 +36,22 @@ class Lesson{
         return ["status" => 200, "message" => null, "redirect" => null, "data" => $data];
     }
 
-    public function listYourLessons(){
+    public function listCreatedLessons($user_id){
         $mongodb = new MongoDB();
-        $token_information = null;
         $data = [];
 
-        
         try{
-            $token_information = $mongodb -> checkValidityCookie($_COOKIE["token"]);
-            $your_lessons = $mongodb -> listYourLessons($token_information["user_id"]);
+            $your_lessons = $mongodb -> listCreatedLessons($user_id);
 
-            if($your_lessons){
-                foreach($your_lessons as $lesson){
-                    array_push($data, [
-                        "id" => (string) $lesson["lessons"]["_id"],
-                        "name" => $lesson["lessons"]["name"],
-                        "timestamp_lesson_start" => $lesson["lessons"]["timestamp_lesson_start"],
-                        "timestamp_lesson_finish" => $lesson["lessons"]["timestamp_lesson_finish"],
-                        "current_quantity" => $lesson["lessons"]["current_quantity"],
-                        "max_quantity" => $lesson["lessons"]["max_quantity"],
-                    ]);
-                }
+            foreach($your_lessons as $lesson){
+                array_push($data, [
+                    "id" => (string) $lesson["_id"],
+                    "name" => $lesson["name"],
+                    "timestamp_lesson_start" => $lesson["timestamp_lesson_start"],
+                    "timestamp_lesson_finish" => $lesson["timestamp_lesson_finish"],
+                    "current_quantity" => $lesson["current_quantity"],
+                    "max_quantity" => $lesson["max_quantity"],
+                ]);
             }
         }
         catch(\Exception $ex){
@@ -68,14 +63,42 @@ class Lesson{
         return ["status" => 200, "message" => null, "redirect" => null, "data" => $data];
     }
 
-    public function createLesson($name, $timestamp_lesson_start, $quantity){
+    public function listEnrolledLessons($user_id){
+        $mongodb = new MongoDB();
+        $data = [];
+
+        try{
+            $your_lessons = $mongodb -> listEnrolledLessons($user_id);
+
+            foreach($your_lessons as $lesson){
+                array_push($data, [
+                    "id" => (string) $lesson["lessons"]["_id"],
+                    "name" => $lesson["lessons"]["name"],
+                    "timestamp_lesson_start" => $lesson["lessons"]["timestamp_lesson_start"],
+                    "timestamp_lesson_finish" => $lesson["lessons"]["timestamp_lesson_finish"],
+                    "current_quantity" => $lesson["lessons"]["current_quantity"],
+                    "max_quantity" => $lesson["lessons"]["max_quantity"],
+                ]);
+            }
+  
+        }
+        catch(\Exception $ex){
+            if($ex -> getPrevious() != ""){
+                return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
+            }
+        }
+
+        return ["status" => 200, "message" => null, "redirect" => null, "data" => $data];
+    }
+
+    public function createLesson($name, $timestamp_lesson_start, $quantity, $teacher_id){
         $mongodb = new MongoDB();
 
         // adding 50 minutes to the current time
         $timestamp_lesson_finish = $timestamp_lesson_start+(3000*1000);
 
         try{
-            $mongodb -> createLesson($name, $timestamp_lesson_start, $timestamp_lesson_finish, $quantity);
+            $mongodb -> createLesson($name, $timestamp_lesson_start, $timestamp_lesson_finish, $quantity, $teacher_id);
         }
         catch(\Exception $ex){
             if($ex -> getPrevious() != ""){
