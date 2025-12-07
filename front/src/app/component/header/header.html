@@ -2,7 +2,17 @@
     <a routerLink="/">
         <img id="logo" src="/logo.png" />
     </a>
-    <div (click)="check()">
-        <img id="login" src="/person.svg" />
+    <div style="display: flex; align-items: center;">
+        <button *ngIf="roleService.role() === 'teacher'" (click)="addLesson()">
+            <img id="plus" src="/plus.svg" />
+        </button>
+
+        <button *ngIf="roleService.role() === 'off'"(click)="login()">
+            <img id="auth" src="/person.svg" />
+        </button>
+
+        <button *ngIf="roleService.role() !== 'off'"(click)="logout()">
+            <img id="auth" src="/logout.svg" />
+        </button>
     </div>
 </div>

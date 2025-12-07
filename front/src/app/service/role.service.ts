@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Http } from './http.service';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngxpert/hot-toast';
@@ -6,17 +6,19 @@ import { HotToastService } from '@ngxpert/hot-toast';
 @Injectable({
   providedIn: 'root'
 })
-export class Role {
+export class RoleService {
 
   constructor(private http: Http, private router: Router, private toast: HotToastService){}
 
-  private role: string = "off";
+  public role = signal<string>("off");
 
   check(): void{
     this.http.get("/").subscribe({
       next: (return_api: ReturnApi) => {
         if(return_api?.data !== null){
-          this.role = return_api.data;
+          console.log("Role atualizada");
+          console.log(return_api.data);
+          this.role.set(return_api.data);
         }
       },
       error: error => {
@@ -28,10 +30,6 @@ export class Role {
           this.router.navigate([error.error.redirect]);
         }
       }
-    })
-  }
-
-  get(): string{
-    return this.role;
+    });
   }
 }

@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterLink } from '@angular/router';
 import { Http } from '../../service/http.service';
-import { Role } from '../../service/role.service';
+import { RoleService } from '../../service/role.service';
 import { HotToastService } from '@ngxpert/hot-toast';
 
 @Component({
@@ -19,7 +19,7 @@ export class Login {
   email: string = '';
   password: string = '';
 
-  constructor(private http: Http, private router: Router, private role: Role, private toast: HotToastService){}
+  constructor(private http: Http, private router: Router, private roleService: RoleService, private toast: HotToastService){}
 
   formSubmit(){
     const data = {
@@ -37,7 +37,7 @@ export class Login {
           this.router.navigate([return_api.redirect]);
         }
 
-        this.role.check();
+        this.roleService.check();
       },
       error: (error) => {
         if(error.error.message != null){

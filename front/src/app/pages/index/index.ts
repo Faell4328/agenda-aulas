@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { lesson } from '../../interfaces';
 import { Router } from '@angular/router';
 import { Http } from '../../service/http.service';
-import { Role } from '../../service/role.service';
+import { RoleService } from '../../service/role.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Dialog } from '../../component/dialog-confirmation/dialog';
 import { HotToastService } from '@ngxpert/hot-toast';
@@ -24,13 +24,13 @@ export class Index implements OnInit{
   ano_atual: number = new Date().getFullYear();
   quantidade: number = 0;
 
-  constructor(private http: Http, private router: Router, private role: Role, private toast: HotToastService){}
+  constructor(private http: Http, private router: Router, private roleService: RoleService, private toast: HotToastService){}
 
   readonly dialog = inject(MatDialog);
 
   joinLesson(element_id: any){
 
-    if(this.role.get() != "student"){
+    if(this.roleService.role() != "student"){
       return;
     }
     
@@ -132,8 +132,7 @@ export class Index implements OnInit{
             this.elements_information.push(elemento);
           }
 
-          const returned_rule = this.role.get();
-          if(returned_rule != "off" && returned_rule != "teacher"){
+          if(this.roleService.role() != "off" && this.roleService.role() != "teacher"){
             this.getYourLessons();
           }
         }
