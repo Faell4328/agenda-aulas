@@ -112,7 +112,6 @@ class Lesson{
     public function updateLesson($name, $timestamp_lesson_start, $quantity){
         $mongodb = new MongoDB();
 
-        // adding 50 minutes to the current time
         $timestamp_lesson_finish = $timestamp_lesson_start+(3000*1000);
 
         try{

@@ -3,13 +3,14 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router, RouterLink } from '@angular/router';
 import { RoleService } from '../../service/role.service';
 import { Http } from '../../service/http.service';
-import { Dialog } from '../dialog-confirmation/dialog';
+import { DialogConfirmation } from '../dialog-confirmation/dialog-confirmation';
+import { DialogForm } from '../dialog-form/dialog-form';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'header',
-  imports: [MatDialogModule, RouterLink, MatDialogModule, CommonModule],
+  imports: [MatDialogModule, RouterLink, CommonModule],
   templateUrl: './header.html',
   styleUrl: './header.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,7 +21,33 @@ export class Header {
   readonly dialog = inject(MatDialog);
 
   addLesson(){
-    console.log(this.roleService.role());
+    this.dialog.open(DialogForm, {
+      data: {
+        dialog: [
+          {
+            "label": "Nome",
+            "name": "name",
+            "type": "string",
+          },
+          {
+            "label": "Dia",
+            "name": "date",
+            "type": "date",
+          },
+          {
+            "label": "Horas",
+            "name": "time",
+            "type": "time",
+          },
+          {
+            "label": "Quantidade",
+            "name": "quantity",
+            "type": "number",
+          }
+        ],
+        url: "/aulas/adicionar"
+      },
+    });
   }
 
   login(){
@@ -28,7 +55,7 @@ export class Header {
   }
 
   logout(){
-    const dialogRef = this.dialog.open(Dialog, {
+    const dialogRef = this.dialog.open(DialogConfirmation, {
       data: {
         dialog: "deslogar",
       }

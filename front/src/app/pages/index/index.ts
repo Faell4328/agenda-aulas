@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { Http } from '../../service/http.service';
 import { RoleService } from '../../service/role.service';
 import { MatDialog } from '@angular/material/dialog';
-import { Dialog } from '../../component/dialog-confirmation/dialog';
+import { DialogConfirmation } from '../../component/dialog-confirmation/dialog-confirmation';
 import { HotToastService } from '@ngxpert/hot-toast';
 
 @Component({
@@ -36,7 +36,7 @@ export class Index implements OnInit{
     
     let is_join:boolean = (document.getElementById(element_id)?.dataset["join"] == "true");
 
-    const dialogRef = this.dialog.open(Dialog, {
+    const dialogRef = this.dialog.open(DialogConfirmation, {
       data: {
         dialog: (is_join == true) ? "sair" : "ingressar",
       }

@@ -1,0 +1,32 @@
+<mat-dialog-content class="mat-typography">
+  <form #frm="ngForm">
+      <h3>Cadastrar aula</h3>
+      <hr />
+      <div id="container-form">
+        <div *ngFor="let element of dialog">
+          <mat-form-field class="input-form">
+
+            <mat-label>{{element.label}}</mat-label>
+
+            <div *ngIf="element.type !== 'time' && element.type !== 'date'">
+              <input [(ngModel)]="formValue[element.name]" type={element.type}} name={{element.name}} required matInput>
+            </div>
+
+            <div class="container-datetime" *ngIf="element.type === 'date'">
+                <input required name="{{element.name}}" matInput [matDatepicker]="datepicker" [(ngModel)]="formValue['date']">
+                <mat-datepicker #datepicker/>
+                <mat-datepicker-toggle [for]="datepicker" matSuffix/>
+            </div>
+
+            <div class="container-datetime" *ngIf="element.type === 'time'">
+              <input required name="{{element.name}}" [(ngModel)]="formValue['time']" matTimepickerMin="13:00" matTimepickerMax="17:00" matInput [matTimepicker]="picker">
+              <mat-timepicker-toggle matIconSuffix [for]="picker"/>
+              <mat-timepicker interval="10min" #picker/>
+            </div>
+
+          </mat-form-field>
+        </div>
+        <button id="btn-submit" (click)="formSubmit()" mat-raised-button color="primary">Cadastrar aula</button>
+      </div>
+  </form>
+</mat-dialog-content>

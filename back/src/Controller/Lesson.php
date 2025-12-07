@@ -29,11 +29,11 @@ class Lesson{
     public function createLesson($req_body_json, $teacher_id){
         $validation = new Validation;
         $validation -> fieldExists($req_body_json, "name");
-        $validation -> fieldExists($req_body_json, "timestamp_lesson_start");
+        $validation -> fieldExists($req_body_json, "timestamp");
         $validation -> fieldExists($req_body_json, "quantity");
 
         $service = new \App\Service\Lesson;
-        $return_service = $service -> createLesson($req_body_json->name, $req_body_json->timestamp_lesson_start, $req_body_json->quantity, $teacher_id);
+        $return_service = $service -> createLesson($req_body_json->name, $req_body_json->timestamp, $req_body_json->quantity, $teacher_id);
 
         new \App\Controller\SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
@@ -42,11 +42,11 @@ class Lesson{
         $validation = new Validation;
         $validation -> queryExists("id");
         $validation -> fieldExists($req_body_json, "name");
-        $validation -> fieldExists($req_body_json, "timestamp_lesson_start");
+        $validation -> fieldExists($req_body_json, "timestamp");
         $validation -> fieldExists($req_body_json, "quantity");
 
         $service = new \App\Service\Lesson;
-        $return_service = $service -> updateLesson($req_body_json->name, $req_body_json->timestamp_lesson_start, $req_body_json->quantity);
+        $return_service = $service -> updateLesson($req_body_json->name, $req_body_json->timestamp, $req_body_json->quantity);
         
         new \App\Controller\SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
