@@ -88,7 +88,7 @@ class MongoDB{
 
     public function listAllLessons(){
         $this -> chooseCollection("lessons");
-        return iterator_to_array($this->collection -> find([], ['sort' => ['timestamp_lesson_start' => 1]]));
+        return iterator_to_array($this->collection -> find([], ['sort' => ['timestamp_lesson_start' => 1, 'id' => 1]]));
     }
 
     public function listCreatedLessons($user_id){
@@ -114,6 +114,12 @@ class MongoDB{
             ],
             [
                 '$unwind' => '$lessons'
+            ],
+            [
+                '$sort' => [
+                    'lessons.timestamp_lesson_start' => 1,
+                    'lessons.id' => 1
+                ]
             ]
         ]));
     }

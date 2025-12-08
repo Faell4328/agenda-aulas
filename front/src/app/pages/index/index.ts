@@ -8,6 +8,7 @@ import { RoleService } from '../../service/role.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogConfirmation } from '../../component/dialog-confirmation/dialog-confirmation';
 import { HotToastService } from '@ngxpert/hot-toast';
+import { LessonService } from '@src/app/service/lesson.service';
 
 @Component({
   selector: 'app-data-component',
@@ -16,15 +17,8 @@ import { HotToastService } from '@ngxpert/hot-toast';
   styleUrl: './index.scss',
 })
 export class Index implements OnInit{
-  lessons: lesson[] | null = null;
-  quantidade_dias_mes: number = 0;
-  elements_information: any = [];
 
-  mes_atual: number = (new Date().getMonth() + 1);
-  ano_atual: number = new Date().getFullYear();
-  quantidade: number = 0;
-
-  constructor(private http: Http, private router: Router, private roleService: RoleService, private toast: HotToastService){}
+  constructor(private http: Http, private router: Router, private roleService: RoleService, private toast: HotToastService, public lessonService: LessonService){}
 
   readonly dialog = inject(MatDialog);
 
@@ -35,6 +29,7 @@ export class Index implements OnInit{
     }
     
     let is_join:boolean = (document.getElementById(element_id)?.dataset["join"] == "true");
+    console.log(is_join);
 
     const dialogRef = this.dialog.open(DialogConfirmation, {
       data: {
@@ -103,38 +98,6 @@ export class Index implements OnInit{
     this.http.get("/aulas").subscribe({
       next: (return_api: ReturnApi) => {
         if(return_api.data !== null){
-          // ex: 30
-          this.quantidade_dias_mes = new Date(this.ano_atual, this.mes_atual, 0).getDate();
-
-          let current_index = 0;
-          for(let present_day = 1; present_day <= this.quantidade_dias_mes; present_day++){
-
-            let lessons: any = []
-
-            while(current_index < return_api.data.length){
-              if((new Date(return_api.data[current_index].timestamp_lesson_start)).getDate() == present_day){
-                lessons.push(return_api.data[current_index]);
-                current_index++;
-              }
-              else{
-                break;
-              }
-            }
-
-            let elemento: any = null;
-            if(lessons[0] != undefined){
-              elemento = { "day": present_day, "name":  lessons }
-            }
-            else{
-              elemento = { "day": present_day }
-            }
-
-            this.elements_information.push(elemento);
-          }
-
-          if(this.roleService.role() != "off" && this.roleService.role() != "teacher"){
-            this.getYourLessons();
-          }
         }
       },
       error: error => {
@@ -174,6 +137,6 @@ export class Index implements OnInit{
   }
 
   ngOnInit(): void{
-    this.getAllLessons();
+    //this.getAllLessons();
   }
 }

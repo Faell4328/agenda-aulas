@@ -12,6 +12,7 @@ import { Http } from '@src/app/service/http.service';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { RoleService } from '@src/app/service/role.service';
 import { Router } from '@angular/router';
+import { LessonService } from '@src/app/service/lesson.service';
 
 @Component({
   selector: 'dialog-form',
@@ -26,7 +27,7 @@ export class DialogForm{
   public dialog: Array<{ label: string, name: string; type: string }> = [];
   public formValue: { [key: string]: any } = {};
 
-  constructor(private http: Http, private router: Router, private roleService: RoleService, private toast: HotToastService, @Inject(MAT_DIALOG_DATA) public data: any){
+  constructor(private http: Http, private router: Router, private lessonService: LessonService, private toast: HotToastService, @Inject(MAT_DIALOG_DATA) public data: any){
     this.dialog = this.data.dialog;
     this.url = this.data.url;
   }
@@ -47,7 +48,8 @@ export class DialogForm{
           this.router.navigate([return_api.redirect]);
         }
 
-        this.roleService.check();
+        this.lessonService.getAllLessons();
+        this.lessonService.getYourLessons();
       },
       error: (error) => {
         console.log(error);
