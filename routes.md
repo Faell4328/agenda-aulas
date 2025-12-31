@@ -32,6 +32,8 @@ As informações tem que ser enviado no formato JSON para o back end.
 - Campos: `name`, `timestamp` (padrão JS, que inclui milesegundos. Apenas do ano, mês, dia, horas e minutos) e `quantity` (quantidade máxima de alunos).
 ! Ao alterar a quantidade, os alunos ingressados são removidos. Caso sejá alterado apenas, nome ou timestamp, será mantido os alunos.
 
+`DELETE /aulas/deletar?id=id_aula` - Remove a aula.
+
 **Somente alunos:**
 
 `GET /aulas/ingressadas` - Consultar aulas ingressadas.
