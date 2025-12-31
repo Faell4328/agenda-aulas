@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogConfirmation } from '../../component/dialog-confirmation/dialog-confirmation';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { LessonService } from '@src/app/service/lesson.service';
+import { DialogForm } from '@src/app/component/dialog-form/dialog-form';
 
 @Component({
   selector: 'app-data-component',
@@ -22,12 +23,21 @@ export class Index implements OnInit{
 
   readonly dialog = inject(MatDialog);
 
-  joinLesson(element_id: any){
-
-    if(this.roleService.role() != "student"){
+  clickLesson(element_id: any){
+    if(this.roleService.role() == "student"){
+      this.joinLesson(element_id);
       return;
     }
-    
+    else if(this.roleService.role() == "teacher"){
+      this.editLesson(element_id);
+    }
+    else{
+      return;
+    }
+  }
+
+  joinLesson(element_id: any){
+
     let is_join:boolean = (document.getElementById(element_id)?.dataset["join"] == "true");
     console.log(is_join);
 
@@ -93,6 +103,38 @@ export class Index implements OnInit{
       }
     });
   }
+
+  editLesson(element_id: any){
+      this.dialog.open(DialogForm, {
+        data: {
+          dialog: [
+            {
+              "label": "Nome",
+              "name": "name",
+              "type": "string",
+            },
+            {
+              "label": "Dia",
+              "name": "date",
+              "type": "date",
+            },
+            {
+              "label": "Horas",
+              "name": "time",
+              "type": "time",
+            },
+            {
+              "label": "Quantidade",
+              "name": "quantity",
+              "type": "number",
+            }
+          ],
+          title: "Atualizar aula",
+          method: "put",
+          url: `/aulas/atualizar?id=${element_id}`
+        },
+      });
+    }
 
   getAllLessons(){
     this.http.get("/aulas").subscribe({

@@ -24,12 +24,16 @@ import { LessonService } from '@src/app/service/lesson.service';
 })
 export class DialogForm{
   public url: string = "";
+  public method: string = "";
+  public title: string = "";
   public dialog: Array<{ label: string, name: string; type: string }> = [];
   public formValue: { [key: string]: any } = {};
 
   constructor(private http: Http, private router: Router, private lessonService: LessonService, private toast: HotToastService, @Inject(MAT_DIALOG_DATA) public data: any){
     this.dialog = this.data.dialog;
+    this.method = this.data.method;
     this.url = this.data.url;
+    this.title = this.data.title;
   }
 
   formSubmit(){
@@ -38,27 +42,50 @@ export class DialogForm{
       this.formValue["timestamp"] = Date.parse(date.toString());
     }
 
-    this.http.post(this.url, this.formValue).subscribe({
-      next: (return_api: ReturnApi) => {
-        if(return_api?.message != null){
-          this.toast.success(return_api.message);
-        }
+    if(this.method == "post"){
+      this.http.post(this.url, this.formValue).subscribe({
+        next: (return_api: ReturnApi) => {
+          if(return_api?.message != null){
+            this.toast.success(return_api.message);
+          }
 
-        if(return_api?.redirect != null){
-          this.router.navigate([return_api.redirect]);
-        }
+          if(return_api?.redirect != null){
+            this.router.navigate([return_api.redirect]);
+          }
 
-        this.lessonService.getAllLessons();
-        this.lessonService.getYourLessons();
-      },
-      error: (error) => {
-        console.log(error);
-        if(error.error.message != null){
-          this.toast.error(error.error.message);
+          this.lessonService.getAllLessons();
+          this.lessonService.getYourLessons();
+        },
+        error: (error) => {
+          console.log(error);
+          if(error.error.message != null){
+            this.toast.error(error.error.message);
+          }
         }
-      }
-    });
+      });
+    }
+    else if(this.method == "put"){
+      this.http.put(this.url, this.formValue).subscribe({
+        next: (return_api: ReturnApi) => {
+          if(return_api?.message != null){
+            this.toast.success(return_api.message);
+          }
 
+          if(return_api?.redirect != null){
+            this.router.navigate([return_api.redirect]);
+          }
+
+          this.lessonService.getAllLessons();
+          this.lessonService.getYourLessons();
+        },
+        error: (error) => {
+          console.log(error);
+          if(error.error.message != null){
+            this.toast.error(error.error.message);
+          }
+        }
+      });
+    }
   }
 
   @Input() component!: any;

@@ -21,6 +21,10 @@ export class Http {
     return this.http.post<returnApi>(this.baseURL + path, JSON.stringify(body), { withCredentials: true });
   }
 
+  put(path: string = "/", body: any | null): Observable<returnApi>{
+    return this.http.put<returnApi>(this.baseURL + path, JSON.stringify(body), { withCredentials: true });
+  }
+
   delete(path: string = "/"): Observable<returnApi>{
     return this.http.delete<returnApi>(this.baseURL + path, { withCredentials: true });
   }

@@ -45,6 +45,8 @@ export class Header {
             "type": "number",
           }
         ],
+        title: "Cadastrar aula",
+        method: "post",
         url: "/aulas/adicionar"
       },
     });

@@ -5,7 +5,7 @@
         <div class="dia">{{element_information.day}}</div>
             <div style="max-height: 70%; overflow-x: auto; cursor: pointer"> 
                 <div *ngFor="let information of element_information.lessons">
-                    <div [attr.data-join]="information.registered ? 'true' : 'false'" id={{information.id}} (click)="joinLesson(information.id)" class="lesson-name">
+                    <div [attr.data-join]="information.registered ? 'true' : 'false'" id={{information.id}} (click)="clickLesson(information.id)" class="lesson-name">
                         <span [attr.class]="information.registered ? 'status-ok' : 'status-no'">{{information.registered ? 'Inscrito' : 'Não inscrito'}}</span>
                         <span>{{information.name}}</span>
                     </div>
