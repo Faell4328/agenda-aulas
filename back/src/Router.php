@@ -21,6 +21,7 @@ class Router{
 
         '/aulas/adicionar' => ["POST"],
         '/aulas/atualizar' => ["PUT"],
+        '/aulas/deletar' => ["DELETE"],
     ];
     
     public function __construct($req_route_path, $req_method, $req_body_json){
@@ -105,6 +106,12 @@ class Router{
             
             $lesson_controller = new \App\Controller\Lesson;
             $lesson_controller -> updateLesson($req_body_json);
+        }
+        else if($route == "/aulas/deletar"){
+            $middleware -> routeForTeachersOnly($user_information);
+            
+            $lesson_controller = new \App\Controller\Lesson;
+            $lesson_controller -> deleteLesson($req_body_json);
         }
         else if($route == "/aulas/ingressar"){
             $middleware -> routeForStudentOnly($user_information);

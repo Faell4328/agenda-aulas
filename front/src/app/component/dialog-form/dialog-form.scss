@@ -6,7 +6,7 @@ form{
     padding: 10px;
 }
 
-#container-form{
+#container-form, #container-extra{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -20,5 +20,12 @@ form{
 
 #btn-submit{
     background-color: #aaa;
+    border-radius: 10px;
+}
+
+#btn-extra{
+    margin-top: 20px;
+    color: #fff;
+    background-color: #e00;
     border-radius: 10px;
 }

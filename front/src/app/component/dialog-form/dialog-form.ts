@@ -26,6 +26,7 @@ export class DialogForm{
   public url: string = "";
   public method: string = "";
   public title: string = "";
+  public extra: { text: string, method: string, url: string } | undefined = undefined;
   public dialog: Array<{ label: string, name: string; type: string }> = [];
   public formValue: { [key: string]: any } = {};
 
@@ -34,6 +35,7 @@ export class DialogForm{
     this.method = this.data.method;
     this.url = this.data.url;
     this.title = this.data.title;
+    this.extra = this.data.extra;
   }
 
   formSubmit(){
@@ -86,6 +88,32 @@ export class DialogForm{
         }
       });
     }
+  }
+
+  actionExtra(){
+    if(this.extra?.method == "delete"){
+      this.http.delete(this.extra?.url).subscribe({
+        next: (return_api: ReturnApi) => {
+          if(return_api?.message != null){
+            this.toast.success(return_api.message);
+          }
+
+          if(return_api?.redirect != null){
+            this.router.navigate([return_api.redirect]);
+          }
+
+          this.lessonService.getAllLessons();
+          this.lessonService.getYourLessons();
+        },
+        error: (error) => {
+          console.log(error);
+          if(error.error.message != null){
+            this.toast.error(error.error.message);
+          }
+        }
+      });
+    }
+    this.extra == undefined;
   }
 
   @Input() component!: any;

@@ -51,6 +51,16 @@ class Lesson{
         new \App\Controller\SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
 
+    public function deleteLesson(){
+        $validation = new Validation;
+        $validation -> queryExists("id");
+
+        $service = new \App\Service\Lesson;
+        $return_service = $service -> deleteLesson($_GET["id"]);
+        
+        new \App\Controller\SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
+    }
+
     public function joinLesson($user_information){
         $validation = new Validation;
         $validation -> queryExists("id");

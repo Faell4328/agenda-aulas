@@ -131,7 +131,12 @@ export class Index implements OnInit{
           ],
           title: "Atualizar aula",
           method: "put",
-          url: `/aulas/atualizar?id=${element_id}`
+          url: `/aulas/atualizar?id=${element_id}`,
+          extra: {
+            text: "Deletar aula",
+            method: "delete",
+            url: `/aulas/deletar?id=${element_id}`,
+          }
         },
       });
     }

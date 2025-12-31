@@ -27,6 +27,9 @@
           </mat-form-field>
         </div>
         <button id="btn-submit" (click)="formSubmit()" mat-raised-button color="primary">{{title}}</button>
+        <div id="container-extra" *ngIf="extra !== undefined">
+          <button id="btn-extra" (click)="actionExtra()" mat-raised-button color="primary">{{extra.text}}</button>
+        </div>
       </div>
   </form>
 </mat-dialog-content>

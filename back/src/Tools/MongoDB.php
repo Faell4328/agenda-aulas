@@ -138,6 +138,13 @@ class MongoDB{
         $this->collection -> updateOne(["_id" => $id], ['$set' => ["name" => $name, "timestamp_lesson_start" => $timestamp_lesson_start, "timestamp_lesson_finish" => $timestamp_lesson_finish, "current_quantity" => 0, "max_quantity" => (int) $quantity]]);
     }
 
+    public function deleteLesson($id_lesson){
+        $id = new ObjectId($_GET["id"]);
+
+        $this -> chooseCollection("lessons");
+        $this->collection -> deleteOne(["_id" => $id]);
+    }
+
     # ------------------------
 
     public function checkIfYouAreAlreadyJoin($user_id, $lesson_id){

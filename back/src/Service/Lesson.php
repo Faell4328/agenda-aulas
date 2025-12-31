@@ -134,6 +134,29 @@ class Lesson{
         return ["status" => 200, "message" => "Aula atualizada", "redirect" => null, "data" => null];
     }
 
+    public function deleteLesson(){
+        $mongodb = new MongoDB();
+
+        try{
+            if($mongodb -> checkLessonExist($_GET["id"]) == true){
+                $mongodb -> deleteLesson($_GET["id"]);
+            }
+            else{
+                throw new \Exception("Aula não existe");
+            }
+        }
+        catch(\Exception $ex){
+            if($ex -> getPrevious() == ""){
+                return ["status" => 400, "message" => $ex -> getMessage(), "redirect" => null, "data" => null];
+            }
+            else{
+                return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
+            }
+        }
+
+        return ["status" => 200, "message" => "Aula removida", "redirect" => null, "data" => null];
+    }
+
     public function joinLesson($user_id){
         $mongodb = new MongoDB();
 
