@@ -3,11 +3,11 @@
         <span class="status-ok" *ngIf="element_information.lessons !== undefined">Tem aula</span>
         <span class="status-no" *ngIf="element_information.lessons == undefined">Não tem aula</span>
         <div class="dia">{{element_information.day}}</div>
-            <div style="max-height: 70%; overflow-x: auto; cursor: pointer"> 
+            <div style="max-height: 70%; overflow-x: auto; cursor: pointer">
                 <div *ngFor="let information of element_information.lessons">
                     <div [attr.data-join]="information.registered ? 'true' : 'false'" id={{information.id}} (click)="clickLesson(information.id)" class="lesson-name">
                         <span [attr.class]="information.registered ? 'status-ok' : 'status-no'">{{information.registered ? 'Inscrito' : 'Não inscrito'}}</span>
-                        <span>{{information.name}}</span>
+                        <span>{{information.time}} - {{information.name}}</span>
                     </div>
                 </div>
             </div>

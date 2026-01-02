@@ -75,7 +75,7 @@ export class LessonService {
     if(this.req_all == false || this.req_your == false){
       return;
     }
-    
+
     this.elements_information.set([]);
 
       // ex: 30
@@ -90,12 +90,16 @@ export class LessonService {
 
         while(index_all < this.all_lessons.length){
           if((new Date(this.all_lessons[index_all].timestamp_lesson_start)).getDate() == present_day){
+
+            const date = new Date(this.all_lessons[index_all].timestamp_lesson_start);
+            const time = `${(date.getHours()).toString().padStart(2, '0')}:${(date.getMinutes()).toString().padStart(2, '0')}`
+
             if(this.all_lessons[index_all].id == this.your_lessons[index_your]?.id){
-              lessons.push({...this.all_lessons[index_all], "registered": true});
+              lessons.push({...this.all_lessons[index_all], time: time, "registered": true});
               index_your++;
             }
             else{
-              lessons.push({...this.all_lessons[index_all], "registered": false});
+              lessons.push({...this.all_lessons[index_all], time: time, "registered": false});
             }
             index_all++;
           }
@@ -106,7 +110,7 @@ export class LessonService {
 
         let elemento: any = null;
         if(lessons[0] != undefined){
-          elemento = { "day": present_day, "lessons":  lessons }
+          elemento = { "day": present_day,"lessons": lessons }
         }
         else{
           elemento = { "day": present_day }

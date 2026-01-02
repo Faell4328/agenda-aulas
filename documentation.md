@@ -1,3 +1,5 @@
+## Regras
+
 ## Rotas:
 
 As informações tem que ser enviado no formato JSON para o back end.
