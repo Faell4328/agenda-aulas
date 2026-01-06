@@ -5,11 +5,40 @@ namespace App\Service;
 use App\Tools\MongoDB;
 
 class Lesson{
-    public function listAllLessons(){
+    public function listLessons($lesson_id){
         $mongodb = new MongoDB();
         $data = [];
         
         try{
+          if($lesson_id){
+            $lesson = $mongodb -> listOfSpecificLessons($lesson_id);
+            if(count($lesson) > 0){
+              $students = $mongodb -> listEnrolledStudents($lesson_id);
+              $listStudents =[];
+              if($students){
+                foreach($students as $student){
+                  array_push($listStudents, $student["student"][0]["name"]);
+                }
+              }
+
+              $teacher = $mongodb -> getTeacherOfLesson($lesson["teacher_id"]);
+
+              array_push($data, [
+                  "id" => (string) $lesson["_id"],
+                  "name" => $lesson["name"],
+                  "timestamp_lesson_start" => $lesson["timestamp_lesson_start"],
+                  "timestamp_lesson_finish" => $lesson["timestamp_lesson_finish"],
+                  "current_quantity" => $lesson["current_quantity"],
+                  "max_quantity" => $lesson["max_quantity"],
+                  "teacher" => $teacher["name"],
+                  "students" => $listStudents,
+              ]);
+            }
+            else{
+                $data = "Aula informada não foi encontrada";
+            }
+          }
+          else{
             $lessons = $mongodb -> listAllLessons();
             if($lessons){
                 foreach($lessons as $lesson){
@@ -26,6 +55,7 @@ class Lesson{
             else{
                 $data = "Nenhuma aula cadastrada";
             }
+          }
         }
         catch(\Exception $ex){
             if($ex -> getPrevious() != ""){

@@ -67,11 +67,18 @@ class MongoDB{
         return $this->collection -> findOne(["email" => $email, "password" => $password]);
     }
 
-    public function listOfSpecificLessons($id){
-        $id = new ObjectId($_GET["id"]);
+    public function listOfSpecificLessons($lesson_id){
+        $lesson_id = new ObjectId($lesson_id);
 
         $this -> chooseCollection("lessons");
-        return $this->collection -> findOne(["_id" => $id]);
+        return $this->collection -> findOne(["_id" => $lesson_id]);
+    }
+
+    public function getTeacherOfLesson($teacher_id){
+        $id = new ObjectId($teacher_id);
+
+        $this -> chooseCollection("user");
+        return $this->collection -> findOne(["_id" => $teacher_id]);
     }
 
     public function checkLessonExist($lesson_id){
@@ -89,6 +96,27 @@ class MongoDB{
     public function listAllLessons(){
         $this -> chooseCollection("lessons");
         return iterator_to_array($this->collection -> find([], ['sort' => ['timestamp_lesson_start' => 1, 'id' => 1]]));
+    }
+
+    public function listEnrolledStudents($lesson_id){
+        $lesson_id = new ObjectId($lesson_id);
+
+        $this -> chooseCollection("join_lesson");
+            return iterator_to_array($this->collection -> aggregate([
+                [
+                    '$match' => [
+                        'id_lesson' => $lesson_id
+                    ]
+                ],
+                [
+                    '$lookup' => [
+                        'from' => 'user',
+                        'localField' => 'id_student',
+                        'foreignField' => '_id',
+                        'as' => 'student'
+                    ]
+                ],
+            ]));
     }
 
     public function listCreatedLessons($user_id){

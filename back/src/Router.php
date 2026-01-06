@@ -81,7 +81,7 @@ class Router{
         }
         else if($route == "/aulas"){
             $lesson_controller = new \App\Controller\Lesson;
-            $lesson_controller -> listAllLessons();
+            $lesson_controller -> listLessons();
         }
         else if($route == "/aulas/cadastradas"){
             $middleware -> routeForTeachersOnly($user_information);
