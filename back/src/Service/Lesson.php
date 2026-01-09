@@ -5,14 +5,15 @@ namespace App\Service;
 use App\Tools\MongoDB;
 
 class Lesson{
-    public function listLessons($lesson_id){
+    public function listLessons($lesson_id, $user_information){
         $mongodb = new MongoDB();
         $data = [];
         
         try{
           if($lesson_id){
+            $is_join_lesson = $mongodb -> isJoinLesson($lesson_id, $user_information["_id"]);
             $lesson = $mongodb -> listOfSpecificLessons($lesson_id);
-            if(count($lesson) > 0){
+            if($lesson){
               $students = $mongodb -> listEnrolledStudents($lesson_id);
               $listStudents =[];
               if($students){
@@ -32,10 +33,11 @@ class Lesson{
                   "max_quantity" => $lesson["max_quantity"],
                   "teacher" => $teacher["name"],
                   "students" => $listStudents,
+                  "is_join" => $is_join_lesson,
               ]);
             }
             else{
-                $data = "Aula informada não foi encontrada";
+              throw new \Exception("Aula informada não foi encontrada");
             }
           }
           else{
@@ -53,14 +55,16 @@ class Lesson{
                 }
             }
             else{
-                $data = "Nenhuma aula cadastrada";
+              throw new \Exception("Aula informada não foi encontrada");
             }
           }
         }
         catch(\Exception $ex){
-            if($ex -> getPrevious() != ""){
-                return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
+            if($ex -> getPrevious() == ""){
+                return ["status" => 400, "message" => $ex -> getMessage(), "redirect" => null, "data" => null];
             }
+
+            return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
         }
 
         return ["status" => 200, "message" => null, "redirect" => null, "data" => $data];
@@ -184,7 +188,7 @@ class Lesson{
             }
         }
 
-        return ["status" => 200, "message" => "Aula removida", "redirect" => null, "data" => null];
+        return ["status" => 200, "message" => "Aula removida", "redirect" => "/", "data" => null];
     }
 
     public function joinLesson($user_id){

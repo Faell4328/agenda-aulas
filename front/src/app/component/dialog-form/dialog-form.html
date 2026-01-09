@@ -8,28 +8,15 @@
 
             <mat-label>{{element.label}}</mat-label>
 
-            <div *ngIf="element.type !== 'time' && element.type !== 'date'">
-              <input [(ngModel)]="formValue[element.name]" type={element.type}} name={{element.name}} required matInput>
-            </div>
-
-            <div class="container-datetime" *ngIf="element.type === 'date'">
-                <input required name="{{element.name}}" matInput [matDatepicker]="datepicker" [(ngModel)]="formValue['date']">
-                <mat-datepicker #datepicker/>
-                <mat-datepicker-toggle [for]="datepicker" matSuffix/>
-            </div>
-
-            <div class="container-datetime" *ngIf="element.type === 'time'">
-              <input required name="{{element.name}}" [(ngModel)]="formValue['time']" matTimepickerMin="13:00" matTimepickerMax="17:00" matInput [matTimepicker]="picker">
-              <mat-timepicker-toggle matIconSuffix [for]="picker"/>
-              <mat-timepicker interval="10min" #picker/>
+            <div>
+              <input *ngIf="element.type != 'time' && element.type != 'date'" [(ngModel)]="formValue[element.name]" id={{element.id}} type={element.type}} name={{element.name}} required matInput>
+              <input *ngIf="element.type == 'date'" (ngModelChange)="correctDate(element.id)" [(ngModel)]="formValue[element.name]" maxlength="10" pattern="[0-9]:[0-9]" id={{element.id}} type={element.type}} name={{element.name}} required matInput>
+              <input *ngIf="element.type == 'time'" (ngModelChange)="correctTime(element.id)" [(ngModel)]="formValue[element.name]" maxlength="5" id={{element.id}} type={element.type}} name={{element.name}} required matInput>
             </div>
 
           </mat-form-field>
         </div>
         <button id="btn-submit" (click)="formSubmit()" mat-raised-button color="primary">{{title}}</button>
-        <div id="container-extra" *ngIf="extra !== undefined">
-          <button id="btn-extra" (click)="actionExtra()" mat-raised-button color="primary">{{extra.text}}</button>
-        </div>
       </div>
   </form>
 </mat-dialog-content>

@@ -14,10 +14,10 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './dialog-confirmation.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DialogConfirmation{
-  public dialog = "";
+export class DialogConfirmation {
+  public text = "";
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
-    this.dialog = this.data.dialog;
+    this.text = this.data.text;
   }
 
   @Input() component!: any;

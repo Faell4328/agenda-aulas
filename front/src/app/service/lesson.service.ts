@@ -8,7 +8,7 @@ import { HotToastService } from '@ngxpert/hot-toast';
 })
 export class LessonService {
 
-  constructor(private http: Http, private router: Router, private toast: HotToastService){}
+  constructor(private http: Http, private router: Router, private toast: HotToastService) { }
 
   private req_all = false;
   private all_lessons: any = [];
@@ -24,10 +24,10 @@ export class LessonService {
   private ano_atual: number = new Date().getFullYear();
   private quantidade: number = 0;
 
-  public async getAllLessons(){
+  public async getAllLessons() {
     this.http.get("/aulas").subscribe({
       next: (return_api: ReturnApi) => {
-        if(return_api.data !== null){
+        if (return_api.data !== null) {
           this.all_lessons = return_api.data;
           console.log("all")
           console.log(return_api.data);
@@ -40,11 +40,11 @@ export class LessonService {
         this.req_all = true;
         this.loadLessons();
 
-        if(error.error.message != null){
+        if (error.error.message != null) {
           this.toast.success(error.error.message);
         }
 
-        if(error.errror.redirect !== null){
+        if (error.errror.redirect !== null) {
           this.router.navigate([error.error.redirect]);
         }
       }
@@ -52,10 +52,10 @@ export class LessonService {
 
   }
 
-  public async getYourLessons(){
+  public async getYourLessons() {
     this.http.get("/aulas/ingressadas").subscribe({
       next: (return_api: ReturnApi) => {
-        if(return_api.data != null){
+        if (return_api.data != null) {
           this.your_lessons = return_api.data;
           console.log("your")
           console.log(return_api.data);
@@ -71,53 +71,68 @@ export class LessonService {
     });
   }
 
-  public loadLessons(){
-    if(this.req_all == false || this.req_your == false){
+  public loadLessons() {
+    if (this.req_all == false || this.req_your == false) {
       return;
     }
 
+    console.log("Lições");
+    this.all_lessons.map((lesson: any) => {
+      console.log((lesson.timestamp_lesson_start))
+      console.log(new Date(lesson.timestamp_lesson_start))
+    })
+
     this.elements_information.set([]);
 
-      // ex: 30
-      this.quantidade_dias_mes = new Date(this.ano_atual, this.mes_atual, 0).getDate();
+    // ex: 30
+    this.quantidade_dias_mes = new Date(this.ano_atual, this.mes_atual, 0).getDate();
 
-      let index_all = 0;
-      let index_your = 0;
-      let elements = [];
-      for(let present_day = 1; present_day <= this.quantidade_dias_mes; present_day++){
+    let index_all = 0;
+    let index_your = 0;
+    let elements = [];
+    for (let present_day = 1; present_day <= this.quantidade_dias_mes; present_day++) {
 
-        let lessons: any = []
+      let lessons: any = []
 
-        while(index_all < this.all_lessons.length){
-          if((new Date(this.all_lessons[index_all].timestamp_lesson_start)).getDate() == present_day){
+      console.log("Dia presente é ");
+      console.log(present_day);
 
-            const date = new Date(this.all_lessons[index_all].timestamp_lesson_start);
-            const time = `${(date.getHours()).toString().padStart(2, '0')}:${(date.getMinutes()).toString().padStart(2, '0')}`
+      while (index_all < this.all_lessons.length) {
 
-            if(this.all_lessons[index_all].id == this.your_lessons[index_your]?.id){
-              lessons.push({...this.all_lessons[index_all], time: time, "registered": true});
-              index_your++;
-            }
-            else{
-              lessons.push({...this.all_lessons[index_all], time: time, "registered": false});
-            }
-            index_all++;
+        console.log("Indice")
+        console.log(index_all);
+        console.log("Dia da aula testada é: ")
+        console.log(new Date(this.all_lessons[index_all].timestamp_lesson_start).getDate());
+
+        if ((new Date(this.all_lessons[index_all].timestamp_lesson_start)).getDate() == present_day) {
+
+          const date = new Date(this.all_lessons[index_all].timestamp_lesson_start);
+          const time = `${(date.getHours()).toString().padStart(2, '0')}:${(date.getMinutes()).toString().padStart(2, '0')}`
+
+          if (this.all_lessons[index_all].id == this.your_lessons[index_your]?.id) {
+            lessons.push({ ...this.all_lessons[index_all], time: time, "registered": true });
+            index_your++;
           }
-          else{
-            break;
+          else {
+            lessons.push({ ...this.all_lessons[index_all], time: time, "registered": false });
           }
+          index_all++;
         }
-
-        let elemento: any = null;
-        if(lessons[0] != undefined){
-          elemento = { "day": present_day,"lessons": lessons }
+        else {
+          break;
         }
-        else{
-          elemento = { "day": present_day }
-        }
-
-        elements.push(elemento);
       }
+
+      let elemento: any = null;
+      if (lessons[0] != undefined) {
+        elemento = { "day": present_day, "lessons": lessons }
+      }
+      else {
+        elemento = { "day": present_day }
+      }
+
+      elements.push(elemento);
+    }
     console.log(elements);
     this.elements_information.set(elements);
 

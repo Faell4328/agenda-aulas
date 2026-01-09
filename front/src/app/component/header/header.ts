@@ -7,6 +7,7 @@ import { DialogConfirmation } from '../dialog-confirmation/dialog-confirmation';
 import { DialogForm } from '../dialog-form/dialog-form';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { CommonModule } from '@angular/common';
+import { LessonService } from '@src/app/service/lesson.service';
 
 @Component({
   selector: 'header',
@@ -16,30 +17,34 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Header {
-  constructor(private router: Router, public roleService: RoleService, private http: Http, private toast: HotToastService){}
+  constructor(private router: Router, public roleService: RoleService, private http: Http, private toast: HotToastService, private lessonService: LessonService) { }
 
   readonly dialog = inject(MatDialog);
 
-  addLesson(){
+  addLesson() {
     this.dialog.open(DialogForm, {
       data: {
         dialog: [
           {
+            "id": "input1",
             "label": "Nome",
             "name": "name",
             "type": "string",
           },
           {
+            "id": "input2",
             "label": "Dia",
             "name": "date",
             "type": "date",
           },
           {
+            "id": "input3",
             "label": "Horas",
             "name": "time",
             "type": "time",
           },
           {
+            "id": "input4",
             "label": "Quantidade",
             "name": "quantity",
             "type": "number",
@@ -47,16 +52,17 @@ export class Header {
         ],
         title: "Cadastrar aula",
         method: "post",
-        url: "/aulas/adicionar"
+        url: "/aulas/adicionar",
+        runAfterSucess: () => { this.lessonService.getAllLessons(); this.lessonService.getYourLessons(); },
       },
     });
   }
 
-  login(){
+  login() {
     this.router.navigate(["/login"]);
   }
 
-  logout(){
+  logout() {
     const dialogRef = this.dialog.open(DialogConfirmation, {
       data: {
         dialog: "deslogar",
@@ -64,17 +70,17 @@ export class Header {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result == true){
+      if (result == true) {
         this.http.post("/logout", null).subscribe({
           next: (return_api) => {
-            if((typeof return_api.message) == "string"){
+            if ((typeof return_api.message) == "string") {
               this.toast.success(return_api.message);
             }
 
             this.roleService.check();
           },
           error: (error) => {
-            if(error.error.message != null){
+            if (error.error.message != null) {
               this.toast.error(error.error.message);
             }
           }

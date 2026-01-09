@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,9 +10,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatButtonModule } from '@angular/material/button';
 import { Http } from '@src/app/service/http.service';
 import { HotToastService } from '@ngxpert/hot-toast';
-import { RoleService } from '@src/app/service/role.service';
 import { Router } from '@angular/router';
-import { LessonService } from '@src/app/service/lesson.service';
 
 @Component({
   selector: 'dialog-form',
@@ -22,67 +20,80 @@ import { LessonService } from '@src/app/service/lesson.service';
   styleUrl: './dialog-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DialogForm{
+
+export class DialogForm implements AfterViewInit {
   public url: string = "";
   public method: string = "";
   public title: string = "";
-  public extra: { text: string, method: string, url: string } | undefined = undefined;
-  public dialog: Array<{ label: string, name: string; type: string }> = [];
+  public dialog: Array<{ id: string, label: string, name: string; type: string, default: string | null }> = [];
   public formValue: { [key: string]: any } = {};
+  private oldLengthTime: number = 0;
+  private oldLengthDate: number = 0;
+  private runAfterSucess: any = null;
 
-  constructor(private http: Http, private router: Router, private lessonService: LessonService, private toast: HotToastService, @Inject(MAT_DIALOG_DATA) public data: any){
+  constructor(private http: Http, private router: Router, private toast: HotToastService, @Inject(MAT_DIALOG_DATA) public data: any) {
     this.dialog = this.data.dialog;
     this.method = this.data.method;
     this.url = this.data.url;
     this.title = this.data.title;
-    this.extra = this.data.extra;
+    this.runAfterSucess = this.data.runAfterSucess;
   }
 
-  formSubmit(){
-    if(this.formValue["time"] && this.formValue["date"]){
-      const date = new Date(this.formValue["date"].getFullYear(), this.formValue["date"].getMonth(), this.formValue["date"].getDate(), this.formValue["time"].getHours(), this.formValue["time"].getMinutes());
+  formSubmit() {
+    if (this.formValue["time"] && this.formValue["date"]) {
+      let date = this.formValue["date"].split("/");
+      date = date[1] + "/" + date[0] + "/" + date[2];
+      date = new Date(date + " " + this.formValue["time"]);
       this.formValue["timestamp"] = Date.parse(date.toString());
+
+      if (!this.formValue["timestamp"] || this.formValue["date"].length < 10 || this.formValue["time"].length < 5) {
+        this.toast.error("Data e/ou hora estão inválidos");
+        return;
+      }
+      console.error("O foi ajustado para: ")
+      console.error(this.formValue["timestamp"]);
+    }
+    else {
+      this.toast.error("Não foi enviado a data e/ou hora");
     }
 
-    if(this.method == "post"){
+    if (this.method == "post") {
       this.http.post(this.url, this.formValue).subscribe({
         next: (return_api: ReturnApi) => {
-          if(return_api?.message != null){
+          if (return_api?.message != null) {
             this.toast.success(return_api.message);
           }
 
-          if(return_api?.redirect != null){
+          if (return_api?.redirect != null) {
             this.router.navigate([return_api.redirect]);
           }
 
-          this.lessonService.getAllLessons();
-          this.lessonService.getYourLessons();
+          this.runAfterSucess();
         },
         error: (error) => {
           console.log(error);
-          if(error.error.message != null){
+          if (error.error.message != null) {
             this.toast.error(error.error.message);
           }
         }
       });
     }
-    else if(this.method == "put"){
+    else if (this.method == "put") {
       this.http.put(this.url, this.formValue).subscribe({
         next: (return_api: ReturnApi) => {
-          if(return_api?.message != null){
+          if (return_api?.message != null) {
             this.toast.success(return_api.message);
           }
 
-          if(return_api?.redirect != null){
+          if (return_api?.redirect != null) {
             this.router.navigate([return_api.redirect]);
           }
 
-          this.lessonService.getAllLessons();
-          this.lessonService.getYourLessons();
+          this.runAfterSucess();
         },
         error: (error) => {
           console.log(error);
-          if(error.error.message != null){
+          if (error.error.message != null) {
             this.toast.error(error.error.message);
           }
         }
@@ -90,31 +101,59 @@ export class DialogForm{
     }
   }
 
-  actionExtra(){
-    if(this.extra?.method == "delete"){
-      this.http.delete(this.extra?.url).subscribe({
-        next: (return_api: ReturnApi) => {
-          if(return_api?.message != null){
-            this.toast.success(return_api.message);
-          }
+  correctDate(nameElement: string) {
+    const element: any = document.getElementById(nameElement);
+    const value: string | null = element.value;
 
-          if(return_api?.redirect != null){
-            this.router.navigate([return_api.redirect]);
-          }
-
-          this.lessonService.getAllLessons();
-          this.lessonService.getYourLessons();
-        },
-        error: (error) => {
-          console.log(error);
-          if(error.error.message != null){
-            this.toast.error(error.error.message);
-          }
-        }
-      });
+    if (!value) {
+      return;
     }
-    this.extra == undefined;
+
+    if ((this.oldLengthDate < value?.length) && (value?.length == 2 || value?.length == 5)) {
+      element.value = value + "/";
+    }
+    else if (value.length == 3 && value[2] != "/") {
+      let newValue = value.split("");
+      element.value = `${newValue[0]}${newValue[1]}/${newValue[2]}`;
+    }
+    else if (value.length == 6 && value[5] != "/") {
+      let newValue = value.split("");
+      element.value = `${newValue[0]}${newValue[1]}${newValue[2]}${newValue[3]}${newValue[4]}/${newValue[4]}`;
+    }
+
+    this.oldLengthDate = value.length;
+  }
+
+  correctTime(nameElement: string) {
+    console.log("Chamou time");
+    const element: any = document.getElementById(nameElement);
+    const value: string | null = element.value;
+
+    if (!value) {
+      return;
+    }
+
+    console.log(value?.length);
+    console.log(this.oldLengthTime)
+
+    if ((this.oldLengthTime < value?.length) && (value?.length == 2)) {
+      element.value = value + ":";
+    }
+    else if (value.length == 3 && value[2] != ":") {
+      let newValue = value.split("");
+      element.value = `${newValue[0]}${newValue[1]}:${newValue[2]}`;
+    }
+
+    this.oldLengthTime = value.length;
   }
 
   @Input() component!: any;
+
+  ngAfterViewInit() {
+    let elements = [...this.dialog];
+    elements = elements.reverse();
+    elements.forEach(element => {
+      this.formValue[element.name] = element.default;
+    })
+  }
 }

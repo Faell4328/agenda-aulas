@@ -5,11 +5,19 @@ namespace App\Controller;
 use App\Tools\Validation;
 
 class Lesson{
-    public function listLessons(){
-        $lesson_id = (isset($_GET["id"])) ? $_GET["id"] : null;
+    public function listLessons($user_information){
+        $validation = new Validation;
+        $lesson_id = 0;
+
+        if(isset($_GET["id"]) && $_GET["id"] == ""){
+          $lesson_id = "sauble";
+        }
+        else if(isset($_GET["id"])){
+          $lesson_id = $_GET["id"];
+        }
 
         $service = new \App\Service\Lesson;
-        $return_service = $service -> listLessons($lesson_id);
+        $return_service = $service -> listLessons($lesson_id, $user_information);
 
         new \App\Controller\SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }

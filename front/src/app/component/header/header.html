@@ -2,6 +2,7 @@
     <a routerLink="/">
         <img id="logo" src="/logo.png" />
     </a>
+
     <div style="display: flex; align-items: center;">
         <button *ngIf="roleService.role() === 'teacher'" (click)="addLesson()">
             <img id="plus" src="/plus.svg" />

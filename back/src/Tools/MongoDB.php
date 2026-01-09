@@ -192,6 +192,13 @@ class MongoDB{
         $this->collection -> insertOne(["id_student" => $id_student, "id_lesson" => $id_lesson]);
     }
 
+    public function isJoinLesson($lesson_id, $student_id){
+        $lesson_id = new ObjectId($lesson_id);
+        $student_id= new ObjectId($student_id);
+        $this -> chooseCollection("join_lesson");
+        return ($this->collection -> countDocuments(["id_student" => $student_id, "id_lesson" => $lesson_id]) > 0) ? true : false;
+    }
+
     public function leaveLesson($id_lesson, $id_student, $current_quantity){
         $id_lesson = new ObjectId($id_lesson);
         $this -> chooseCollection("lessons");
