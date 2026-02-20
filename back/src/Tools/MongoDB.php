@@ -162,8 +162,13 @@ class MongoDB{
     public function updateLesson($name, $timestamp_lesson_start, $timestamp_lesson_finish, $quantity){
         $id = new ObjectId($_GET["id"]);
 
+        $return_lesson = $this -> listOfSpecificLessons($_GET["id"]);
+        if($return_lesson["current_quantity"] > $quantity){
+            throw new \Exception("A quantidade máxima não pode ser menor que a quantidade atual de alunos inscritos");
+        }
+
         $this -> chooseCollection("lessons");
-        $this->collection -> updateOne(["_id" => $id], ['$set' => ["name" => $name, "timestamp_lesson_start" => $timestamp_lesson_start, "timestamp_lesson_finish" => $timestamp_lesson_finish, "current_quantity" => 0, "max_quantity" => (int) $quantity]]);
+        $this->collection -> updateOne(["_id" => $id], ['$set' => ["name" => $name, "timestamp_lesson_start" => $timestamp_lesson_start, "timestamp_lesson_finish" => $timestamp_lesson_finish, "max_quantity" => (int) $quantity]]);
     }
 
     public function deleteLesson($id_lesson){
@@ -171,6 +176,8 @@ class MongoDB{
 
         $this -> chooseCollection("lessons");
         $this->collection -> deleteOne(["_id" => $id]);
+
+        $this -> removeAllStudentsFromLesson($id_lesson);
     }
 
     # ------------------------
@@ -206,6 +213,12 @@ class MongoDB{
 
         $this -> chooseCollection("join_lesson");
         $this->collection -> deleteOne(["id_student" => $id_student, "id_lesson" => $id_lesson]);
+    }
+
+    public function removeAllStudentsFromLesson($lesson_id){
+        $lesson_id = new ObjectId($lesson_id);
+        $this -> chooseCollection("join_lesson");
+        $this->collection -> deleteMany(["id_lesson" => $lesson_id]);
     }
 }
 
