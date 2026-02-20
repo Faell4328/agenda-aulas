@@ -29,13 +29,9 @@ export class Index implements OnInit {
 
   getAllLessons() {
     this.http.get("/aulas").subscribe({
-      next: (return_api: ReturnApi) => {
-        if (return_api.data !== null) {
-        }
-      },
       error: error => {
         if (error.error.message != null) {
-          this.toast.success(error.error.message);
+          this.toast.error(error.error.message);
         }
 
         if (error.errror.redirect !== null) {

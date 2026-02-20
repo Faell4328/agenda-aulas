@@ -8,11 +8,14 @@ class Lesson{
     public function listLessons($lesson_id, $user_information){
         $mongodb = new MongoDB();
         $data = [];
-        
+
         try{
           if($lesson_id){
-            $is_join_lesson = $mongodb -> isJoinLesson($lesson_id, $user_information["_id"]);
+            if($user_information){
+                $is_join_lesson = $mongodb -> isJoinLesson($lesson_id, $user_information["_id"]);
+            }
             $lesson = $mongodb -> listOfSpecificLessons($lesson_id);
+
             if($lesson){
               $students = $mongodb -> listEnrolledStudents($lesson_id);
               $listStudents =[];
@@ -53,9 +56,6 @@ class Lesson{
                         "max_quantity" => $lesson["max_quantity"],
                     ]);
                 }
-            }
-            else{
-              throw new \Exception("Aula informada não foi encontrada");
             }
           }
         }

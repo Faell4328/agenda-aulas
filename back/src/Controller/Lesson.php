@@ -7,14 +7,8 @@ use App\Tools\Validation;
 class Lesson{
     public function listLessons($user_information){
         $validation = new Validation;
-        $lesson_id = 0;
 
-        if(isset($_GET["id"]) && $_GET["id"] == ""){
-          $lesson_id = "sauble";
-        }
-        else if(isset($_GET["id"])){
-          $lesson_id = $_GET["id"];
-        }
+        $lesson_id = $_GET["id"] ?? null;
 
         $service = new \App\Service\Lesson;
         $return_service = $service -> listLessons($lesson_id, $user_information);
