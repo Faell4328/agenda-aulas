@@ -14,6 +14,9 @@ class Lesson{
             if($user_information){
                 $is_join_lesson = $mongodb -> isJoinLesson($lesson_id, $user_information["_id"]);
             }
+            else{
+                $is_join_lesson = false;
+            }
             $lesson = $mongodb -> listOfSpecificLessons($lesson_id);
 
             if($lesson){
