@@ -2,25 +2,29 @@
 
 namespace App\Service;
 
-use App\Tools\MongoDB;
+use App\Model\Lesson as LessonModel;
+use App\Model\JoinLesson as JoinLessonModel;
+use App\Model\User as UserModel;
 
 class Lesson{
     public function listLessons($lesson_id, $user_information){
-        $mongodb = new MongoDB();
+        $lessonModel = new LessonModel();
+        $joinLessonModel = new JoinLessonModel();
+        $userModel = new UserModel();
         $data = [];
 
         try{
           if($lesson_id){
             if($user_information){
-                $is_join_lesson = $mongodb -> isJoinLesson($lesson_id, $user_information["_id"]);
+                $is_join_lesson = $joinLessonModel -> checkIfYouAreAlreadyJoin($user_information["_id"], $lesson_id);
             }
             else{
                 $is_join_lesson = false;
             }
-            $lesson = $mongodb -> listOfSpecificLessons($lesson_id);
+            $lesson = $lessonModel -> findById($lesson_id);
 
             if($lesson){
-              $students = $mongodb -> listEnrolledStudents($lesson_id);
+              $students = $lessonModel -> listEnrolledStudents($lesson_id);
               $listStudents =[];
               if($students){
                 foreach($students as $student){
@@ -28,7 +32,7 @@ class Lesson{
                 }
               }
 
-              $teacher = $mongodb -> getTeacherOfLesson($lesson["teacher_id"]);
+              $teacher = $userModel -> getTeacherById($lesson["teacher_id"]);
 
               array_push($data, [
                   "id" => (string) $lesson["_id"],
@@ -47,7 +51,7 @@ class Lesson{
             }
           }
           else{
-            $lessons = $mongodb -> listAllLessons();
+            $lessons = $lessonModel -> listAll();
             if($lessons){
                 foreach($lessons as $lesson){
                     array_push($data, [
@@ -74,11 +78,11 @@ class Lesson{
     }
 
     public function listCreatedLessons($user_id){
-        $mongodb = new MongoDB();
+        $lessonModel = new LessonModel();
         $data = [];
 
         try{
-            $your_lessons = $mongodb -> listCreatedLessons($user_id);
+            $your_lessons = $lessonModel -> listCreatedLessons($user_id);
 
             foreach($your_lessons as $lesson){
                 array_push($data, [
@@ -101,11 +105,11 @@ class Lesson{
     }
 
     public function listEnrolledLessons($user_id){
-        $mongodb = new MongoDB();
+        $lessonModel = new LessonModel();
         $data = [];
 
         try{
-            $your_lessons = $mongodb -> listEnrolledLessons($user_id);
+            $your_lessons = $lessonModel -> listEnrolledLessons($user_id);
 
             foreach($your_lessons as $lesson){
                 array_push($data, [
@@ -129,13 +133,13 @@ class Lesson{
     }
 
     public function createLesson($name, $timestamp_lesson_start, $quantity, $teacher_id){
-        $mongodb = new MongoDB();
+        $lessonModel = new LessonModel();
 
         // adding 50 minutes to the current time
         $timestamp_lesson_finish = $timestamp_lesson_start+(3000*1000);
 
         try{
-            $mongodb -> createLesson($name, $timestamp_lesson_start, $timestamp_lesson_finish, $quantity, $teacher_id);
+            $lessonModel -> create($name, $timestamp_lesson_start, $timestamp_lesson_finish, $quantity, $teacher_id);
         }
         catch(\Exception $ex){
             if($ex -> getPrevious() != ""){
@@ -146,14 +150,14 @@ class Lesson{
         return ["status" => 201, "message" => "Aula cadastrada", "redirect" => null, "data" => null];
     }
 
-    public function updateLesson($name, $timestamp_lesson_start, $quantity){
-        $mongodb = new MongoDB();
+    public function updateLesson($lesson_id, $name, $timestamp_lesson_start, $quantity){
+        $lessonModel = new LessonModel();
 
         $timestamp_lesson_finish = $timestamp_lesson_start+(3000*1000);
 
         try{
-            if($mongodb -> checkLessonExist($_GET["id"]) == true){
-                $mongodb -> updateLesson($name, $timestamp_lesson_start, $timestamp_lesson_finish, $quantity);
+            if($lessonModel -> exists($lesson_id) == true){
+                $lessonModel -> update($lesson_id, $name, $timestamp_lesson_start, $timestamp_lesson_finish, $quantity);
             }
             else{
                 throw new \Exception("Aula não existe");
@@ -172,11 +176,11 @@ class Lesson{
     }
 
     public function deleteLesson(){
-        $mongodb = new MongoDB();
+        $lessonModel = new LessonModel();
 
         try{
-            if($mongodb -> checkLessonExist($_GET["id"]) == true){
-                $mongodb -> deleteLesson($_GET["id"]);
+            if($lessonModel -> exists($_GET["id"]) == true){
+                $lessonModel -> delete($_GET["id"]);
             }
             else{
                 throw new \Exception("Aula não existe");
@@ -195,16 +199,17 @@ class Lesson{
     }
 
     public function joinLesson($user_id){
-        $mongodb = new MongoDB();
+        $joinModel = new JoinLessonModel();
+        $lessonModel = new LessonModel();
 
         try{
-            if($mongodb -> checkIfYouAreAlreadyJoin($user_id, $_GET["id"]) !== 0){
+            if($joinModel -> checkIfYouAreAlreadyJoin($user_id, $_GET["id"]) !== 0){
                 throw new \Exception("Já está ingressado na aula");
             }
 
-            if($mongodb -> checkLessonExist($_GET["id"]) == true){
-                $specific_lesson = $mongodb -> listOfSpecificLessons($_GET["id"]);
-                if($specific_lesson -> current_quantity >= $specific_lesson -> max_quantity ){
+            if($lessonModel -> exists($_GET["id"]) == true){
+                $specific_lesson = $lessonModel -> findById($_GET["id"]);
+                if($specific_lesson['current_quantity'] >= $specific_lesson['max_quantity']){
                     throw new \Exception("Aula já está cheia");
                 }
             }
@@ -212,7 +217,7 @@ class Lesson{
                 throw new \Exception("Aula não encontrada");
             }
 
-            $mongodb -> joinLesson($_GET["id"], $user_id, $specific_lesson -> current_quantity);
+            $joinModel -> joinLesson($_GET["id"], $user_id);
         }
         catch(\Exception $ex){
             if($ex -> getPrevious() == ""){
@@ -228,21 +233,22 @@ class Lesson{
     }
 
     public function leaveLesson($user_id){
-        $mongodb = new MongoDB();
+        $joinModel = new JoinLessonModel();
+        $lessonModel = new LessonModel();
 
         try{
-            if($mongodb -> checkIfYouAreAlreadyJoin($user_id, $_GET["id"]) != 1){
+            if($joinModel -> checkIfYouAreAlreadyJoin($user_id, $_GET["id"]) == 0){
                 throw new \Exception("Não está ingressado na aula");
             }
 
-            if($mongodb -> checkLessonExist($_GET["id"]) == true){
-                $specific_lesson = $mongodb -> listOfSpecificLessons($_GET["id"]);
+            if($lessonModel -> exists($_GET["id"]) == true){
+                $specific_lesson = $lessonModel -> findById($_GET["id"]);
             }
             else{
                 throw new \Exception("Aula não encontrada");
             }
 
-            $mongodb -> leaveLesson($_GET["id"], $user_id, $specific_lesson -> current_quantity);
+            $joinModel -> leaveLesson($_GET["id"], $user_id);
         }
         catch(\Exception $ex){
             if($ex -> getPrevious() == ""){

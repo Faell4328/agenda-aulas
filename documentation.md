@@ -1,4 +1,50 @@
-## Regras
+## Arquitetura
+
+O projeto utiliza uma arquitetura em camadas (Layered Architecture), composta por quatro principais camadas:
+
+- **Controller:** Responsável por receber e tratar as requisições HTTP, coordenando o fluxo entre as camadas e retornando as respostas adequadas.
+- **Service:** Contém a lógica de negócio da aplicação, processando as regras e operações principais antes de interagir com as demais camadas.
+- **Model:** Responsável pela representação e manipulação dos dados da aplicação, geralmente mapeando entidades do banco de dados e centralizando regras de persistência e estrutura dos dados.
+- **Tools:** Reúne utilitários e ferramentas auxiliares, como validações, manipulação de cookies, integração com banco de dados e outras funções de apoio.
+
+---
+
+**Estrutura do projeto**
+
+```
+├─ back/
+│ ├─ .htaccess
+│ ├─ apache2.conf
+│ ├─ composer.json
+│ ├─ Dockerfile
+│ └─ src/
+│   ├─ index.php
+│   ├─ Middleware.php
+│   ├─ Router.php
+│   ├─ Controller/
+│   │ ├─ Auth.php
+│   │ └─ Lesson.php
+│   ├─ Model/
+│   │ ├─ BaseModel.php
+│   │ ├─ JoinLesson.php
+│   │ ├─ Lesson.php
+│   │ ├─ Token.php
+│   │ └─ User.php
+│   ├─ Service/
+│   │ ├─ Auth.php
+│   │ └─ Lesson.php
+│   └─ Tools/
+│     ├─ Cookie.php
+│     ├─ SendingPattern.php
+│     └─ Validation.php
+├─ front/
+│ ├─ public/
+│ └─ src/
+│   ├─ ...
+├─ docker-compose.yml
+├─ README.md
+└─ documentation.md
+```
 
 ## Rotas
 
@@ -12,7 +58,7 @@ As informações tem que ser enviado no formato JSON para o back end.
 ! Retorna ordenado por timestamp_lesson_start.
 
 `GET /aulas?id=id_aula` - Consultar informações da aula especifica
-! Rotarna nome, data e horas, quantidade inscrita e máxima, nome professor e alunos inscritos.
+! Rotarna nome, data e hora, quantidade inscrita e máxima, nome professor e alunos inscritos.
 
 **Somente usuário não logados:**
 

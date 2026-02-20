@@ -2,17 +2,17 @@
 
 namespace App\Service;
 
-use App\Tools\MongoDB;
+use App\Model\User;
 use App\Tools\Cookie;
 
 class Auth{
     public function logInUser($email, $password){
-        $mongodb = new MongoDB();
+        $userModel = new User();
         $user_information = null;
         $cookie = new Cookie();
 
         try{
-            $user_information = $mongodb -> loginUser($email, $password);
+            $user_information = $userModel -> findByEmailAndPassword($email, $password);
 
             if($user_information){
                 $cookie -> createLoginToken($user_information["_id"]);
@@ -34,11 +34,11 @@ class Auth{
     }
 
     public function registerUser($name, $role, $email, $password){
-        $mongodb = new MongoDB();
+        $userModel = new User();
 
         try{
-            if($mongodb -> checkEmailExist($email) == false){
-                $mongodb -> registerUser($name, $role, $email, $password);
+            if($userModel -> emailExists($email) == false){
+                $userModel -> create($name, $role, $email, $password);
             }
             else{
                 throw new \Exception("Email já cadastrado");
