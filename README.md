@@ -1,5 +1,7 @@
 Um projeto simples desenvolvido para praticar Angular.js e PHP, executado em containers Docker.
 
+O arquivo de design é apenas uma inspiração, não é necessário seguir tudo a risca.
+
 ## Funcionalidades
 
 **Cadastro**
