@@ -8,8 +8,7 @@ use App\Model\User;
 class Cookie
 {
     // Look up a token and return the associated user document or null
-    public function findByToken(string $token)
-    {
+    public function findByToken(string $token){
         $tokenModel = new Token();
         $token_information = $tokenModel->findByToken($token);
 
@@ -25,8 +24,7 @@ class Cookie
         return $userModel->findById($token_information['user_id']);
     }
 
-    public function getUserInformation()
-    {
+    public function getUserInformation(){
         if (!isset($_COOKIE['token'])) {
             return null;
         }
@@ -34,8 +32,7 @@ class Cookie
         return $this->findByToken($_COOKIE['token']);
     }
 
-    public function createLoginToken($user_id)
-    {
+    public function createLoginToken($user_id){
         $tokenModel = new Token();
         $token = bin2hex(random_bytes(32));
         $expiration_date = strtotime('+30 days');
@@ -44,11 +41,10 @@ class Cookie
         setcookie('token', $token, $expiration_date, '/', 'localhost', true, false);
     }
 
-    public function deleteLoginToken($token)
-    {
+    public function deleteLoginToken($token){
         $tokenModel = new Token();
         $tokenModel->deleteLoginToken($token);
-        $expiration_date = strtotime('-30 days');
+        $expiration_date = strtotime('-360 days');
         setcookie('token', '', $expiration_date, '/', 'localhost');
     }
 }

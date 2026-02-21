@@ -7,12 +7,12 @@ use App\Tools\Cookie;
 
 class Auth{
     public function logInUser($email, $password){
-        $userModel = new User();
+        $user_model = new User;
+        $cookie = new Cookie;
         $user_information = null;
-        $cookie = new Cookie();
 
         try{
-            $user_information = $userModel -> findByEmailAndPassword($email, $password);
+            $user_information = $user_model -> findByEmailAndPassword($email, $password);
 
             if($user_information){
                 $cookie -> createLoginToken($user_information["_id"]);
@@ -34,11 +34,11 @@ class Auth{
     }
 
     public function registerUser($name, $role, $email, $password){
-        $userModel = new User();
+        $user_model = new User;
 
         try{
-            if($userModel -> emailExists($email) == false){
-                $userModel -> create($name, $role, $email, $password);
+            if($user_model -> emailExists($email) == false){
+                $user_model -> create($name, $role, $email, $password);
             }
             else{
                 throw new \Exception("Email já cadastrado");
@@ -57,7 +57,7 @@ class Auth{
     }
 
     public function logOut($token){
-        $cookie = new Cookie();
+        $cookie = new Cookie;
 
         try{
             $cookie -> deleteLoginToken($token);

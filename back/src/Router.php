@@ -4,6 +4,9 @@ namespace App;
 
 use App\Middleware;
 use App\Tools\Cookie;
+use App\Tools\SendingPattern;
+use App\Controller\Auth;
+use App\Controller\Lesson;
 
 class Router{
     private $accepted_routes_path_and_methods = [
@@ -29,7 +32,7 @@ class Router{
             $this->route($req_route_path, $req_body_json);
         }
         else{
-            new \App\Tools\SendingPattern(404, "Not Found");
+            new SendingPattern(404, "Not Found");
         }
     }
 
@@ -37,91 +40,77 @@ class Router{
         $middleware = new Middleware();
         $cookie = new Cookie();
 
-        if(isset($_COOKIE["token"])){
-            $user_information = $cookie -> findByToken($_COOKIE["token"]);
-        }
-        else{
-            $user_information = null;
+        $user_information = null;
+
+        if (isset($_COOKIE["token"])) {
+            $user_information = $cookie->findByToken($_COOKIE["token"]);
         }
 
-        if($route == "/"){
-            if(isset($user_information->role)){
-                echo json_encode([
-                    "message" => null,
-                    "redirect" => null,
-                    "data" => $user_information -> role
-                ]);
-            }
-            else{
-                echo json_encode([
-                    "message" => null,
-                    "redirect" => null,
-                    "data" => "off"
-                ]);
-            }
+        if ($route == "/") {
+            new SendingPattern(200, null, null, $user_information->role ?? "off");
         }
         else if($route == "/cadastrar"){
             $middleware -> routeWithoutLogin($user_information);
             
-            $register_controller = new \App\Controller\Auth();
+            $register_controller = new Auth();
             $register_controller -> registerUser($req_body_json);
         }
         else if($route == "/login"){
             $middleware -> routeWithoutLogin($user_information);
 
-            $login_controller = new \App\Controller\Auth();
+            $login_controller = new Auth();
             $login_controller -> logInUser($req_body_json);
         }
         else if($route == "/logout"){
             $middleware -> routeWithLogin($user_information);
 
-            $loginout_controller = new \App\Controller\Auth();
+            $loginout_controller = new Auth();
             $loginout_controller -> logOut();
         }
         else if($route == "/aulas"){
-            $lesson_controller = new \App\Controller\Lesson();
+            $lesson_controller = new Lesson();
             $lesson_controller -> listLessons($user_information);
         }
         else if($route == "/aulas/cadastradas"){
             $middleware -> routeForTeachersOnly($user_information);
             
-            $lesson_controller = new \App\Controller\Lesson();
+            $lesson_controller = new Lesson();
             $lesson_controller -> listCreatedLessons($user_information -> _id);
         }
         else if($route == "/aulas/ingressadas"){
             $middleware -> routeForStudentOnly($user_information);
             
-            $lesson_controller = new \App\Controller\Lesson();
+            $lesson_controller = new Lesson();
             $lesson_controller -> listEnrolledLessons($user_information -> _id);
         }
         else if($route == "/aulas/adicionar"){
             $middleware -> routeForTeachersOnly($user_information);
             
-            $lesson_controller = new \App\Controller\Lesson();
+            $lesson_controller = new Lesson();
             $lesson_controller -> createLesson($req_body_json, $user_information->_id);
         }
         else if($route == "/aulas/atualizar"){
             $middleware -> routeForTeachersOnly($user_information);
             
-            $lesson_controller = new \App\Controller\Lesson();
+            $lesson_controller = new Lesson();
             $lesson_controller -> updateLesson($req_body_json);
         }
         else if($route == "/aulas/deletar"){
             $middleware -> routeForTeachersOnly($user_information);
             
-            $lesson_controller = new \App\Controller\Lesson();
+            $lesson_controller = new Lesson();
             $lesson_controller -> deleteLesson($req_body_json);
         }
         else if($route == "/aulas/ingressar"){
             $middleware -> routeForStudentOnly($user_information);
             
-            $lesson_controller = new \App\Controller\Lesson();
+            $lesson_controller = new Lesson();
             $lesson_controller -> joinLesson($user_information);
         }
         else if($route == "/aulas/sair"){
             $middleware -> routeForStudentOnly($user_information);
             
-            $lesson_controller = new \App\Controller\Lesson();
+            $lesson_controller = new Lesson();
             $lesson_controller -> leaveLesson($user_information);
         }
     }

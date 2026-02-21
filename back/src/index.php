@@ -26,17 +26,15 @@ if ($parsed !== null && $parsed !== false) {
 }
 
 $req_body_json = null;
-$rawInput = file_get_contents('php://input');
-if ($rawInput === false) {
+$raw_input = file_get_contents('php://input');
+if ($raw_input === false) {
     new SendingPattern(500, 'Erro ao ler os dados enviados');
-    return;
 }
 
-if ($rawInput !== null && $rawInput !== '') {
-    $req_body_json = json_decode($rawInput);
+if ($raw_input !== null && $raw_input !== '') {
+    $req_body_json = json_decode($raw_input);
     if (json_last_error() !== JSON_ERROR_NONE) {
         new SendingPattern(400, 'Erro ao decodificar os dados enviados');
-        return;
     }
 }
 

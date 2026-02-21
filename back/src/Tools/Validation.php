@@ -8,23 +8,23 @@ class Validation{
     public function queryExists($query){
         if(!isset($_GET[$query])){
             new SendingPattern(400, "Campo \"$query\" não enviado");
+            exit;
         }
         else if($_GET[$query] == ""){
             new SendingPattern(400, "Campo \"$query\" está vazio");
+            exit;
         }
-
-        exit;
     }
 
     public function fieldExists($body_json, $name_field){
         if(!isset($body_json->$name_field)){
             new SendingPattern(400, "Campo \"$name_field\" não enviados");
+            exit;
         }
         else if($body_json->$name_field == ""){
             new SendingPattern(400, "Campo \"$name_field\" está vazio");
+            exit;
         }
-
-        exit;
     }
 }
 

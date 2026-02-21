@@ -8,9 +8,9 @@ use App\Model\User as UserModel;
 
 class Lesson{
     public function listLessons($lesson_id, $user_information){
-        $lessonModel = new LessonModel();
-        $joinLessonModel = new JoinLessonModel();
-        $userModel = new UserModel();
+        $lessonModel = new LessonModel;
+        $joinLessonModel = new JoinLessonModel;
+        $userModel = new UserModel;
         $data = [];
 
         try{
@@ -78,7 +78,7 @@ class Lesson{
     }
 
     public function listCreatedLessons($user_id){
-        $lessonModel = new LessonModel();
+        $lessonModel = new LessonModel;
         $data = [];
 
         try{
@@ -105,7 +105,7 @@ class Lesson{
     }
 
     public function listEnrolledLessons($user_id){
-        $lessonModel = new LessonModel();
+        $lessonModel = new LessonModel;
         $data = [];
 
         try{
@@ -133,7 +133,7 @@ class Lesson{
     }
 
     public function createLesson($name, $timestamp_lesson_start, $quantity, $teacher_id){
-        $lessonModel = new LessonModel();
+        $lessonModel = new LessonModel;
 
         // adding 50 minutes to the current time
         $timestamp_lesson_finish = $timestamp_lesson_start+(3000*1000);
@@ -151,7 +151,7 @@ class Lesson{
     }
 
     public function updateLesson($lesson_id, $name, $timestamp_lesson_start, $quantity){
-        $lessonModel = new LessonModel();
+        $lessonModel = new LessonModel;
 
         $timestamp_lesson_finish = $timestamp_lesson_start+(3000*1000);
 
@@ -176,7 +176,7 @@ class Lesson{
     }
 
     public function deleteLesson(){
-        $lessonModel = new LessonModel();
+        $lessonModel = new LessonModel;
 
         try{
             if($lessonModel -> exists($_GET["id"]) == true){
@@ -199,8 +199,8 @@ class Lesson{
     }
 
     public function joinLesson($user_id){
-        $joinModel = new JoinLessonModel();
-        $lessonModel = new LessonModel();
+        $joinModel = new JoinLessonModel;
+        $lessonModel = new LessonModel;
 
         try{
             if($joinModel -> checkIfYouAreAlreadyJoin($user_id, $_GET["id"]) !== 0){
@@ -233,8 +233,8 @@ class Lesson{
     }
 
     public function leaveLesson($user_id){
-        $joinModel = new JoinLessonModel();
-        $lessonModel = new LessonModel();
+        $joinModel = new JoinLessonModel;
+        $lessonModel = new LessonModel;
 
         try{
             if($joinModel -> checkIfYouAreAlreadyJoin($user_id, $_GET["id"]) == 0){
