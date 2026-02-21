@@ -3,9 +3,12 @@
         <img id="logo" src="/logo.png" />
     </a>
 
+    <h1>Fevereiro 2026</h1>
+
     <div style="display: flex; align-items: center;">
-        <button *ngIf="roleService.role() === 'teacher'" (click)="addLesson()">
+        <button style="display: flex; width: auto; height: 50px; padding: 20px; border-radius: 10px; background-color: #638cd9;" *ngIf="roleService.role() === 'teacher'" (click)="addLesson()">
             <img id="plus" src="/plus.svg" />
+            <span class="text-menu">Nova Aula</span>
         </button>
 
         <button *ngIf="roleService.role() === 'off'"(click)="login()">
