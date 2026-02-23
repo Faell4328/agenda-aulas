@@ -19,7 +19,7 @@ class Lesson{
         $data = [];
 
         try{
-            $lessons = $lessonModel -> listAll($month, $timestamp_start_month, $timestamp_end_month);
+            $lessons = $lessonModel -> listAll($timestamp_start_month, $timestamp_end_month);
             //print_r($lessons);
             //echo($return[0]['teacher'][0]['name']);
             //echo($lessons[0]["student_names"][0]["name"]);

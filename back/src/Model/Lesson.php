@@ -17,7 +17,7 @@ class Lesson extends BaseModel
         return ($col->countDocuments(['_id' => $this->toObjectId($lesson_id)]) > 0);
     }
 
-    public function listAll(string $month, int $timestamp_start_month, int $timestamp_end_month): array{
+    public function listAll(int $timestamp_start_month, int $timestamp_end_month): array{
         $col = $this->collection('lessons');
 
         return iterator_to_array($col->aggregate([

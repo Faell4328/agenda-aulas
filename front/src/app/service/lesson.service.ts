@@ -29,6 +29,7 @@ export class LessonService {
     this.http.get("/aulas").subscribe({
       next: (return_api: ReturnApi) => {
         if (return_api.data !== null) {
+          this.all_lessons = [];
           this.all_lessons = return_api.data;
           console.log("all")
           console.log(return_api.data);
@@ -57,6 +58,7 @@ export class LessonService {
     this.http.get("/aulas/ingressadas").subscribe({
       next: (return_api: ReturnApi) => {
         if (return_api.data != null) {
+          this.your_lessons = [];
           this.your_lessons = return_api.data;
           console.log("your")
           console.log(return_api.data);
@@ -155,7 +157,6 @@ export class LessonService {
     }
 
     // Preparation of the weeks
-    this.mes_atual = 3;
     let last_day_of_last_month = new Date(this.ano_atual, this.mes_atual - 1, 0).getDate();
     let day_of_weeks = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
     let first_day_of_the_week = new Date(this.ano_atual, this.mes_atual - 1, 1).getDay();
@@ -297,6 +298,9 @@ export class LessonService {
     //   separe_days_of_week.push(days_of_week.slice((cont * 7), ((cont +1)*7)));
     // }
 
+    this.req_all = false;
+    this.req_your = false;
+
     console.log(days_of_week);
     this.elements_information.set(days_of_week);
     this.loadMenu(this.current_day);
@@ -304,8 +308,8 @@ export class LessonService {
 
   public lesson_of_the_day: any = [];
   public loadMenu(day: number){
-    console.log("Menu carregado para o dia " + day);
     const lessons = this.all_lessons.filter((lesson: any) => {
+      console.log(`${lesson.timestamp_lesson_start} - ${day}`)
       return new Date(lesson.timestamp_lesson_start).getDate() === day;
     });
 
