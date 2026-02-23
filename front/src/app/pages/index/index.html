@@ -1,8 +1,56 @@
-<div id="container">
-    <div class="datas" *ngFor="let element_information of lessonService.elements_information()">
+<div style="display: flex; justify-content: space-between; width: 90%; margin: auto; padding: 30px;">
+    <div id="container-calendar">
+        <div id="calendar">
+            <div style="border-radius: 10px 0px 0px 0px" class="day-of-the-week">Dom</div>
+            <div class="day-of-the-week">Seg</div>
+            <div class="day-of-the-week">Ter</div>
+            <div class="day-of-the-week">Qua</div>
+            <div class="day-of-the-week">Qui</div>
+            <div class="day-of-the-week">Sex</div>
+            <div style="border-radius: 0px 10px 0px 0px" class="day-of-the-week">Sáb</div>
+            <div id="day-{{element_information.day}}" class="datas {{(lessonService.current_day == element_information.day) ? 'lesson-selected' : ''}}" (click)="lessonService.selectLesson(element_information.day)" style="display: block; position: relative; grid-template-columns: repeat(7, 80px);" *ngFor="let element_information of lessonService.elements_information()">
+                <div style="position: relative;" class="dia">
+                    <p>{{(element_information.day < 10) ? ('0' + element_information.day) : element_information.day}}</p>
+                </div>
+                <div style="position: absolute; top: 10px; right: 5px;" class="lesson" *ngIf="element_information.lesson == true"></div>
+            </div>
+        </div>
+    </div>
+    <div id="container-menu">
+        <h2>Detalhes da aula</h2>
+        <br /><hr /><br />
+        <p *ngIf="lessonService.lesson_of_the_day.length === 0">Não tem lição nesse dia</p>
+        <div *ngIf="lessonService.lesson_of_the_day.length > 0">
+            <div *ngFor="let lesson of lessonService.lesson_of_the_day">
+                <p>{{lesson.id}}</p>
+                <p>{{lesson.name}}</p>
+                <p>Quantidade ingressada: {{lesson.current_quantity}}</p>
+                <p>Quantidade máxima: {{lesson.max_quantity}}</p>
+                <p>Professor: {{lesson.teacher}}</p>
+                <p>Horário de início: {{lesson.timestamp_lesson_start | date:'shortTime'}}</p>
+                <p>Horário de término: {{lesson.timestamp_lesson_finish | date:'shortTime'}}</p>
+                <p>Aluno ingressados: {{lesson.students.join(', ')}}</p>
+                <p>É ingressado: {{lesson.is_ingressed ? 'Sim' : 'Não'}}</p>
+                <hr />
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- <div id="container">
+    <div style="border-radius: 10px 0px 0px 0px" class="day-of-the-week">Seg</div>
+    <div class="day-of-the-week">Ter</div>
+    <div class="day-of-the-week">Qua</div>
+    <div class="day-of-the-week">Qui</div>
+    <div class="day-of-the-week">Sex</div>
+    <div class="day-of-the-week">Sáb</div>
+    <div style="border-radius: 0px 10px 0px 0px" class="day-of-the-week">Dom</div>
+    <div class="datas" style="display: block; grid-template-columns: repeat(7, 80px);" *ngFor="let element_information of lessonService.elements_information()">
         <span class="status-ok" *ngIf="element_information.lessons !== undefined">Tem aula</span>
         <span class="status-no" *ngIf="element_information.lessons == undefined">Não tem aula</span>
         <div class="dia">{{element_information.day}}</div>
+        <div class="dia">{{element_information.day_of_the_week}}</div>
             <div style="max-height: 70%; overflow-x: auto; cursor: pointer">
                 <div *ngFor="let information of element_information.lessons">
                     <div [attr.data-join]="information.registered ? 'true' : 'false'" id={{information.id}} (click)="clickLesson(information.id)" class="lesson-name">
@@ -12,4 +60,4 @@
                 </div>
             </div>
     </div>
-</div>
+</div> -->

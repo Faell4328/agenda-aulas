@@ -6,10 +6,13 @@ button{
 }
 
 #header{
+    width: 90%;
     background-color: #f9f8fc;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin: auto;
+    border-radius: 20px;
 
     border: 1px solid #eee;
     padding: 20px;
