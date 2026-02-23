@@ -162,16 +162,11 @@ export class LessonService {
     let last_day_of_month = new Date(this.ano_atual, this.mes_atual, 0).getDate();
 
     let days_of_week = [];
-    let cont_lessons = 0;
 
     for(var day = 0; day < last_day_of_month; day++) {
       if(day == 0){
 
-        let lesson = false;
-        if((day+1) == new Date(this.all_lessons[cont_lessons]?.timestamp_lesson_start).getDate()) {
-          lesson = true;
-          cont_lessons++;
-        }
+        const lesson = this.all_lessons.some((l: any) => { const d = new Date(l?.timestamp_lesson_start); return d.getDate() === (day+1) && (d.getMonth() + 1) === this.mes_atual && d.getFullYear() === this.ano_atual; });
 
         // segunda
         if(first_day_of_the_week == 1) {
@@ -226,11 +221,7 @@ export class LessonService {
       // Parei aqui 
       else if((day+1) == last_day_of_month){
 
-        let lesson = false;
-        if((day+1) == new Date(this.all_lessons[cont_lessons]?.timestamp_lesson_start).getDate()) {
-          lesson = true;
-          cont_lessons++;
-        }
+        const lesson = this.all_lessons.some((l: any) => { const d = new Date(l?.timestamp_lesson_start); return d.getDate() === (day+1) && (d.getMonth() + 1) === this.mes_atual && d.getFullYear() === this.ano_atual; });
 
         // Domingo
         if(((first_day_of_the_week + day) % 7) == 0) {
@@ -283,11 +274,7 @@ export class LessonService {
         }
       }
       else{
-        let lesson = false;
-        if((day+1) == new Date(this.all_lessons[cont_lessons]?.timestamp_lesson_start).getDate()) {
-          lesson = true;
-          cont_lessons++;
-        }
+        const lesson = this.all_lessons.some((l: any) => { const d = new Date(l?.timestamp_lesson_start); return d.getDate() === (day+1) && (d.getMonth() + 1) === this.mes_atual && d.getFullYear() === this.ano_atual; });
         days_of_week.push({ "day": (day+1) , "day_of_the_week": day_of_weeks[(first_day_of_the_week+day) % 7], current_month: true, lesson });
       }
     }
