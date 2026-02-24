@@ -23,6 +23,7 @@
         <div *ngIf="lessonService.lesson_of_the_day.length > 0">
             <div style="position: relative; margin-bottom: 20px;" *ngFor="let lesson of lessonService.lesson_of_the_day">
                 <div style="position: absolute; top: -8px; right: 0px; background-color: #92cfb5; padding: 5px; border-radius: 30px; margin-bottom: 10px;" *ngIf="lesson.is_ingressed">Ingressado</div>
+                <div style="position: absolute; top: -8px; right: 0px; background-color: #cf9292; padding: 5px; border-radius: 30px; margin-bottom: 10px;" *ngIf="(!lesson.is_ingressed && (lesson.current_quantity >= lesson.max_quantity))">Aula cheia</div>
                 <h3 style="text-align: center; margin-bottom: 20px;">Aula: {{lesson.name}}</h3>
                 <div style="display: flex; justify-content: space-around; gap: 20px;">
                     <div>
@@ -37,8 +38,8 @@
                     </div>
                 </div>
                 <div style="display: flex; justify-content: space-around; gap: 20px;">
-                    <button (click)="joinLesson(lesson.id)" style="margin: 10px; padding: 20px; background-color: #5c85d7; border-radius: 10px;" mat-raised-button *ngIf="(lesson.is_ingressed == undefined)">Ingressar</button>
-                    <button (click)="leaveLesson(lesson.id)" style="margin: 10px; padding: 20px; background-color: #d75c5c; border-radius: 10px;" mat-raised-button *ngIf="(lesson.is_ingressed == true)">Desingressar</button>
+                    <button (click)="joinLesson(lesson.id)" style="margin: 10px; padding: 20px; background-color: #5c85d7; border-radius: 10px;" mat-raised-button *ngIf="(lesson.is_ingressed == undefined) && (roleService.role() == 'student')">Ingressar</button>
+                    <button (click)="leaveLesson(lesson.id)" style="margin: 10px; padding: 20px; background-color: #d75c5c; border-radius: 10px;" mat-raised-button *ngIf="((lesson.is_ingressed == true) && (roleService.role() == 'student'))">Desingressar</button>
                 </div>
                 <hr style="margin-bottom: 30px;" />
             </div>
