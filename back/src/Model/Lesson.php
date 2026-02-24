@@ -22,8 +22,8 @@ class Lesson extends BaseModel
 
         return iterator_to_array($col->aggregate([
             ['$match' => [
-                'timestamp_lesson_start' => ['$gt' => $timestamp_start_month],
-                'timestamp_lesson_finish' => ['$lt' => $timestamp_end_month]
+                'timestamp_lesson_start' => ['$gte' => $timestamp_start_month],
+                'timestamp_lesson_finish' => ['$lte' => $timestamp_end_month]
             ]],
             ['$lookup' => [
                 'from' => 'user',

@@ -73,31 +73,6 @@ export class Lesson implements OnInit {
   }
 
   leaveLesson() {
-    const dialogRef = this.dialog.open(DialogConfirmation, {
-      data: {
-        text: "Deseja realmente sair a aula?",
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result == true) {
-        this.http.delete(`/aulas/sair?id=${this.lessonId}`).subscribe({
-          next: (return_api) => {
-            if (return_api.message) {
-              this.toast.success(return_api.message);
-              this.getSpecificLesson();
-              this.lessonService.getAllLessons();
-              this.lessonService.getYourLessons();
-            }
-          },
-          error: (error) => {
-            if ((typeof error.error.message) == "string") {
-              this.toast.error(error.error.message);
-            }
-          }
-        });
-      }
-    })
   }
 
   editLesson() {

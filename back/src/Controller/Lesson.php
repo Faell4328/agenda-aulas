@@ -7,17 +7,17 @@ use App\Tools\SendingPattern;
 use App\Service\Lesson as LessonService;
 
 class Lesson{
-    public function listLessons($user_information){
+    public function listLessons(){
         $validation = new Validation;
 
         $months_of_number = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
         $months = ["janeiro" => "january", "fevereiro" => "february", "março" => "march", "abril" => "april", "maio" => "may", "junho" => "june", "julho" => "july", "agosto" => "august", "setembro" => "september", "outubro" => "october", "novembro" => "november", "dezembro" => "december"];
         $current_month = $months[$months_of_number[date('n') - 1]];
 
-        $month = (isset($_GET["month"]) && isset($months[$_GET["month"]])) ? $_GET["month"] : $current_month;
+        $month = (isset($_GET["month"]) && isset($months[$_GET["month"]])) ? $months[$_GET["month"]] : $current_month;
 
         $service = new LessonService;
-        $return_service = $service -> listLessons($month, $user_information);
+        $return_service = $service -> listLessons($month);
 
         new SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }

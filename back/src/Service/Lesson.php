@@ -8,7 +8,7 @@ use App\Model\User as UserModel;
 
 class Lesson{
     // REMOVE O LESSON_ID
-    public function listLessons($month, $user_information){
+    public function listLessons($month){
         $timestamp_start_month = strtotime("first day of $month this year 00:00:00", time())*1000;
         $timestamp_end_month = strtotime("last day of $month this year 23:59:59", time())*1000;
 
@@ -20,9 +20,6 @@ class Lesson{
 
         try{
             $lessons = $lessonModel -> listAll($timestamp_start_month, $timestamp_end_month);
-            //print_r($lessons);
-            //echo($return[0]['teacher'][0]['name']);
-            //echo($lessons[0]["student_names"][0]["name"]);
 
             $data = [];
             foreach($lessons as $lesson){
@@ -43,43 +40,6 @@ class Lesson{
                 ]);
             }
         }
-        
-        // try{
-        //     if($user_information){
-        //         $is_join_lesson = $joinLessonModel -> checkIfYouAreAlreadyJoin($user_information["_id"], $lesson_id);
-        //     }
-        //     else{
-        //         $is_join_lesson = false;
-        //     }
-        //     $lesson = $lessonModel -> findById($lesson_id);
-
-        //     if($lesson){
-        //         $students = $lessonModel -> listEnrolledStudents($lesson_id);
-        //         $listStudents =[];
-        //         if($students){
-        //         foreach($students as $student){
-        //             array_push($listStudents, $student["student"][0]["name"]);
-        //         }
-        //         }
-
-        //         $teacher = $userModel -> getTeacherById($lesson["teacher_id"]);
-
-        //         array_push($data, [
-        //             "id" => (string) $lesson["_id"],
-        //             "name" => $lesson["name"],
-        //             "timestamp_lesson_start" => $lesson["timestamp_lesson_start"],
-        //             "timestamp_lesson_finish" => $lesson["timestamp_lesson_finish"],
-        //             "current_quantity" => $lesson["current_quantity"],
-        //             "max_quantity" => $lesson["max_quantity"],
-        //             "teacher" => $teacher["name"],
-        //             "students" => $listStudents,
-        //             "is_join" => $is_join_lesson,
-        //         ]);
-        //     }
-        //     else{
-        //         throw new \Exception("Aula informada não foi encontrada");
-        //     }
-        
         catch(\Exception $ex){
             if($ex -> getPrevious() == ""){
                 return ["status" => 400, "message" => $ex -> getMessage(), "redirect" => null, "data" => null];

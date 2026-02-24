@@ -25,7 +25,7 @@ export class LessonService {
   private ano_atual: number = new Date().getFullYear();
   private quantidade: number = 0;
 
-  public async getAllLessons(is_update: boolean = false) {
+  public getAllLessons(is_update: boolean = false) {
 
     this.http.get("/aulas").subscribe({
       next: (return_api: ReturnApi) => {
@@ -54,7 +54,7 @@ export class LessonService {
 
   }
 
-  public async getYourLessons(is_update: boolean = false) {
+  public getYourLessons(is_update: boolean = false) {
     this.http.get("/aulas/ingressadas").subscribe({
       next: (return_api: ReturnApi) => {
         if (return_api.data != null) {
@@ -95,7 +95,7 @@ export class LessonService {
         let lesson = false;
         if((day+1) == new Date(this.all_lessons[cont_lessons]?.timestamp_lesson_start).getDate()) {
           lesson = true;
-          while((day+1) == new Date(this.all_lessons[cont_lessons]?.timestamp_lesson_start).getDate()){
+          while(cont_lessons < this.all_lessons.length && (day + 1) == new Date(this.all_lessons[cont_lessons]?.timestamp_lesson_start).getDate()){
             cont_lessons++;
           }
         }
@@ -253,7 +253,7 @@ export class LessonService {
 
     if(lessons_of_the_day.length > 0) {
       console.log("Entrou em your lesson")
-      this.your_lessons.filter((your_lesson: any) => {
+      this.your_lessons.forEach((your_lesson: any) => {
         console.log(`${your_lesson.id} - ${lessons_of_the_day[0].id}`);
 
         let cont = 0;

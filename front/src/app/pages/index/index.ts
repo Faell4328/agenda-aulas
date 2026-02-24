@@ -28,44 +28,6 @@ export class Index implements OnInit {
     this.router.navigate([`/aula/${element_id}`]);
   }
 
-  // getAllLessons() {
-  //   this.http.get("/aulas").subscribe({
-  //     error: error => {
-  //       if (error.error.message != null) {
-  //         this.toast.error(error.error.message);
-  //       }
-
-  //       if (error.errror.redirect !== null) {
-  //         this.router.navigate([error.error.redirect]);
-  //       }
-  //     }
-  //   });
-  // }
-
-  // getYourLessons() {
-  //   this.http.get("/aulas/ingressadas").subscribe({
-  //     next: (return_api: ReturnApi) => {
-  //       if (return_api.data != null) {
-  //         return_api.data.map((yourLesson: any) => {
-  //           let element = document.getElementById(yourLesson.id) as HTMLElement;
-  //           element.dataset["join"] = "true";
-
-  //           element = element.childNodes[0] as HTMLElement;
-
-  //           element.classList.remove("status-no");
-  //           element.classList.add("status-ok");
-  //           element.innerHTML = "Inscrito";
-  //         })
-  //       }
-  //     },
-  //     error: error => {
-  //       if (error.error.message != null) {
-  //         this.toast.success(error.error.message);
-  //       }
-  //     }
-  //   });
-  // }
-
   joinLesson(lesson_id: string) {
     this.http.post(`/aulas/ingressar?id=${lesson_id}`, null).subscribe({
       next: (return_api) => {
