@@ -232,30 +232,41 @@ export class LessonService {
     console.log(days_of_week);
     if(is_update == false) {
       this.elements_information.set(days_of_week);
-      this.loadMenu(this.current_day);
+      this.selectLesson(this.current_day);
     }
     else{
-      this.loadMenu(this.lesson_selected);
+      this.selectLesson(this.lesson_selected);
     }
   }
 
   public lesson_of_the_day: any = [];
   public loadMenu(day: number){
-    const lessons = this.all_lessons.filter((lesson: any) => {
-      console.log(`${lesson.timestamp_lesson_start} - ${day}`)
+    console.log("Carregando menu");
+
+    const lessons_of_the_day = this.all_lessons.filter((lesson: any) => {
+      console.log(`${new Date(lesson.timestamp_lesson_start).getDate()} - ${day}`)
       return new Date(lesson.timestamp_lesson_start).getDate() === day;
     });
 
-    if(lessons.length > 0) {
+    console.log('Lissons do dia:');
+    console.log(lessons_of_the_day);
+
+    if(lessons_of_the_day.length > 0) {
       console.log("Entrou em your lesson")
-      this.your_lessons.find((your_lesson: any) => {
-        if(your_lesson.id == lessons[0].id) {
-          lessons[0] = { ...lessons[0], is_ingressed: true };
+      this.your_lessons.filter((your_lesson: any) => {
+        console.log(`${your_lesson.id} - ${lessons_of_the_day[0].id}`);
+
+        let cont = 0;
+        while(cont < lessons_of_the_day.length) {
+          if(your_lesson.id == lessons_of_the_day[cont].id) {
+            lessons_of_the_day[cont] = { ...lessons_of_the_day[cont], is_ingressed: true };
+          }
+          cont++;
         }
       });
     }
     
-    this.lesson_of_the_day = lessons;
+    this.lesson_of_the_day = lessons_of_the_day;
     console.log("----");
     console.log(this.lesson_of_the_day);
   }
@@ -265,12 +276,9 @@ export class LessonService {
     console.log("Aula selecionada")
     console.log(this.lesson_selected);
 
-    // if(document.getElementById(`day-${this.current_day}`) !== null) {
-    //   document.getElementById(`day-${this.current_day}`)?.classList.remove("lesson-selected");
-    // }
+    document.getElementById(`day-${this.current_day}`)?.classList.remove("lesson-selected");
 
     if(this.lesson_selected == null) {
-      document.getElementById(`day-${this.current_day}`)?.classList.remove("lesson-selected");
       document.getElementById(`day-${day_selected}`)?.classList.add("lesson-selected");
     }
     else{
