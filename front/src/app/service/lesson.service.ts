@@ -10,10 +10,10 @@ export class LessonService {
 
   constructor(private http: Http, private router: Router, private toast: HotToastService) { }
 
-  private req_all = false;
-  private all_lessons: any = [];
-  private req_your = false;
-  private your_lessons: any = [];
+  public req_all = false;
+  public all_lessons: any = [];
+  public req_your = false;
+  public your_lessons: any = [];
   public current_day = new Date().getDate();
 
   public elements_information = signal<any>([]);
@@ -26,27 +26,27 @@ export class LessonService {
   private quantidade: number = 0;
 
   public async getAllLessons() {
+
     this.http.get("/aulas").subscribe({
       next: (return_api: ReturnApi) => {
         if (return_api.data !== null) {
-          this.all_lessons = [];
           this.all_lessons = return_api.data;
           console.log("all")
           console.log(return_api.data);
         }
 
         this.req_all = true;
-        this.loadLessons2();
+        this.loadLessons();
       },
       error: error => {
         this.req_all = true;
-        this.loadLessons2();
+        this.loadLessons();
 
         if (error.error.message != null) {
           this.toast.success(error.error.message);
         }
 
-        if (error.errror.redirect !== null) {
+        if (error.error.redirect !== null) {
           this.router.navigate([error.error.redirect]);
         }
       }
@@ -54,104 +54,28 @@ export class LessonService {
 
   }
 
-  public async getYourLessons() {
+  public async getYourLessons(is_update: boolean = false) {
     this.http.get("/aulas/ingressadas").subscribe({
       next: (return_api: ReturnApi) => {
         if (return_api.data != null) {
-          this.your_lessons = [];
           this.your_lessons = return_api.data;
           console.log("your")
           console.log(return_api.data);
         }
         
         this.req_your = true;
-        this.loadLessons2();
+        this.loadLessons(is_update);
       },
       error: error => {
         console.log("Sua lição: Deu erro")
         console.log(error);
         this.req_your = true;
-        this.loadLessons2();
+        this.loadLessons(is_update);
       }
     });
   }
 
-  // public loadLessons() {
-  //   if (this.req_all == false || this.req_your == false) {
-  //     return;
-  //   }
-
-  //   console.log("Lições");
-  //   this.all_lessons.map((lesson: any) => {
-  //     console.log((lesson.timestamp_lesson_start))
-  //     console.log(new Date(lesson.timestamp_lesson_start))
-  //   })
-
-  //   this.elements_information.set([]);
-
-  //   // ex: 30
-  //   this.quantidade_dias_mes = new Date(this.ano_atual, this.mes_atual, 0).getDate();
-
-  //   let index_all = 0;
-  //   let index_your = 0;
-  //   let elements = [];
-  //   for (let present_day = 1; present_day <= this.quantidade_dias_mes; present_day++) {
-
-  //     let lessons: any = []
-
-  //     console.log("Dia presente é ");
-  //     console.log(present_day);
-
-  //     while (index_all < this.all_lessons.length) {
-
-  //       console.log("Indice")
-  //       console.log(index_all);
-  //       console.log("Dia da aula testada é: ")
-  //       console.log(new Date(this.all_lessons[index_all].timestamp_lesson_start).getDate());
-
-  //       if ((new Date(this.all_lessons[index_all].timestamp_lesson_start)).getDate() == present_day) {
-
-  //         const date = new Date(this.all_lessons[index_all].timestamp_lesson_start);
-  //         const time = `${(date.getHours()).toString().padStart(2, '0')}:${(date.getMinutes()).toString().padStart(2, '0')}`
-
-  //         if (this.all_lessons[index_all].id == this.your_lessons[index_your]?.id) {
-  //           lessons.push({ ...this.all_lessons[index_all], time: time, "registered": true });
-  //           index_your++;
-  //         }
-  //         else {
-  //           lessons.push({ ...this.all_lessons[index_all], time: time, "registered": false });
-  //         }
-  //         index_all++;
-  //       }
-  //       else {
-  //         break;
-  //       }
-  //     }
-
-  //     let elemento: any = null;
-  //     let names_of_days = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
-  //     let day_of_the_week = new Date(this.ano_atual, this.mes_atual - 1, present_day).getDay();
-  //     if (lessons[0] != undefined) {
-  //       elemento = { "day": present_day, "lessons": lessons, "day_of_the_week": names_of_days[day_of_the_week] }
-  //     }
-  //     else {
-  //       elemento = { "day": present_day, "day_of_the_week": names_of_days[day_of_the_week] }
-  //     }
-
-  //     elements.push(elemento);
-  //   }
-  //   console.log(elements);
-  //   this.elements_information.set(elements);
-
-
-  //   this.all_lessons = [];
-  //   this.your_lessons = [];
-  //   this.req_all = false;
-  //   this.req_your = false;
-  // }
-
-
-  public loadLessons2() {
+  public loadLessons(is_update: boolean = false) {
     if (this.req_all == false || this.req_your == false) {
       return;
     }
@@ -171,7 +95,9 @@ export class LessonService {
         let lesson = false;
         if((day+1) == new Date(this.all_lessons[cont_lessons]?.timestamp_lesson_start).getDate()) {
           lesson = true;
-          cont_lessons++;
+          while((day+1) == new Date(this.all_lessons[cont_lessons]?.timestamp_lesson_start).getDate()){
+            cont_lessons++;
+          }
         }
 
         // segunda
@@ -230,7 +156,9 @@ export class LessonService {
         let lesson = false;
         if((day+1) == new Date(this.all_lessons[cont_lessons]?.timestamp_lesson_start).getDate()) {
           lesson = true;
-          cont_lessons++;
+          while((day+1) == new Date(this.all_lessons[cont_lessons]?.timestamp_lesson_start).getDate()){
+            cont_lessons++;
+          }
         }
 
         // Domingo
@@ -287,23 +215,28 @@ export class LessonService {
         let lesson = false;
         if((day+1) == new Date(this.all_lessons[cont_lessons]?.timestamp_lesson_start).getDate()) {
           lesson = true;
-          cont_lessons++;
+          while((day+1) == new Date(this.all_lessons[cont_lessons]?.timestamp_lesson_start).getDate()){
+            cont_lessons++;
+          }
         }
+
         days_of_week.push({ "day": (day+1) , "day_of_the_week": day_of_weeks[(first_day_of_the_week+day) % 7], current_month: true, lesson });
       }
     }
 
-    // let separe_days_of_week = [];
-    // for(var cont = 0; cont < (days_of_week.length/7); cont++) {
-    //   separe_days_of_week.push(days_of_week.slice((cont * 7), ((cont +1)*7)));
-    // }
+    console.log(this.all_lessons)
 
     this.req_all = false;
     this.req_your = false;
 
     console.log(days_of_week);
-    this.elements_information.set(days_of_week);
-    this.loadMenu(this.current_day);
+    if(is_update == false) {
+      this.elements_information.set(days_of_week);
+      this.loadMenu(this.current_day);
+    }
+    else{
+      this.loadMenu(this.lesson_selected);
+    }
   }
 
   public lesson_of_the_day: any = [];
@@ -323,25 +256,30 @@ export class LessonService {
     }
     
     this.lesson_of_the_day = lessons;
+    console.log("----");
     console.log(this.lesson_of_the_day);
   }
 
-  private oldLesson: any = null;
-  public selectLesson(day: any) {
-    console.log("Old Lesson")
-    console.log(this.oldLesson)
+  public lesson_selected: any = null;
+  public selectLesson(day_selected: any) {
+    console.log("Aula selecionada")
+    console.log(this.lesson_selected);
 
-    if(document.getElementById(`day-${this.current_day}`) !== null) {
+    // if(document.getElementById(`day-${this.current_day}`) !== null) {
+    //   document.getElementById(`day-${this.current_day}`)?.classList.remove("lesson-selected");
+    // }
+
+    if(this.lesson_selected == null) {
       document.getElementById(`day-${this.current_day}`)?.classList.remove("lesson-selected");
+      document.getElementById(`day-${day_selected}`)?.classList.add("lesson-selected");
     }
-
-    if(this.oldLesson == null) {
-      this.oldLesson = document.getElementById(`day-${this.current_day}`);
+    else{
+      document.getElementById(`day-${this.lesson_selected}`)?.classList.remove("lesson-selected");
+      document.getElementById(`day-${day_selected}`)?.classList.add("lesson-selected");
     }
     
-    this.oldLesson.classList.remove("lesson-selected");
-    this.oldLesson = document.getElementById(`day-${day}`);
-    this.oldLesson.classList.add("lesson-selected");
-    this.loadMenu(day);
+    
+    this.lesson_selected = day_selected;
+    this.loadMenu(day_selected);
   }
 }

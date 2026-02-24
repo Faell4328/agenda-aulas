@@ -17,47 +17,31 @@
         </div>
     </div>
     <div id="container-menu">
-        <h2>Detalhes da aula</h2>
+        <h2>Detalhes da Aula</h2>
         <br /><hr /><br />
         <p *ngIf="lessonService.lesson_of_the_day.length === 0">Não tem lição nesse dia</p>
         <div *ngIf="lessonService.lesson_of_the_day.length > 0">
-            <div *ngFor="let lesson of lessonService.lesson_of_the_day">
-                <p>{{lesson.id}}</p>
-                <p>{{lesson.name}}</p>
-                <p>Quantidade ingressada: {{lesson.current_quantity}}</p>
-                <p>Quantidade máxima: {{lesson.max_quantity}}</p>
-                <p>Professor: {{lesson.teacher}}</p>
-                <p>Horário de início: {{lesson.timestamp_lesson_start | date:'shortTime'}}</p>
-                <p>Horário de término: {{lesson.timestamp_lesson_finish | date:'shortTime'}}</p>
-                <p>Aluno ingressados: {{lesson.students.join(', ')}}</p>
-                <p>É ingressado: {{lesson.is_ingressed ? 'Sim' : 'Não'}}</p>
-                <hr />
+            <div style="position: relative; margin-bottom: 20px;" *ngFor="let lesson of lessonService.lesson_of_the_day">
+                <div style="position: absolute; top: -8px; right: 0px; background-color: #92cfb5; padding: 5px; border-radius: 30px; margin-bottom: 10px;" *ngIf="lesson.is_ingressed">Ingressado</div>
+                <h3 style="text-align: center; margin-bottom: 20px;">Aula: {{lesson.name}}</h3>
+                <div style="display: flex; justify-content: space-around; gap: 20px;">
+                    <div>
+                        <p style="margin-bottom: 20px;">Quantidade ingressada: {{lesson.current_quantity}}</p>
+                        <p style="margin-bottom: 20px;">Horário de início: {{lesson.timestamp_lesson_start | date:'shortTime'}}</p>
+                        <p style="margin-bottom: 20px;">Professor: {{lesson.teacher}}</p>
+                    </div>
+                    <div>
+                        <p style="margin-bottom: 20px;">Quantidade máxima: {{lesson.max_quantity}}</p>
+                        <p style="margin-bottom: 20px;">Horário de término: {{lesson.timestamp_lesson_finish | date:'shortTime'}}</p>
+                        <p style="margin-bottom: 20px;">Aluno ingressados: {{(lesson.students && lesson.students.length > 0) ? lesson.students.join(', ') : 'Nenhum'}}</p>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-around; gap: 20px;">
+                    <button (click)="joinLesson(lesson.id)" style="margin: 10px; padding: 20px; background-color: #5c85d7; border-radius: 10px;" mat-raised-button *ngIf="(lesson.is_ingressed == undefined)">Ingressar</button>
+                    <button (click)="leaveLesson(lesson.id)" style="margin: 10px; padding: 20px; background-color: #d75c5c; border-radius: 10px;" mat-raised-button *ngIf="(lesson.is_ingressed == true)">Desingressar</button>
+                </div>
+                <hr style="margin-bottom: 30px;" />
             </div>
         </div>
     </div>
 </div>
-
-
-<!-- <div id="container">
-    <div style="border-radius: 10px 0px 0px 0px" class="day-of-the-week">Seg</div>
-    <div class="day-of-the-week">Ter</div>
-    <div class="day-of-the-week">Qua</div>
-    <div class="day-of-the-week">Qui</div>
-    <div class="day-of-the-week">Sex</div>
-    <div class="day-of-the-week">Sáb</div>
-    <div style="border-radius: 0px 10px 0px 0px" class="day-of-the-week">Dom</div>
-    <div class="datas" style="display: block; grid-template-columns: repeat(7, 80px);" *ngFor="let element_information of lessonService.elements_information()">
-        <span class="status-ok" *ngIf="element_information.lessons !== undefined">Tem aula</span>
-        <span class="status-no" *ngIf="element_information.lessons == undefined">Não tem aula</span>
-        <div class="dia">{{element_information.day}}</div>
-        <div class="dia">{{element_information.day_of_the_week}}</div>
-            <div style="max-height: 70%; overflow-x: auto; cursor: pointer">
-                <div *ngFor="let information of element_information.lessons">
-                    <div [attr.data-join]="information.registered ? 'true' : 'false'" id={{information.id}} (click)="clickLesson(information.id)" class="lesson-name">
-                        <span [attr.class]="information.registered ? 'status-ok' : 'status-no'">{{information.registered ? 'Inscrito' : 'Não inscrito'}}</span>
-                        <span>{{information.time}} - {{information.name}}</span>
-                    </div>
-                </div>
-            </div>
-    </div>
-</div> -->

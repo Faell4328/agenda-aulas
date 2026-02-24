@@ -13,7 +13,10 @@ export class RoleService {
 
   public role = signal<string>("off");
 
-  update_dependencies(){
+  public update_dependencies(){
+    this.lessonService.lesson_of_the_day = []
+    this.lessonService.all_lessons = [];
+    this.lessonService.your_lessons = [];
     this.lessonService.getAllLessons();
     this.lessonService.getYourLessons();
   }

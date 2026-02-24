@@ -42,7 +42,8 @@ class Lesson extends BaseModel
                 'localField' => 'students.id_student',
                 'foreignField' => '_id',
                 'as' => 'student_names'
-            ]]
+            ]],
+            ['$sort' => ['timestamp_lesson_start' => 1, 'id' => 1]]
         ]));
     }
 

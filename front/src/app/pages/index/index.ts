@@ -10,10 +10,11 @@ import { DialogConfirmation } from '../../component/dialog-confirmation/dialog-c
 import { HotToastService } from '@ngxpert/hot-toast';
 import { LessonService } from '@src/app/service/lesson.service';
 import { DialogForm } from '@src/app/component/dialog-form/dialog-form';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-data-component',
-  imports: [CommonModule],
+  imports: [CommonModule, MatButtonModule],
   templateUrl: './index.html',
   styleUrl: './index.scss',
 })
@@ -27,42 +28,88 @@ export class Index implements OnInit {
     this.router.navigate([`/aula/${element_id}`]);
   }
 
-  getAllLessons() {
-    this.http.get("/aulas").subscribe({
-      error: error => {
-        if (error.error.message != null) {
-          this.toast.error(error.error.message);
-        }
+  // getAllLessons() {
+  //   this.http.get("/aulas").subscribe({
+  //     error: error => {
+  //       if (error.error.message != null) {
+  //         this.toast.error(error.error.message);
+  //       }
 
-        if (error.errror.redirect !== null) {
-          this.router.navigate([error.error.redirect]);
+  //       if (error.errror.redirect !== null) {
+  //         this.router.navigate([error.error.redirect]);
+  //       }
+  //     }
+  //   });
+  // }
+
+  // getYourLessons() {
+  //   this.http.get("/aulas/ingressadas").subscribe({
+  //     next: (return_api: ReturnApi) => {
+  //       if (return_api.data != null) {
+  //         return_api.data.map((yourLesson: any) => {
+  //           let element = document.getElementById(yourLesson.id) as HTMLElement;
+  //           element.dataset["join"] = "true";
+
+  //           element = element.childNodes[0] as HTMLElement;
+
+  //           element.classList.remove("status-no");
+  //           element.classList.add("status-ok");
+  //           element.innerHTML = "Inscrito";
+  //         })
+  //       }
+  //     },
+  //     error: error => {
+  //       if (error.error.message != null) {
+  //         this.toast.success(error.error.message);
+  //       }
+  //     }
+  //   });
+  // }
+
+  joinLesson(lesson_id: string) {
+    this.http.post(`/aulas/ingressar?id=${lesson_id}`, null).subscribe({
+      next: (return_api) => {
+        if (return_api.message) {
+          this.toast.success(return_api.message);
+          // AQUI
+          this.lessonService.req_all = true;
+          this.lessonService.getYourLessons(true);
+        }
+      },
+      error: (error) => {
+        if ((typeof error.error.message) == "string") {
+          this.toast.error(error.error.message);
         }
       }
     });
   }
 
-  getYourLessons() {
-    this.http.get("/aulas/ingressadas").subscribe({
-      next: (return_api: ReturnApi) => {
-        if (return_api.data != null) {
-          return_api.data.map((yourLesson: any) => {
-            let element = document.getElementById(yourLesson.id) as HTMLElement;
-            element.dataset["join"] = "true";
-
-            element = element.childNodes[0] as HTMLElement;
-
-            element.classList.remove("status-no");
-            element.classList.add("status-ok");
-            element.innerHTML = "Inscrito";
-          })
-        }
-      },
-      error: error => {
-        if (error.error.message != null) {
-          this.toast.success(error.error.message);
-        }
+  leaveLesson(lesson_id: string) {
+    const dialogRef = this.dialog.open(DialogConfirmation, {
+      data: {
+        text: "Deseja realmente sair a aula?",
       }
     });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == true) {
+        this.http.delete(`/aulas/sair?id=${lesson_id}`).subscribe({
+          next: (return_api) => {
+            if (return_api.message) {
+              this.toast.success(return_api.message);
+              // AQUI
+              this.lessonService.req_all = true;
+              this.lessonService.getYourLessons(true);
+            }
+          },
+          error: (error) => {
+            if ((typeof error.error.message) == "string") {
+              this.toast.error(error.error.message);
+            }
+          }
+        });
+      }
+    })
   }
 
   ngOnInit(): void {

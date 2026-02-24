@@ -70,21 +70,6 @@ export class Lesson implements OnInit {
   }
 
   joinLesson() {
-    this.http.post(`/aulas/ingressar?id=${this.lessonId}`, null).subscribe({
-      next: (return_api) => {
-        if (return_api.message) {
-          this.toast.success(return_api.message);
-          this.getSpecificLesson();
-          this.lessonService.getAllLessons();
-          this.lessonService.getYourLessons();
-        }
-      },
-      error: (error) => {
-        if ((typeof error.error.message) == "string") {
-          this.toast.error(error.error.message);
-        }
-      }
-    });
   }
 
   leaveLesson() {
