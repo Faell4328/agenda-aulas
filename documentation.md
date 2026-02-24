@@ -53,18 +53,18 @@ As informações tem que ser enviado no formato JSON para o back end.
 **Sem restrição:**
 
 `GET /` - Retorna a role do usuário.
+! Podendo retorna "teacher", "student" ou "off".
 
-`GET /aulas` - Consultar todas as aulas cadastradas.
-! Retorna ordenado por timestamp_lesson_start.
+`GET /aulas` - Consultar todas as aulas do mês atual
 
-`GET /aulas?id=id_aula` - Consultar informações da aula especifica
-! Rotarna nome, data e hora, quantidade inscrita e máxima, nome professor e alunos inscritos.
+`GET /aulas?month=month` - Consulta todas as aulas do mês solicitado.
+! O mês no valor é em português.
 
 **Somente usuário não logados:**
 
 `POST /cadastrar` - Realizar cadastro.
 
-- Campos: `name`, `role`, `email` e `password`.
+- Campos: `name`, `role` (teacher ou student), `email` e `password`.
 
 `POST /login` - Realizar login.
 
@@ -72,7 +72,7 @@ As informações tem que ser enviado no formato JSON para o back end.
 
 **Somente usuário logados**
 
-`POST logout/` - Desloga o usuário.
+`POST /logout` - Desloga o usuário.
 
 **Somente professores:**
 
