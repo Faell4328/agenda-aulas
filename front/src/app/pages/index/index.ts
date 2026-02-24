@@ -20,7 +20,7 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class Index implements OnInit {
 
-  constructor(private http: Http, private router: Router, private roleService: RoleService, private toast: HotToastService, public lessonService: LessonService) { }
+  constructor(private http: Http, private router: Router, public roleService: RoleService, private toast: HotToastService, public lessonService: LessonService) { }
 
   readonly dialog = inject(MatDialog);
 
@@ -72,13 +72,16 @@ export class Index implements OnInit {
         if (return_api.message) {
           this.toast.success(return_api.message);
           // AQUI
-          this.lessonService.req_all = true;
+          this.lessonService.getAllLessons(true);
           this.lessonService.getYourLessons(true);
         }
       },
       error: (error) => {
         if ((typeof error.error.message) == "string") {
           this.toast.error(error.error.message);
+
+          this.lessonService.getAllLessons(true);
+          this.lessonService.getYourLessons(true);
         }
       }
     });
@@ -98,13 +101,16 @@ export class Index implements OnInit {
             if (return_api.message) {
               this.toast.success(return_api.message);
               // AQUI
-              this.lessonService.req_all = true;
+              this.lessonService.getAllLessons(true);
               this.lessonService.getYourLessons(true);
             }
           },
           error: (error) => {
             if ((typeof error.error.message) == "string") {
               this.toast.error(error.error.message);
+
+              this.lessonService.getAllLessons(true);
+              this.lessonService.getYourLessons(true);
             }
           }
         });

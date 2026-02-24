@@ -25,7 +25,7 @@ export class LessonService {
   private ano_atual: number = new Date().getFullYear();
   private quantidade: number = 0;
 
-  public async getAllLessons() {
+  public async getAllLessons(is_update: boolean = false) {
 
     this.http.get("/aulas").subscribe({
       next: (return_api: ReturnApi) => {
@@ -36,11 +36,11 @@ export class LessonService {
         }
 
         this.req_all = true;
-        this.loadLessons();
+        this.loadLessons(is_update);
       },
       error: error => {
         this.req_all = true;
-        this.loadLessons();
+        this.loadLessons(is_update);
 
         if (error.error.message != null) {
           this.toast.success(error.error.message);
