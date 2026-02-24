@@ -76,44 +76,6 @@ export class Lesson implements OnInit {
   }
 
   editLesson() {
-    this.dialog.open(DialogForm, {
-      data: {
-        dialog: [
-          {
-            "id": "input1",
-            "label": "Nome",
-            "name": "name",
-            "type": "string",
-            "default": this.informationLesson?.name,
-          },
-          {
-            "id": "input2",
-            "label": "Dia",
-            "name": "date",
-            "type": "date",
-            "default": this.informationLesson?.date,
-          },
-          {
-            "id": "input3",
-            "label": "Horas",
-            "name": "time",
-            "type": "time",
-            "default": this.informationLesson?.time_start,
-          },
-          {
-            "id": "input4",
-            "label": "Quantidade",
-            "name": "quantity",
-            "type": "number",
-            "default": this.informationLesson?.max_quantity,
-          }
-        ],
-        title: "Atualizar aula",
-        method: "put",
-        url: `/aulas/atualizar?id=${this.lessonId}`,
-        runAfterSucess: () => { this.lessonService.getAllLessons(); this.lessonService.getYourLessons(); this.getSpecificLesson() },
-      },
-    });
   }
 
   deleteLesson() {

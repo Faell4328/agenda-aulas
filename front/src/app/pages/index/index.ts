@@ -80,6 +80,90 @@ export class Index implements OnInit {
     })
   }
 
+  editLesson(lesson_id: string) {
+    let informationLesson: any = this.lessonService.all_lessons.filter((lesson: any) => lesson.id == lesson_id)[0];
+    let date = new Date(informationLesson.timestamp_lesson_start);
+    informationLesson.date = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+    informationLesson.time_start = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+
+    this.dialog.open(DialogForm, {
+      data: {
+        dialog: [
+          {
+            "id": "input1",
+            "label": "Nome",
+            "name": "name",
+            "type": "string",
+            "default": informationLesson?.name,
+          },
+          {
+            "id": "input2",
+            "label": "Dia",
+            "name": "date",
+            "type": "date",
+            "default": informationLesson?.date,
+          },
+          {
+            "id": "input3",
+            "label": "Horas",
+            "name": "time",
+            "type": "time",
+            "default": informationLesson?.time_start,
+          },
+          {
+            "id": "input4",
+            "label": "Quantidade",
+            "name": "quantity",
+            "type": "number",
+            "default": informationLesson?.max_quantity,
+          }
+        ],
+        title: "Atualizar aula",
+        method: "put",
+        url: `/aulas/atualizar?id=${lesson_id}`,
+        runAfterSucess: () => {
+          this.lessonService.getAllLessons(true);
+          this.lessonService.getYourLessons(true);
+        },
+      },
+    });
+  }
+
+  deleteLesson(lesson_id: string, timestamp_lesson_start: number) {
+    const dialogRef = this.dialog.open(DialogConfirmation, {
+      data: {
+        text: "Deseja realmente deletar a aula?",
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == true) {
+        this.http.delete(`/aulas/deletar?id=${lesson_id}`).subscribe({
+          next: (return_api) => {
+
+            if (return_api?.redirect != null) {
+              this.router.navigate([return_api.redirect]);
+            }
+
+            if (return_api.message) {
+              this.toast.success(return_api.message);
+            }
+
+            this.lessonService.getAllLessons();
+            this.lessonService.getYourLessons();
+          },
+          error: (error) => {
+            if ((typeof error.error.message) == "string") {
+              this.toast.error(error.error.message);
+              this.lessonService.getAllLessons(true);
+              this.lessonService.getYourLessons(true);
+            }
+          }
+        });
+      }
+    })
+  };
+
   ngOnInit(): void {
     //this.getAllLessons();
   }

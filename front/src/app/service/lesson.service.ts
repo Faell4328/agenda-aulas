@@ -147,7 +147,7 @@ export class LessonService {
         }
         // domingo
         else{
-          days_of_week.push({ "day": (day+1) , "day_of_the_week": day_of_weeks[0], current_month: true });
+          days_of_week.push({ "day": (day+1) , "day_of_the_week": day_of_weeks[0], current_month: true, lesson });
         }
       }
       // Parei aqui 
@@ -232,7 +232,12 @@ export class LessonService {
     console.log(days_of_week);
     if(is_update == false) {
       this.elements_information.set(days_of_week);
-      this.selectLesson(this.current_day);
+      if(this.lesson_selected == null) {
+        this.selectLesson(this.current_day);
+      }
+      else{
+        this.loadMenu(this.lesson_selected);
+      }
     }
     else{
       this.selectLesson(this.lesson_selected);
@@ -274,6 +279,7 @@ export class LessonService {
   public lesson_selected: any = null;
   public selectLesson(day_selected: any) {
     console.log("Aula selecionada")
+    console.log("Aula antida")
     console.log(this.lesson_selected);
 
     document.getElementById(`day-${this.current_day}`)?.classList.remove("lesson-selected");
