@@ -14,7 +14,7 @@ class Lesson{
         $months = ["janeiro" => "january", "fevereiro" => "february", "março" => "march", "abril" => "april", "maio" => "may", "junho" => "june", "julho" => "july", "agosto" => "august", "setembro" => "september", "outubro" => "october", "novembro" => "november", "dezembro" => "december"];
         $current_month = $months[$months_of_number[date('n') - 1]];
 
-        $month = (isset($_GET["month"]) && isset($months[$_GET["month"]])) ? $months[$_GET["month"]] : $current_month;
+        $month = (isset($_GET["month"]) && isset($months[strtolower($_GET["month"])])) ? $months[strtolower($_GET["month"])] : $current_month;
 
         $service = new LessonService;
         $return_service = $service -> listLessons($month);

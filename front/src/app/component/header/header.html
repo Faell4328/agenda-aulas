@@ -3,8 +3,10 @@
         <img id="logo" src="/logo.png" />
     </a>
 
-    <div class="{{(currentUrl == '/login' || currentUrl == '/cadastrar') ? 'hidden' : ''}}">
-        <h1>Fevereiro 2026</h1>
+    <div class="{{(currentUrl == '/login' || currentUrl == '/cadastrar') ? 'hidden' : ''}} container-month">
+        <img (click)="previousMonth()" class="arrow" src="/seta-esquerda.svg" />
+        <h1>{{ lessonService.months[lessonService.selected_month - 1] }} {{ lessonService.ano_atual }}</h1>
+        <img (click)="nextMonth()" class="arrow" src="/seta-direita.svg" />
     </div>
     
     <div class="{{(currentUrl == '/login' || currentUrl == '/cadastrar') ? 'hidden' : ''}}" style="display: flex; align-items: center;">

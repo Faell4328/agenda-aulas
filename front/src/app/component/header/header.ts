@@ -21,7 +21,7 @@ import { ChangeDetectorRef } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Header {
-  constructor(private router: Router, public roleService: RoleService, private http: Http, private toast: HotToastService, private lessonService: LessonService, private cdr: ChangeDetectorRef) {
+  constructor(private router: Router, public roleService: RoleService, private http: Http, private toast: HotToastService, public lessonService: LessonService, private cdr: ChangeDetectorRef) {
     this.currentUrl = this.router.url;
 
     this.router.events
@@ -37,6 +37,26 @@ export class Header {
   public current_route = "";
   public currentUrl: string;
   readonly dialog = inject(MatDialog);
+
+  previousMonth() {
+    if(this.lessonService.selected_month == 1) {
+      this.lessonService.selected_month = 13;
+    }
+
+    this.lessonService.selected_month--;
+
+    this.roleService.update_dependencies();
+  }
+
+  nextMonth() {
+    if(this.lessonService.selected_month == 12) {
+      this.lessonService.selected_month = 0;
+    }
+
+    this.lessonService.selected_month++;
+
+    this.roleService.update_dependencies();
+  }
 
   addLesson() {
     this.dialog.open(DialogForm, {

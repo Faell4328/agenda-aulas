@@ -11,6 +11,7 @@ export class LessonService {
 
   constructor(private http: Http, private router: Router, private toast: HotToastService) { }
 
+  public selected_month = new Date().getMonth() + 1;
   public req_all = false;
   public all_lessons: any = [];
   public req_your = false;
@@ -23,12 +24,13 @@ export class LessonService {
   private quantidade_dias_mes: number = 0;
 
   private mes_atual: number = (new Date().getMonth() + 1);
-  private ano_atual: number = new Date().getFullYear();
+  public ano_atual: number = new Date().getFullYear();
   private quantidade: number = 0;
 
-  public getAllLessons(is_update: boolean = false) {
+  public months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
-    this.http.get<AllLessons>("/aulas").subscribe({
+  public getAllLessons(is_update: boolean = false) {
+    this.http.get<AllLessons>(`/aulas?month=${this.months[this.selected_month - 1]}`).subscribe({
       next: (return_api: ReturnApi<AllLessons>) => {
         if (return_api.data !== null) {
           this.all_lessons = return_api.data;
