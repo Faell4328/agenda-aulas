@@ -1,3 +1,5 @@
+@use '../../../variables' as variable;
+
 button{
     background-color: transparent;
     border: 0px;
@@ -7,14 +9,14 @@ button{
 
 #header{
     width: 90%;
-    background-color: #f9f8fc;
+    background-color: variable.$background-color-secondary;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin: auto;
     border-radius: 20px;
 
-    border: 1px solid #eee;
+    border: 1px solid variable.$border-color;
     padding: 20px;
 }
 

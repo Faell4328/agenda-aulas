@@ -1,3 +1,5 @@
+@use '../../../variables' as variable;
+
 ::-webkit-scrollbar {
   width: 0px;
 }
@@ -17,7 +19,7 @@
         display: inline-grid;
         grid-template-columns: repeat(7, auto);
         justify-content: center;
-        background-color: #faf9fc;
+        background-color: variable.$background-color-secondary;
         border-radius: 15px;
 
         .day-of-the-week{
@@ -30,11 +32,9 @@
         }
 
         .container-days{
-            display: block;
             position: relative;
-            grid-template-columns: repeat(7, 80px);
 
-            border: 1px solid #ebebf2;
+            border: 1px solid variable.$border-color;
             padding: 40px;
 
             cursor: pointer;
@@ -47,11 +47,11 @@
             display: block;
             padding: 4px;
             border-radius: 30px;
-            background-color: #92d1b5;
+            background-color: variable.$green;
         }
 
         .lesson-selected{
-            border: 1px solid #547ccd;
+            border: 1px solid variable.$blue;
         }
 
         .days{
@@ -68,9 +68,13 @@
 
 #container-menu{
     width: 35%;
-    background-color: #faf9fc;
+    background-color: variable.$background-color-secondary;
     padding: 30px;
     border-radius: 15px;
+
+    .container-menu-lesson{
+        position: relative;
+    }
 
     .lesson-name{
         text-align: center;
@@ -81,7 +85,7 @@
         position: absolute;
         top: -8px;
         right: 0px;
-        background-color: #92cfb5;
+        background-color: variable.$green;
         padding: 5px;
         border-radius: 30px;
         margin-bottom: 10px;
@@ -91,6 +95,13 @@
         display: flex;
         justify-content: space-around;
         gap: 20px;
+    }
+
+    .lesson-details-col-1, .lesson-details-col-2{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 40%;
     }
 
     .text-lesson-details{
@@ -111,11 +122,15 @@
 
     .button-lesson-actions-blue{
         @extend .button-lesson-actions;
-        background-color: #5c85d7
+        background-color: variable.$blue;
     }
 
     .button-lesson-actions-red{
         @extend .button-lesson-actions;
-        background-color: #d75c5c
+        background-color: variable.$red;
     }
+}
+
+hr{
+    margin-bottom: 30px;
 }
