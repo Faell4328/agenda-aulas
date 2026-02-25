@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
 import { RoleService } from '../../service/role.service';
 import { Http } from '../../service/http.service';
 import { DialogConfirmation } from '../dialog-confirmation/dialog-confirmation';
@@ -9,6 +9,9 @@ import { HotToastService } from '@ngxpert/hot-toast';
 import { CommonModule } from '@angular/common';
 import { LessonService } from '@src/app/service/lesson.service';
 import { ReturnApi } from '@src/app/interfaces_types';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter } from 'rxjs';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'header',
@@ -18,8 +21,21 @@ import { ReturnApi } from '@src/app/interfaces_types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Header {
-  constructor(private router: Router, public roleService: RoleService, private http: Http, private toast: HotToastService, private lessonService: LessonService) { }
+  constructor(private router: Router, public roleService: RoleService, private http: Http, private toast: HotToastService, private lessonService: LessonService, private cdr: ChangeDetectorRef) {
+    this.currentUrl = this.router.url;
 
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        this.currentUrl = event.urlAfterRedirects;
+        console.log('URL mudou:', this.currentUrl);
+        console.log('URL atual:', this.router.url == "/login");
+        this.cdr.detectChanges();
+      });
+  }
+
+  public current_route = "";
+  public currentUrl: string;
   readonly dialog = inject(MatDialog);
 
   addLesson() {
@@ -66,7 +82,9 @@ export class Header {
   logout() {
     const dialogRef = this.dialog.open(DialogConfirmation, {
       data: {
-        dialog: "deslogar",
+        title: "Deseja realmente deslogar?",
+        message: "Você terá que logar novamente para acessar as funcionalidades do site.",
+        button_text: "Deslogar",
       }
     });
 

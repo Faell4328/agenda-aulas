@@ -1,5 +1,13 @@
 @use '../../../variables' as variable;
 
+.hidden{
+    display: none !important;
+}
+
+.middle{
+    margin: auto;
+}
+
 button{
     background-color: transparent;
     border: 0px;

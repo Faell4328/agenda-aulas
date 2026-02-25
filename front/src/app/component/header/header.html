@@ -1,11 +1,13 @@
 <div id="header">
-    <a routerLink="/">
+    <a  class="{{(currentUrl == '/login' || currentUrl == '/cadastrar') ? 'middle' : ''}}" routerLink="/">
         <img id="logo" src="/logo.png" />
     </a>
 
-    <h1>Fevereiro 2026</h1>
-
-    <div style="display: flex; align-items: center;">
+    <div class="{{(currentUrl == '/login' || currentUrl == '/cadastrar') ? 'hidden' : ''}}">
+        <h1>Fevereiro 2026</h1>
+    </div>
+    
+    <div class="{{(currentUrl == '/login' || currentUrl == '/cadastrar') ? 'hidden' : ''}}" style="display: flex; align-items: center;">
         <button style="display: flex; width: auto; height: 50px; padding: 20px; border-radius: 10px; background-color: #638cd9;" *ngIf="roleService.role() === 'teacher'" (click)="addLesson()">
             <img id="plus" src="/plus.svg" />
             <span class="text-menu">Nova Aula</span>
