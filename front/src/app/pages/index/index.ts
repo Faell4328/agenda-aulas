@@ -52,7 +52,8 @@ export class Index implements OnInit {
   leaveLesson(lesson_id: string) {
     const dialogRef = this.dialog.open(DialogConfirmation, {
       data: {
-        text: "Deseja realmente sair a aula?",
+        title: "Deseja realmente sair da aula?",
+        button_text: "Sim",
       }
     });
 
@@ -132,7 +133,9 @@ export class Index implements OnInit {
   deleteLesson(lesson_id: string, timestamp_lesson_start: number) {
     const dialogRef = this.dialog.open(DialogConfirmation, {
       data: {
-        text: "Deseja realmente deletar a aula?",
+        title: "Deseja realmente deletar?",
+        message: "A aula será deletada permanentemente e não poderá ser recuperada.",
+        button_text: "Deletar",
       }
     });
 

@@ -1,3 +1,5 @@
+@use '../../../variables' as variables;
+
 form{
     display: flex;
     flex-direction: column;
@@ -19,13 +21,13 @@ form{
 }
 
 #btn-submit{
-    background-color: #aaa;
+    background-color: variables.$blue;
     border-radius: 10px;
 }
 
 #btn-extra{
     margin-top: 20px;
     color: #fff;
-    background-color: #e00;
+    background-color: variables.$red;
     border-radius: 10px;
 }
