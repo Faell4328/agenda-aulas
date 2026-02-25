@@ -2,6 +2,7 @@ import { effect, Injectable, signal } from '@angular/core';
 import { Http } from './http.service';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngxpert/hot-toast';
+import { AllLessons, ReturnApi, YourLessons } from '../interfaces_types';
 
 @Injectable({
   providedIn: 'root'
@@ -27,8 +28,8 @@ export class LessonService {
 
   public getAllLessons(is_update: boolean = false) {
 
-    this.http.get("/aulas").subscribe({
-      next: (return_api: ReturnApi) => {
+    this.http.get<AllLessons>("/aulas").subscribe({
+      next: (return_api: ReturnApi<AllLessons>) => {
         if (return_api.data !== null) {
           this.all_lessons = return_api.data;
           console.log("all")
@@ -55,8 +56,8 @@ export class LessonService {
   }
 
   public getYourLessons(is_update: boolean = false) {
-    this.http.get("/aulas/ingressadas").subscribe({
-      next: (return_api: ReturnApi) => {
+    this.http.get<YourLessons>("/aulas/ingressadas").subscribe({
+      next: (return_api: ReturnApi<YourLessons>) => {
         if (return_api.data != null) {
           this.your_lessons = return_api.data;
           console.log("your")

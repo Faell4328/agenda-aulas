@@ -1,7 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { lesson } from '../../interfaces';
 import { Router } from '@angular/router';
 import { Http } from '../../service/http.service';
 import { RoleService } from '../../service/role.service';
@@ -11,6 +10,7 @@ import { HotToastService } from '@ngxpert/hot-toast';
 import { LessonService } from '@src/app/service/lesson.service';
 import { DialogForm } from '@src/app/component/dialog-form/dialog-form';
 import { MatButtonModule } from '@angular/material/button';
+import { ReturnApi } from '@src/app/interfaces_types';
 
 @Component({
   selector: 'app-data-component',
@@ -29,8 +29,8 @@ export class Index implements OnInit {
   }
 
   joinLesson(lesson_id: string) {
-    this.http.post(`/aulas/ingressar?id=${lesson_id}`, null).subscribe({
-      next: (return_api) => {
+    this.http.post<null>(`/aulas/ingressar?id=${lesson_id}`, null).subscribe({
+      next: (return_api: ReturnApi<null>) => {
         if (return_api.message) {
           this.toast.success(return_api.message);
           // AQUI
@@ -138,8 +138,8 @@ export class Index implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == true) {
-        this.http.delete(`/aulas/deletar?id=${lesson_id}`).subscribe({
-          next: (return_api) => {
+        this.http.delete<null>(`/aulas/deletar?id=${lesson_id}`).subscribe({
+          next: (return_api: ReturnApi<null>) => {
 
             if (return_api?.redirect != null) {
               this.router.navigate([return_api.redirect]);

@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { Http } from '@src/app/service/http.service';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { Router } from '@angular/router';
+import { ReturnApi } from '@src/app/interfaces_types';
 
 @Component({
   selector: 'dialog-form',
@@ -58,8 +59,8 @@ export class DialogForm implements AfterViewInit {
     }
 
     if (this.method == "post") {
-      this.http.post(this.url, this.formValue).subscribe({
-        next: (return_api: ReturnApi) => {
+      this.http.post<null>(this.url, this.formValue).subscribe({
+        next: (return_api: ReturnApi<null>) => {
           if (return_api?.message != null) {
             this.toast.success(return_api.message);
           }
@@ -79,8 +80,8 @@ export class DialogForm implements AfterViewInit {
       });
     }
     else if (this.method == "put") {
-      this.http.put(this.url, this.formValue).subscribe({
-        next: (return_api: ReturnApi) => {
+      this.http.put<null>(this.url, this.formValue).subscribe({
+        next: (return_api: ReturnApi<null>) => {
           if (return_api?.message != null) {
             this.toast.success(return_api.message);
           }

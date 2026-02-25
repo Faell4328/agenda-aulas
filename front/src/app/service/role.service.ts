@@ -3,6 +3,7 @@ import { Http } from './http.service';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { LessonService } from './lesson.service';
+import { ReturnApi, Roles } from '../interfaces_types';
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +23,8 @@ export class RoleService {
   }
 
   check(){
-    this.http.get("/").subscribe({
-      next: (return_api: ReturnApi) => {
+    this.http.get<Roles>("/").subscribe({
+      next: (return_api: ReturnApi<Roles>) => {
         if(return_api?.data !== null){
           console.log("Role atualizada");
           console.log(return_api.data);

@@ -8,6 +8,7 @@ import { Router, RouterLink } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
 import { Http } from '../../service/http.service';
 import { HotToastService } from '@ngxpert/hot-toast';
+import { ReturnApi } from '@src/app/interfaces_types';
 
 @Component({
   selector: 'app-cadastrar',
@@ -31,8 +32,8 @@ export class Cadastrar {
       "password": this.password
     }
 
-    this.http.post("/cadastrar", data).subscribe({
-      next: (return_api) => {
+    this.http.post<null>("/cadastrar", data).subscribe({
+      next: (return_api: ReturnApi<null>) => {
         if((typeof return_api.message) == "string"){
           this.toast.success(return_api.message);
         }

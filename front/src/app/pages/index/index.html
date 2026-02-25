@@ -1,4 +1,4 @@
-<div style="display: flex; justify-content: space-between; width: 90%; margin: auto; padding: 30px;">
+<div id="container">
     <div id="container-calendar">
         <div id="calendar">
             <div style="border-radius: 10px 0px 0px 0px" class="day-of-the-week">Dom</div>
@@ -8,11 +8,11 @@
             <div class="day-of-the-week">Qui</div>
             <div class="day-of-the-week">Sex</div>
             <div style="border-radius: 0px 10px 0px 0px" class="day-of-the-week">Sáb</div>
-            <div id="day-{{element_information.day}}" class="datas {{((lessonService.current_day == element_information.day) && (lessonService.lesson_selected == null) || (lessonService.lesson_selected == element_information.day)) ? 'lesson-selected' : ''}}" (click)="lessonService.selectLesson(element_information.day)" style="display: block; position: relative; grid-template-columns: repeat(7, 80px);" *ngFor="let element_information of lessonService.elements_information()">
-                <div style="position: relative;" class="dia">
+            <div id="day-{{element_information.day}}" class="container-days {{((lessonService.current_day == element_information.day) && (lessonService.lesson_selected == null) || (lessonService.lesson_selected == element_information.day)) ? 'lesson-selected' : ''}}" (click)="lessonService.selectLesson(element_information.day)" *ngFor="let element_information of lessonService.elements_information()">
+                <div class="days">
                     <p>{{(element_information.day < 10) ? ('0' + element_information.day) : element_information.day}}</p>
                 </div>
-                <div style="position: absolute; top: 10px; right: 5px;" class="lesson" *ngIf="element_information.lesson == true"></div>
+                <div style="position: absolute; top: 10px; right: 5px;" class="with-lesson" *ngIf="element_information.lesson == true"></div>
             </div>
         </div>
     </div>
@@ -21,27 +21,27 @@
         <br /><hr /><br />
         <p *ngIf="lessonService.lesson_of_the_day.length === 0">Não tem lição nesse dia</p>
         <div *ngIf="lessonService.lesson_of_the_day.length > 0">
-            <div style="position: relative; margin-bottom: 20px;" *ngFor="let lesson of lessonService.lesson_of_the_day">
-                <div style="position: absolute; top: -8px; right: 0px; background-color: #92cfb5; padding: 5px; border-radius: 30px; margin-bottom: 10px;" *ngIf="lesson.is_ingressed">Ingressado</div>
-                <div style="position: absolute; top: -8px; right: 0px; background-color: #cf9292; padding: 5px; border-radius: 30px; margin-bottom: 10px;" *ngIf="(!lesson.is_ingressed && (lesson.current_quantity >= lesson.max_quantity))">Aula cheia</div>
-                <h3 style="text-align: center; margin-bottom: 20px;">Aula: {{lesson.name}}</h3>
-                <div style="display: flex; justify-content: space-around; gap: 20px;">
+            <div *ngFor="let lesson of lessonService.lesson_of_the_day">
+                <div class="notificaion" *ngIf="lesson.is_ingressed">Ingressado</div>
+                <div class="notificaion" *ngIf="(!lesson.is_ingressed && (lesson.current_quantity >= lesson.max_quantity))">Aula cheia</div>
+                <h3 class="lesson-name">Aula: {{lesson.name}}</h3>
+                <div class="container-lesson-details">
                     <div>
-                        <p style="margin-bottom: 20px;">Quantidade ingressada: {{lesson.current_quantity}}</p>
-                        <p style="margin-bottom: 20px;">Horário de início: {{lesson.timestamp_lesson_start | date:'HH:mm'}}</p>
-                        <p style="margin-bottom: 20px;">Professor: {{lesson.teacher}}</p>
+                        <p class="text-lesson-details">Quantidade ingressada: {{lesson.current_quantity}}</p>
+                        <p class="text-lesson-details">Horário de início: {{lesson.timestamp_lesson_start | date:'HH:mm'}}</p>
+                        <p class="text-lesson-details">Professor: {{lesson.teacher}}</p>
                     </div>
                     <div>
-                        <p style="margin-bottom: 20px;">Quantidade máxima: {{lesson.max_quantity}}</p>
-                        <p style="margin-bottom: 20px;">Horário de término: {{lesson.timestamp_lesson_finish | date:'HH:mm'}}</p>
-                        <p style="margin-bottom: 20px;">Aluno ingressados: {{(lesson.students && lesson.students.length > 0) ? lesson.students.sort().join(', ') : 'Nenhum'}}</p>
+                        <p class="text-lesson-details">Quantidade máxima: {{lesson.max_quantity}}</p>
+                        <p class="text-lesson-details">Horário de término: {{lesson.timestamp_lesson_finish | date:'HH:mm'}}</p>
+                        <p class="text-lesson-details">Aluno ingressados: {{(lesson.students && lesson.students.length > 0) ? lesson.students.sort().join(', ') : 'Nenhum'}}</p>
                     </div>
                 </div>
-                <div style="display: flex; justify-content: space-around; gap: 20px;">
-                    <button (click)="joinLesson(lesson.id)" style="margin: 10px; padding: 20px; background-color: #5c85d7; border-radius: 10px;" mat-raised-button *ngIf="(lesson.is_ingressed == undefined) && (roleService.role() == 'student')">Ingressar</button>
-                    <button (click)="leaveLesson(lesson.id)" style="margin: 10px; padding: 20px; background-color: #d75c5c; border-radius: 10px;" mat-raised-button *ngIf="((lesson.is_ingressed == true) && (roleService.role() == 'student'))">Desingressar</button>
-                    <button (click)="editLesson(lesson.id)" style="margin: 10px; padding: 20px; background-color: #5c85d7; border-radius: 10px;" mat-raised-button *ngIf="(roleService.role() == 'teacher')">Editar</button>
-                    <button (click)="deleteLesson(lesson.id, lesson.timestamp_lesson_start)" style="margin: 10px; padding: 20px; background-color: #d75c5c; border-radius: 10px;" mat-raised-button *ngIf="(roleService.role() == 'teacher')">Deletar</button>
+                <div class="container-lesson-actions">
+                    <button (click)="joinLesson(lesson.id)" class="button-lesson-actions-blue" mat-raised-button *ngIf="(lesson.is_ingressed == undefined) && (roleService.role() == 'student')">Ingressar</button>
+                    <button (click)="leaveLesson(lesson.id)" class="button-lesson-actions-red" mat-raised-button *ngIf="((lesson.is_ingressed == true) && (roleService.role() == 'student'))">Desingressar</button>
+                    <button (click)="editLesson(lesson.id)" class="button-lesson-actions-blue" mat-raised-button *ngIf="(roleService.role() == 'teacher')">Editar</button>
+                    <button (click)="deleteLesson(lesson.id, lesson.timestamp_lesson_start)" class="button-lesson-actions-red" mat-raised-button *ngIf="(roleService.role() == 'teacher')">Deletar</button>
                 </div>
                 <hr style="margin-bottom: 30px;" />
             </div>

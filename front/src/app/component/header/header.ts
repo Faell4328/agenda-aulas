@@ -8,6 +8,7 @@ import { DialogForm } from '../dialog-form/dialog-form';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { CommonModule } from '@angular/common';
 import { LessonService } from '@src/app/service/lesson.service';
+import { ReturnApi } from '@src/app/interfaces_types';
 
 @Component({
   selector: 'header',
@@ -71,8 +72,8 @@ export class Header {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == true) {
-        this.http.post("/logout", null).subscribe({
-          next: (return_api) => {
+        this.http.post<null>("/logout", null).subscribe({
+          next: (return_api: ReturnApi<null>) => {
             if ((typeof return_api.message) == "string") {
               this.toast.success(return_api.message);
             }

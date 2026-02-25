@@ -8,6 +8,7 @@ import { Router, RouterLink } from '@angular/router';
 import { Http } from '../../service/http.service';
 import { RoleService } from '../../service/role.service';
 import { HotToastService } from '@ngxpert/hot-toast';
+import { ReturnApi } from '@src/app/interfaces_types';
 
 @Component({
   selector: 'app-login',
@@ -27,8 +28,8 @@ export class Login {
       "password": this.password
     }
 
-    this.http.post("/login", data).subscribe({
-      next: (return_api: ReturnApi) => {
+    this.http.post<null>("/login", data).subscribe({
+      next: (return_api: ReturnApi<null>) => {
         if(return_api?.message != null){
           this.toast.success(return_api.message);
         }
