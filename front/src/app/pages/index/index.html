@@ -8,7 +8,7 @@
             <div class="day-of-the-week">Qui</div>
             <div class="day-of-the-week">Sex</div>
             <div style="border-radius: 0px 10px 0px 0px" class="day-of-the-week">Sáb</div>
-            <div id="day-{{element_information.day}}" class="container-days {{((lessonService.current_day == element_information.day) && (lessonService.lesson_selected == null) || (lessonService.lesson_selected == element_information.day)) ? 'lesson-selected' : ''}}" (click)="lessonService.selectLesson(element_information.day)" *ngFor="let element_information of lessonService.elements_information()">
+            <div id="day-{{element_information.day}}" class="container-days {{((lessonService.current_day == element_information.day) && (lessonService.lesson_selected == null) || (lessonService.lesson_selected == element_information.day)) ? 'lesson-selected' : ''}} {{ element_information.current_month ? '' : 'outside-month' }}" (click)="lessonService.selectLesson(element_information.day, element_information.current_month)" *ngFor="let element_information of lessonService.elements_information()">
                 <div class="days">
                     <p>{{(element_information.day < 10) ? ('0' + element_information.day) : element_information.day}}</p>
                 </div>

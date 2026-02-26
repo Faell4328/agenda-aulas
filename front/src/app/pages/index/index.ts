@@ -123,8 +123,8 @@ export class Index implements OnInit {
         method: "put",
         url: `/aulas/atualizar?id=${lesson_id}`,
         runAfterSucess: () => {
-          this.lessonService.getAllLessons(true);
-          this.lessonService.getYourLessons(true);
+          this.lessonService.getAllLessons();
+          this.lessonService.getYourLessons();
         },
       },
     });

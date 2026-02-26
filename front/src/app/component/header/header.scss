@@ -33,6 +33,7 @@ button{
     height: 60px;
     margin: 0px 30px;
 
+    user-select: none;
     filter: invert(1);
 }
 
@@ -45,6 +46,7 @@ button{
     height: 20px;
     margin: 0px 12px 0px 0px;
 
+    user-select: none;
     filter: invert(1);
 }
 
@@ -57,6 +59,7 @@ button{
     height: 46px;
     margin: 0px 0px 0px 50px;
 
+    user-select: none;
     filter: invert(0);
 }
 
@@ -72,6 +75,8 @@ button{
     flex-direction: row;
     align-self: center;
     gap: 15px;
+
+    user-select: none;
 }
 
 .text-menu{
@@ -80,4 +85,6 @@ button{
     font-size: 18px;
     color: #fff;
     margin: 0px 6px 0px 0px;
+
+    user-select: none;
 }

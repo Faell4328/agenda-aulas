@@ -84,10 +84,10 @@ export class LessonService {
     }
 
     // Preparation of the weeks
-    let last_day_of_last_month = new Date(this.ano_atual, this.mes_atual - 1, 0).getDate();
+    let last_day_of_last_month = new Date(this.ano_atual, this.selected_month - 1, 0).getDate();
     let day_of_weeks = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
-    let first_day_of_the_week = new Date(this.ano_atual, this.mes_atual - 1, 1).getDay();
-    let last_day_of_month = new Date(this.ano_atual, this.mes_atual, 0).getDate();
+    let first_day_of_the_week = new Date(this.ano_atual, this.selected_month - 1, 1).getDay();
+    let last_day_of_month = new Date(this.ano_atual, this.selected_month, 0).getDate();
 
     let days_of_week = [];
     let cont_lessons = 0;
@@ -236,14 +236,14 @@ export class LessonService {
     if(is_update == false) {
       this.elements_information.set(days_of_week);
       if(this.lesson_selected == null) {
-        this.selectLesson(this.current_day);
+        this.selectLesson(this.current_day, true);
       }
       else{
         this.loadMenu(this.lesson_selected);
       }
     }
     else{
-      this.selectLesson(this.lesson_selected);
+      this.selectLesson(this.lesson_selected, true);
     }
   }
 
@@ -280,10 +280,11 @@ export class LessonService {
   }
 
   public lesson_selected: any = null;
-  public selectLesson(day_selected: any) {
-    console.log("Aula selecionada")
-    console.log("Aula antida")
-    console.log(this.lesson_selected);
+  public selectLesson(day_selected: any, current_month: boolean) {
+
+    if(current_month == false) {
+      return;
+    }
 
     document.getElementById(`day-${this.current_day}`)?.classList.remove("lesson-selected");
 
