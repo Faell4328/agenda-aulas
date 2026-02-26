@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Model\User;
 use App\Tools\Cookie;
 
 class Auth{
-    public function logInUser($email, $password){
+    public function loginUser(string $email, string $password): array{
         $user_model = new User;
         $cookie = new Cookie;
-        $user_information = null;
 
         try{
             $user_information = $user_model -> findByEmailAndPassword($email, $password);
@@ -21,19 +22,18 @@ class Auth{
                 throw new \Exception("Email ou senha incorreto");
             }
         }
-        catch(\Exception $ex){
-            if($ex -> getPrevious() == ""){
+        catch(\Throwable $ex){
+            if($ex->getMessage() === "Email ou senha incorreto"){
                 return ["status" => 400, "message" => $ex -> getMessage(), "redirect" => null, "data" => null];
             }
-            else{
-                return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
-            }
+
+            return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
         }
 
         return ["status" => 200, "message" => "Logado com sucesso", "redirect" => "/", "data" => $user_information["role"]];
     }
 
-    public function registerUser($name, $role, $email, $password){
+    public function registerUser(string $name, string $role, string $email, string $password): array{
         $user_model = new User;
 
         try{
@@ -44,25 +44,24 @@ class Auth{
                 throw new \Exception("Email já cadastrado");
             }
         }
-        catch(\Exception $ex){
-            if($ex -> getPrevious() == ""){
+        catch(\Throwable $ex){
+            if($ex->getMessage() === "Email já cadastrado"){
                 return ["status" => 400, "message" => $ex -> getMessage(), "redirect" => null, "data" => null];
             }
-            else{
-                return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
-            }
+
+            return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
         }
 
         return ["status" => 200, "message" => "Cadastrado com sucesso", "redirect" => "/login", "data" => null];
     }
 
-    public function logOut($token){
+    public function logOut(string $token): array{
         $cookie = new Cookie;
 
         try{
             $cookie -> deleteLoginToken($token);
         }
-        catch(\Exception $ex){
+        catch(\Throwable $ex){
             return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
         }
 

@@ -24,7 +24,7 @@ export class Index {
 
   readonly dialog = inject(MatDialog);
 
-  clickLesson(element_id: any) {
+  clickLesson(element_id: string) {
     this.router.navigate([`/aula/${element_id}`]);
   }
 

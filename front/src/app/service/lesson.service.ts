@@ -2,7 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { Http } from './http.service';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngxpert/hot-toast';
-import { AllLessons, ReturnApi, YourLessons } from '../interfaces_types';
+import { AllLessons, CalendarDay, Lesson, ReturnApi, YourLessons } from '../interfaces_types';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +12,7 @@ export class LessonService {
   constructor(private http: Http, private router: Router, private toast: HotToastService) { }
 
   public months_in_portugues = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+  private readonly day_of_weeks_in_portugues = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
   public current_year = new Date().getFullYear();
   public selected_month = new Date().getMonth() + 1;
   public current_day = new Date().getDate();
@@ -22,14 +23,14 @@ export class LessonService {
   public controller_req_all = false;
   public controller_req_your = false;
 
-  public lessons_calender = signal<any>([]);
+  public lessons_calender = signal<CalendarDay[]>([]);
 
   
   public getAllLessons(is_update: boolean = false) {
     this.http.get<AllLessons>(`/aulas?month=${this.months_in_portugues[this.selected_month - 1]}`).subscribe({
       next: (return_api: ReturnApi<AllLessons>) => {
         if (return_api.data !== null) {
-          this.all_lessons = return_api.data;
+          this.all_lessons = [...return_api.data].sort((lesson_a, lesson_b) => lesson_a.timestamp_lesson_start - lesson_b.timestamp_lesson_start);
         }
 
         this.controller_req_all = true;
@@ -69,197 +70,101 @@ export class LessonService {
   }
 
   public loadLessons(is_update: boolean = false) {
-    if (this.controller_req_all == false || this.controller_req_your == false) {
+    if (this.controller_req_all === false || this.controller_req_your === false) {
       return;
     }
 
-    let day_of_weeks_in_portugues = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+    const last_day_of_last_month = new Date(this.current_year, this.selected_month - 1, 0).getDate();
+    const first_day_weekday = new Date(this.current_year, this.selected_month - 1, 1).getDay();
+    const last_day_of_month = new Date(this.current_year, this.selected_month, 0).getDate();
 
-    let last_day_of_last_month = new Date(this.current_year, this.selected_month - 1, 0).getDate();
-    let first_day_weekday = new Date(this.current_year, this.selected_month - 1, 1).getDay();
-    let last_day_of_month = new Date(this.current_year, this.selected_month, 0).getDate();
-
-    let lessons = [];
+    const lessons: CalendarDay[] = [];
     let cont_lessons = 0;
 
-    for(var day = 0; day < last_day_of_month; day++) {
-      if(day == 0){
+    for (let weekday = 0; weekday < first_day_weekday; weekday++) {
+      lessons.push({
+        day: last_day_of_last_month - first_day_weekday + weekday + 1,
+        day_of_the_week: this.day_of_weeks_in_portugues[weekday],
+        current_month: false,
+      });
+    }
 
-        let with_lesson = false;
-        if((day+1) == new Date(this.all_lessons[cont_lessons]?.timestamp_lesson_start).getDate()) {
-          with_lesson = true;
-          while(cont_lessons < this.all_lessons.length && (day + 1) == new Date(this.all_lessons[cont_lessons]?.timestamp_lesson_start).getDate()){
-            cont_lessons++;
-          }
-        }
+    for (let day = 1; day <= last_day_of_month; day++) {
+      let with_lesson = false;
 
-        if(first_day_weekday == 1) {
-          lessons.push({ "day": last_day_of_last_month, "day_of_the_week": day_of_weeks_in_portugues[0], current_month: false });
-          lessons.push({ "day": (day+1) , "day_of_the_week": day_of_weeks_in_portugues[1], current_month: true, with_lesson });
-        }
-        else if(first_day_weekday == 2) {
-          lessons.push({ "day": last_day_of_last_month - 1, "day_of_the_week": day_of_weeks_in_portugues[0], current_month: false });
-          lessons.push({ "day": last_day_of_last_month, "day_of_the_week": day_of_weeks_in_portugues[1], current_month: false });
-          lessons.push({ "day": (day+1) , "day_of_the_week": day_of_weeks_in_portugues[2], current_month: true, with_lesson });
-        }
-        else if(first_day_weekday == 3) {
-          lessons.push({ "day": last_day_of_last_month - 2, "day_of_the_week": day_of_weeks_in_portugues[0], current_month: false });
-          lessons.push({ "day": last_day_of_last_month - 1, "day_of_the_week": day_of_weeks_in_portugues[1], current_month: false });
-          lessons.push({ "day": last_day_of_last_month, "day_of_the_week": day_of_weeks_in_portugues[2], current_month: false });
-          lessons.push({ "day": (day+1) , "day_of_the_week": day_of_weeks_in_portugues[3], current_month: true, with_lesson });
-        }
-        else if(first_day_weekday == 4) {
-          lessons.push({ "day": last_day_of_last_month - 3, "day_of_the_week": day_of_weeks_in_portugues[0], current_month: false });
-          lessons.push({ "day": last_day_of_last_month - 2, "day_of_the_week": day_of_weeks_in_portugues[1], current_month: false });
-          lessons.push({ "day": last_day_of_last_month - 1, "day_of_the_week": day_of_weeks_in_portugues[2], current_month: false });
-          lessons.push({ "day": last_day_of_last_month, "day_of_the_week": day_of_weeks_in_portugues[3], current_month: false });
-          lessons.push({ "day": (day+1) , "day_of_the_week": day_of_weeks_in_portugues[4], current_month: true, with_lesson });
-        }
-        else if(first_day_weekday == 5) {
-          lessons.push({ "day": last_day_of_last_month - 4, "day_of_the_week": day_of_weeks_in_portugues[0], current_month: false });
-          lessons.push({ "day": last_day_of_last_month - 3, "day_of_the_week": day_of_weeks_in_portugues[1], current_month: false });
-          lessons.push({ "day": last_day_of_last_month - 2, "day_of_the_week": day_of_weeks_in_portugues[2], current_month: false });
-          lessons.push({ "day": last_day_of_last_month - 1, "day_of_the_week": day_of_weeks_in_portugues[3], current_month: false });
-          lessons.push({ "day": last_day_of_last_month, "day_of_the_week": day_of_weeks_in_portugues[4], current_month: false });
-          lessons.push({ "day": (day+1) , "day_of_the_week": day_of_weeks_in_portugues[5], current_month: true, with_lesson });
-        }
-        else if(first_day_weekday == 6) {
-          lessons.push({ "day": last_day_of_last_month - 5, "day_of_the_week": day_of_weeks_in_portugues[0], current_month: false });
-          lessons.push({ "day": last_day_of_last_month - 4, "day_of_the_week": day_of_weeks_in_portugues[1], current_month: false });
-          lessons.push({ "day": last_day_of_last_month - 3, "day_of_the_week": day_of_weeks_in_portugues[2], current_month: false });
-          lessons.push({ "day": last_day_of_last_month - 2, "day_of_the_week": day_of_weeks_in_portugues[3], current_month: false });
-          lessons.push({ "day": last_day_of_last_month - 1, "day_of_the_week": day_of_weeks_in_portugues[4], current_month: false });
-          lessons.push({ "day": last_day_of_last_month, "day_of_the_week": day_of_weeks_in_portugues[5], current_month: false });
-          lessons.push({ "day": (day+1) , "day_of_the_week": day_of_weeks_in_portugues[6], current_month: true, with_lesson });
-        }
-        else{
-          lessons.push({ "day": (day+1) , "day_of_the_week": day_of_weeks_in_portugues[0], current_month: true, with_lesson });
-        }
+      while (
+        cont_lessons < this.all_lessons.length &&
+        new Date(this.all_lessons[cont_lessons].timestamp_lesson_start).getDate() === day
+      ) {
+        with_lesson = true;
+        cont_lessons++;
       }
-      else if((day+1) == last_day_of_month){
 
-        let with_lesson = false;
-        if((day+1) == new Date(this.all_lessons[cont_lessons]?.timestamp_lesson_start).getDate()) {
-          with_lesson = true;
-          while((day+1) == new Date(this.all_lessons[cont_lessons]?.timestamp_lesson_start).getDate()){
-            cont_lessons++;
-          }
-        }
+      lessons.push({
+        day,
+        day_of_the_week: this.day_of_weeks_in_portugues[(first_day_weekday + day - 1) % 7],
+        current_month: true,
+        with_lesson,
+      });
+    }
 
-        if(((first_day_weekday + day) % 7) == 0) {
-          lessons.push({ "day": (day+1) , "day_of_the_week": day_of_weeks_in_portugues[0], current_month: true, with_lesson });
-          lessons.push({ "day": 1, "day_of_the_week": day_of_weeks_in_portugues[1], current_month: false });
-          lessons.push({ "day": 2, "day_of_the_week": day_of_weeks_in_portugues[2], current_month: false });
-          lessons.push({ "day": 3, "day_of_the_week": day_of_weeks_in_portugues[3], current_month: false });
-          lessons.push({ "day": 4, "day_of_the_week": day_of_weeks_in_portugues[4], current_month: false });
-          lessons.push({ "day": 5, "day_of_the_week": day_of_weeks_in_portugues[5], current_month: false });
-          lessons.push({ "day": 6, "day_of_the_week": day_of_weeks_in_portugues[6], current_month: false });
-        }
-        else if(((first_day_weekday + day) % 7) == 1) {
-          lessons.push({ "day": (day+1) , "day_of_the_week": day_of_weeks_in_portugues[1], current_month: true, with_lesson });
-          lessons.push({ "day": 1, "day_of_the_week": day_of_weeks_in_portugues[2], current_month: false });
-          lessons.push({ "day": 2, "day_of_the_week": day_of_weeks_in_portugues[3], current_month: false });
-          lessons.push({ "day": 3, "day_of_the_week": day_of_weeks_in_portugues[4], current_month: false });
-          lessons.push({ "day": 4, "day_of_the_week": day_of_weeks_in_portugues[5], current_month: false });
-          lessons.push({ "day": 5, "day_of_the_week": day_of_weeks_in_portugues[6], current_month: false });
-        }
-        else if(((first_day_weekday + day) % 7) == 2) {
-          lessons.push({ "day": (day+1) , "day_of_the_week": day_of_weeks_in_portugues[2], current_month: true, with_lesson });
-          lessons.push({ "day": 1, "day_of_the_week": day_of_weeks_in_portugues[3], current_month: false });
-          lessons.push({ "day": 2, "day_of_the_week": day_of_weeks_in_portugues[4], current_month: false });
-          lessons.push({ "day": 3, "day_of_the_week": day_of_weeks_in_portugues[5], current_month: false });
-          lessons.push({ "day": 4, "day_of_the_week": day_of_weeks_in_portugues[6], current_month: false });
-        }
-        else if(((first_day_weekday + day) % 7) == 3) {
-          lessons.push({ "day": (day+1) , "day_of_the_week": day_of_weeks_in_portugues[3], current_month: true, with_lesson });
-          lessons.push({ "day": 1, "day_of_the_week": day_of_weeks_in_portugues[4], current_month: false });
-          lessons.push({ "day": 2, "day_of_the_week": day_of_weeks_in_portugues[5], current_month: false });
-          lessons.push({ "day": 3, "day_of_the_week": day_of_weeks_in_portugues[6], current_month: false });
-        }
-        else if(((first_day_weekday + day) % 7) == 4) {
-          lessons.push({ "day": (day+1) , "day_of_the_week": day_of_weeks_in_portugues[4], current_month: true, with_lesson });
-          lessons.push({ "day": 1, "day_of_the_week": day_of_weeks_in_portugues[5], current_month: false });
-          lessons.push({ "day": 2, "day_of_the_week": day_of_weeks_in_portugues[6], current_month: false });
-        }
-        else if(((first_day_weekday + day) % 7) == 5) {
-          lessons.push({ "day": (day+1) , "day_of_the_week": day_of_weeks_in_portugues[5], current_month: true, with_lesson });
-          lessons.push({ "day": 1, "day_of_the_week": day_of_weeks_in_portugues[6], current_month: false });
-        }
-        else {
-          lessons.push({ "day": (day+1) , "day_of_the_week": day_of_weeks_in_portugues[6], current_month: true, with_lesson });
-        }
-      }
-      else{
-        let with_lesson = false;
-        if((day+1) == new Date(this.all_lessons[cont_lessons]?.timestamp_lesson_start).getDate()) {
-          with_lesson = true;
-          while((day+1) == new Date(this.all_lessons[cont_lessons]?.timestamp_lesson_start).getDate()){
-            cont_lessons++;
-          }
-        }
-
-        lessons.push({ "day": (day+1) , "day_of_the_week": day_of_weeks_in_portugues[(first_day_weekday+day) % 7], current_month: true, with_lesson });
-      }
+    const remaining_days = (7 - (lessons.length % 7)) % 7;
+    for (let day = 1; day <= remaining_days; day++) {
+      lessons.push({
+        day,
+        day_of_the_week: this.day_of_weeks_in_portugues[(first_day_weekday + last_day_of_month - 1 + day) % 7],
+        current_month: false,
+      });
     }
 
     this.controller_req_all = false;
     this.controller_req_your = false;
 
-    if(is_update == false) {
+    if (is_update === false) {
       this.lessons_calender.set(lessons);
-      if(this.lesson_selected == null) {
+      if (this.lesson_selected === null) {
         this.selectLesson(this.current_day, true);
       }
-      else{
+      else {
         this.loadMenu(this.lesson_selected);
       }
     }
-    else{
+    else if (this.lesson_selected !== null) {
       this.selectLesson(this.lesson_selected, true);
     }
   }
 
-  public lesson_of_the_day: any = [];
-  public loadMenu(day: number){
+  public lesson_of_the_day: Lesson[] = [];
+  public loadMenu(day: number) {
 
-    let lessons_of_the_day = this.all_lessons.filter((lesson: any) => {
-      return new Date(lesson.timestamp_lesson_start).getDate() === day;
-    });
+    const your_lessons_ids = new Set(this.your_lessons.map((lesson) => lesson.id));
 
-    if(lessons_of_the_day.length > 0) {
-      this.your_lessons.forEach((your_lesson: any) => {
+    const lessons_of_the_day = this.all_lessons
+      .filter((lesson) => new Date(lesson.timestamp_lesson_start).getDate() === day)
+      .map((lesson) => ({ ...lesson, is_ingressed: your_lessons_ids.has(lesson.id) }));
 
-        let cont = 0;
-        while(cont < lessons_of_the_day.length) {
-          if(your_lesson.id == lessons_of_the_day[cont].id) {
-            lessons_of_the_day[cont] = { ...lessons_of_the_day[cont], is_ingressed: true };
-          }
-          cont++;
-        }
-      });
-    }
-    
     this.lesson_of_the_day = lessons_of_the_day;
   }
 
-  public lesson_selected: any = null;
-  public selectLesson(day_selected: any, current_month: boolean) {
+  public lesson_selected: number | null = null;
+  public isLessonSelected(day: number, current_month: boolean): boolean {
+    if (!current_month) {
+      return false;
+    }
 
-    if(current_month == false) {
+    if (this.lesson_selected !== null) {
+      return this.lesson_selected === day;
+    }
+
+    return this.current_day === day;
+  }
+
+  public selectLesson(day_selected: number, current_month: boolean) {
+
+    if (current_month === false) {
       return;
     }
 
-    document.getElementById(`day-${this.current_day}`)?.classList.remove("lesson-selected");
-
-    if(this.lesson_selected == null) {
-      document.getElementById(`day-${day_selected}`)?.classList.add("lesson-selected");
-    }
-    else{
-      document.getElementById(`day-${this.lesson_selected}`)?.classList.remove("lesson-selected");
-      document.getElementById(`day-${day_selected}`)?.classList.add("lesson-selected");
-    }
-    
-    
     this.lesson_selected = day_selected;
     this.loadMenu(day_selected);
   }

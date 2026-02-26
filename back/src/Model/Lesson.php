@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Model;
+declare(strict_types=1);
 
-use MongoDB\BSON\ObjectId;
+namespace App\Model;
 use App\Model\JoinLesson as JoinLessonModel;
 
 class Lesson extends BaseModel
@@ -80,7 +80,7 @@ class Lesson extends BaseModel
         $col = $this->collection('lessons');
         $col->deleteOne(['_id' => $this->toObjectId($lesson_id)]);
         // remove related join records
-        $join = new JoinLesson();
+        $join = new JoinLessonModel();
         $join->removeAllStudentsFromLesson($lesson_id);
     }
 

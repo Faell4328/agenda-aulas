@@ -1,5 +1,5 @@
 <mat-dialog-content class="mat-typography">
-  <form #frm="ngForm">
+  <form #frm="ngForm" (ngSubmit)="formSubmit()">
       <h3>{{title}}</h3>
       <hr />
       <div>
@@ -9,14 +9,14 @@
             <mat-label>{{input.label}}</mat-label>
 
             <div>
-              <input *ngIf="input.type != 'time' && input.type != 'date'" [(ngModel)]="form_value[input.name]" id={{input.id}} type={{input.type}} name={{input.name}} required matInput>
-              <input *ngIf="input.type == 'date'" (ngModelChange)="formatDate(input.id)" [(ngModel)]="form_value[input.name]" maxlength="10" pattern="[0-9]:[0-9]" id={{input.id}} type='text'name={{input.name}} required matInput>
-              <input *ngIf="input.type == 'time'" (ngModelChange)="formatTime(input.id)" [(ngModel)]="form_value[input.name]" maxlength="5" id={{input.id}} type='text' name={{input.name}} required matInput>
+              <input *ngIf="input.type != 'time' && input.type != 'date'" [(ngModel)]="form_value[input.name]" [id]="input.id" [type]="input.type" [name]="input.name" required matInput>
+              <input *ngIf="input.type == 'date'" (ngModelChange)="formatDate(input.id)" [(ngModel)]="form_value[input.name]" maxlength="10" pattern="[0-9/]*" [id]="input.id" type="text" [name]="input.name" required matInput>
+              <input *ngIf="input.type == 'time'" (ngModelChange)="formatTime(input.id)" [(ngModel)]="form_value[input.name]" maxlength="5" [id]="input.id" type="text" [name]="input.name" required matInput>
             </div>
 
           </mat-form-field>
         </div>
-        <button id="btn-submit" (click)="formSubmit()" mat-raised-button color="primary">{{title}}</button>
+        <button id="btn-submit" type="submit" mat-raised-button color="primary">{{title}}</button>
       </div>
   </form>
 </mat-dialog-content>

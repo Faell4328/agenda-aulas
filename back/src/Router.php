@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
 use App\Middleware;
-use App\Tools\Cookie;
 use App\Tools\SendingPattern;
+use App\Tools\Cookie;
 use App\Controller\Auth;
 use App\Controller\Lesson;
 
@@ -27,7 +29,7 @@ class Router{
         '/aulas/deletar' => ["DELETE"],
     ];
     
-    public function __construct($req_route_path, $req_method, $req_body_json){
+    public function __construct(string $req_route_path, string $req_method, ?object $req_body_json){
         if(array_key_exists($req_route_path, $this->accepted_routes_path_and_methods) && in_array($req_method, $this->accepted_routes_path_and_methods[$req_route_path])){
             $this->route($req_route_path, $req_body_json);
         }
@@ -36,7 +38,7 @@ class Router{
         }
     }
 
-    private function route($route, $req_body_json){
+    private function route(string $route, ?object $req_body_json): void{
         $middleware = new Middleware();
         $cookie = new Cookie();
 
@@ -59,7 +61,7 @@ class Router{
             $middleware -> routeWithoutLogin($user_information);
 
             $login_controller = new Auth();
-            $login_controller -> logInUser($req_body_json);
+            $login_controller -> loginUser($req_body_json);
         }
         else if($route == "/logout"){
             $middleware -> routeWithLogin($user_information);
@@ -69,7 +71,7 @@ class Router{
         }
         else if($route == "/aulas"){
             $lesson_controller = new Lesson();
-            $lesson_controller -> listLessons($user_information);
+            $lesson_controller -> listLessons();
         }
         else if($route == "/aulas/cadastradas"){
             $middleware -> routeForTeachersOnly($user_information);
@@ -99,7 +101,7 @@ class Router{
             $middleware -> routeForTeachersOnly($user_information);
             
             $lesson_controller = new Lesson();
-            $lesson_controller -> deleteLesson($req_body_json);
+            $lesson_controller -> deleteLesson();
         }
         else if($route == "/aulas/ingressar"){
             $middleware -> routeForStudentOnly($user_information);

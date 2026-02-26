@@ -18,5 +18,12 @@ export type Lesson = {
     is_ingressed?: boolean;
 }
 
+export type CalendarDay = {
+    day: number;
+    day_of_the_week: string;
+    current_month: boolean;
+    with_lesson?: boolean;
+}
+
 export type AllLessons = Lesson[];
 export type YourLessons = Lesson[];

@@ -12,31 +12,31 @@ export class RoleService {
 
   constructor(private http: Http, private router: Router, private toast: HotToastService, private lessonService: LessonService){}
 
-  public role = signal<string>("off");
+  public role = signal<Roles>("off");
 
-  public update_dependencies(){
-    this.lessonService.lesson_of_the_day = []
+  public update_dependencies() {
+    this.lessonService.lesson_of_the_day = [];
     this.lessonService.all_lessons = [];
     this.lessonService.your_lessons = [];
     this.lessonService.getAllLessons();
     this.lessonService.getYourLessons();
-    this.lessonService.lessons_calender.set([])
+    this.lessonService.lessons_calender.set([]);
   }
 
-  check(){
+  check() {
     this.http.get<Roles>("/").subscribe({
       next: (return_api: ReturnApi<Roles>) => {
-        if(return_api?.data !== null){
+        if (return_api?.data !== null) {
           this.role.set(return_api.data);
           this.update_dependencies();
         }
       },
       error: error => {
-        if(error.error.message != null){
+        if (error.error.message != null) {
           this.toast.error(error.error.message);
         }
 
-        if(error.error.redirect != null){
+        if (error.error.redirect != null) {
           this.router.navigate([error.error.redirect]);
         }
       }

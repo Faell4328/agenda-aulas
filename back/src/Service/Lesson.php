@@ -1,22 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Model\Lesson as LessonModel;
 use App\Model\JoinLesson as JoinLessonModel;
-use App\Model\User as UserModel;
 
 class Lesson{
-    // REMOVE O LESSON_ID
-    public function listLessons($month){
+    private const LESSON_DURATION_MS = 3000000;
+
+    public function listLessons(string $month): array{
         $timestamp_start_month = strtotime("first day of $month this year 00:00:00", time())*1000;
         $timestamp_end_month = strtotime("last day of $month this year 23:59:59", time())*1000;
 
 
         $lessonModel = new LessonModel;
-        $joinLessonModel = new JoinLessonModel;
-        $userModel = new UserModel;
-        $data = [];
 
         try{
             $lessons = $lessonModel -> listAll($timestamp_start_month, $timestamp_end_month);
@@ -40,18 +39,14 @@ class Lesson{
                 ]);
             }
         }
-        catch(\Exception $ex){
-            if($ex -> getPrevious() == ""){
-                return ["status" => 400, "message" => $ex -> getMessage(), "redirect" => null, "data" => null];
-            }
-
+        catch(\Throwable $ex){
             return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
         }
 
         return ["status" => 200, "message" => null, "redirect" => null, "data" => $data];
     }
 
-    public function listCreatedLessons($user_id){
+    public function listCreatedLessons($user_id): array{
         $lessonModel = new LessonModel;
         $data = [];
 
@@ -69,16 +64,14 @@ class Lesson{
                 ]);
             }
         }
-        catch(\Exception $ex){
-            if($ex -> getPrevious() != ""){
-                return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
-            }
+        catch(\Throwable $ex){
+            return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
         }
 
         return ["status" => 200, "message" => null, "redirect" => null, "data" => $data];
     }
 
-    public function listEnrolledLessons($user_id){
+    public function listEnrolledLessons($user_id): array{
         $lessonModel = new LessonModel;
         $data = [];
 
@@ -97,37 +90,40 @@ class Lesson{
             }
   
         }
-        catch(\Exception $ex){
-            if($ex -> getPrevious() != ""){
-                return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
-            }
+        catch(\Throwable $ex){
+            return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
         }
 
         return ["status" => 200, "message" => null, "redirect" => null, "data" => $data];
     }
 
-    public function createLesson($name, $timestamp_lesson_start, $quantity, $teacher_id){
+    public function createLesson(string $name, int $timestamp_lesson_start, int $quantity, $teacher_id): array{
         $lessonModel = new LessonModel;
 
-        // adding 50 minutes to the current time
-        $timestamp_lesson_finish = $timestamp_lesson_start+(3000*1000);
+        if ($quantity <= 0) {
+            return ["status" => 400, "message" => "Quantidade máxima deve ser maior que zero", "redirect" => null, "data" => null];
+        }
+
+        $timestamp_lesson_finish = $timestamp_lesson_start + self::LESSON_DURATION_MS;
 
         try{
             $lessonModel -> create($name, $timestamp_lesson_start, $timestamp_lesson_finish, $quantity, $teacher_id);
         }
-        catch(\Exception $ex){
-            if($ex -> getPrevious() != ""){
-                return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
-            }
+        catch(\Throwable $ex){
+            return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
         }
 
         return ["status" => 201, "message" => "Aula cadastrada", "redirect" => null, "data" => null];
     }
 
-    public function updateLesson($lesson_id, $name, $timestamp_lesson_start, $quantity){
+    public function updateLesson($lesson_id, string $name, int $timestamp_lesson_start, int $quantity): array{
         $lessonModel = new LessonModel;
 
-        $timestamp_lesson_finish = $timestamp_lesson_start+(3000*1000);
+        if ($quantity <= 0) {
+            return ["status" => 400, "message" => "Quantidade máxima deve ser maior que zero", "redirect" => null, "data" => null];
+        }
+
+        $timestamp_lesson_finish = $timestamp_lesson_start + self::LESSON_DURATION_MS;
 
         try{
             if($lessonModel -> exists($lesson_id) == true){
@@ -137,52 +133,50 @@ class Lesson{
                 throw new \Exception("Aula não existe");
             }
         }
-        catch(\Exception $ex){
-            if($ex -> getPrevious() == ""){
+        catch(\Throwable $ex){
+            if($ex -> getMessage() === "Aula não existe" || $ex -> getMessage() === 'A quantidade máxima não pode ser menor que a quantidade atual de alunos inscritos'){
                 return ["status" => 400, "message" => $ex -> getMessage(), "redirect" => null, "data" => null];
             }
-            else{
-                return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
-            }
+
+            return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
         }
 
         return ["status" => 200, "message" => "Aula atualizada", "redirect" => null, "data" => null];
     }
 
-    public function deleteLesson(){
+    public function deleteLesson($lesson_id): array{
         $lessonModel = new LessonModel;
 
         try{
-            if($lessonModel -> exists($_GET["id"]) == true){
-                $lessonModel -> delete($_GET["id"]);
+            if($lessonModel -> exists($lesson_id) == true){
+                $lessonModel -> delete($lesson_id);
             }
             else{
                 throw new \Exception("Aula não existe");
             }
         }
-        catch(\Exception $ex){
-            if($ex -> getPrevious() == ""){
+        catch(\Throwable $ex){
+            if($ex -> getMessage() === "Aula não existe"){
                 return ["status" => 400, "message" => $ex -> getMessage(), "redirect" => null, "data" => null];
             }
-            else{
-                return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
-            }
+
+            return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
         }
 
         return ["status" => 200, "message" => "Aula removida", "redirect" => "/", "data" => null];
     }
 
-    public function joinLesson($user_id){
+    public function joinLesson($user_id, $lesson_id): array{
         $joinModel = new JoinLessonModel;
         $lessonModel = new LessonModel;
 
         try{
-            if($joinModel -> checkIfYouAreAlreadyJoin($user_id, $_GET["id"]) !== 0){
+            if($joinModel -> checkIfYouAreAlreadyJoin($user_id, $lesson_id) !== 0){
                 throw new \Exception("Já está ingressado na aula");
             }
 
-            if($lessonModel -> exists($_GET["id"]) == true){
-                $specific_lesson = $lessonModel -> findById($_GET["id"]);
+            if($lessonModel -> exists($lesson_id) == true){
+                $specific_lesson = $lessonModel -> findById($lesson_id);
                 if($specific_lesson['current_quantity'] >= $specific_lesson['max_quantity']){
                     throw new \Exception("Aula já está cheia");
                 }
@@ -191,46 +185,41 @@ class Lesson{
                 throw new \Exception("Aula não encontrada");
             }
 
-            $joinModel -> joinLesson($_GET["id"], $user_id);
+            $joinModel -> joinLesson($lesson_id, $user_id);
         }
-        catch(\Exception $ex){
-            if($ex -> getPrevious() == ""){
+        catch(\Throwable $ex){
+            if(in_array($ex -> getMessage(), ["Já está ingressado na aula", "Aula já está cheia", "Aula não encontrada"], true)){
                 return ["status" => 400, "message" => $ex -> getMessage(), "redirect" => null, "data" => null];
             }
-            else{
-                return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
-            }
+
+            return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
         }
 
         return ["status" => 201, "message" => "Ingressou na aula", "redirect" => null, "data" => null];
 
     }
 
-    public function leaveLesson($user_id){
+    public function leaveLesson($user_id, $lesson_id): array{
         $joinModel = new JoinLessonModel;
         $lessonModel = new LessonModel;
 
         try{
-            if($joinModel -> checkIfYouAreAlreadyJoin($user_id, $_GET["id"]) == 0){
+            if($joinModel -> checkIfYouAreAlreadyJoin($user_id, $lesson_id) == 0){
                 throw new \Exception("Não está ingressado na aula");
             }
 
-            if($lessonModel -> exists($_GET["id"]) == true){
-                $specific_lesson = $lessonModel -> findById($_GET["id"]);
-            }
-            else{
+            if($lessonModel -> exists($lesson_id) != true){
                 throw new \Exception("Aula não encontrada");
             }
 
-            $joinModel -> leaveLesson($_GET["id"], $user_id);
+            $joinModel -> leaveLesson($lesson_id, $user_id);
         }
-        catch(\Exception $ex){
-            if($ex -> getPrevious() == ""){
+        catch(\Throwable $ex){
+            if(in_array($ex -> getMessage(), ["Não está ingressado na aula", "Aula não encontrada"], true)){
                 return ["status" => 400, "message" => $ex -> getMessage(), "redirect" => null, "data" => null];
             }
-            else{
-                return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
-            }
+
+            return ["status" => 500, "message" => "Ocorreu um erro interno", "redirect" => null, "data" => null];
         }
 
         return ["status" => 202, "message" => "Saiu da aula", "redirect" => null, "data" => null];

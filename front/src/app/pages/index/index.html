@@ -3,7 +3,9 @@
         <div id="calendar">
             <div *ngFor="let day of ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']" class="day-of-the-week">{{day}}</div>
             <div id="day-{{lesson_info.day}}"
-                class="container-days {{((lessonService.current_day == lesson_info.day) && (lessonService.lesson_selected == null) || (lessonService.lesson_selected == lesson_info.day)) ? 'lesson-selected' : ''}} {{ lesson_info.current_month ? '' : 'days-outside-month' }}"
+                class="container-days"
+                [class.lesson-selected]="lessonService.isLessonSelected(lesson_info.day, lesson_info.current_month)"
+                [class.days-outside-month]="!lesson_info.current_month"
                 (click)="lessonService.selectLesson(lesson_info.day, lesson_info.current_month)"
                 *ngFor="let lesson_info of lessonService.lessons_calender()">
                 <div class="days">
@@ -35,7 +37,7 @@
                     </div>
                 </div>
                 <div class="container-lesson-actions">
-                    <button (click)="joinLesson(lesson.id)" class="button-lesson-actions-blue" mat-raised-button *ngIf="(lesson.is_ingressed == undefined) && (roleService.role() == 'student')">Ingressar</button>
+                    <button (click)="joinLesson(lesson.id)" class="button-lesson-actions-blue" mat-raised-button *ngIf="(lesson.is_ingressed == false) && (roleService.role() == 'student')">Ingressar</button>
                     <button (click)="leaveLesson(lesson.id)" class="button-lesson-actions-red" mat-raised-button *ngIf="((lesson.is_ingressed == true) && (roleService.role() == 'student'))">Desingressar</button>
                     <button (click)="editLesson(lesson.id)" class="button-lesson-actions-blue" mat-raised-button *ngIf="(roleService.role() == 'teacher')">Editar</button>
                     <button (click)="deleteLesson(lesson.id)" class="button-lesson-actions-red" mat-raised-button *ngIf="(roleService.role() == 'teacher')">Deletar</button>

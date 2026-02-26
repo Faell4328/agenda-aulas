@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tools;
 
 use App\Model\Token;
@@ -17,6 +19,7 @@ class Cookie
         }
 
         if (isset($token_information['expiration_date']) && $token_information['expiration_date'] <= time()) {
+            $tokenModel->deleteLoginToken($token);
             return null;
         }
 
@@ -32,19 +35,34 @@ class Cookie
         return $this->findByToken($_COOKIE['token']);
     }
 
-    public function createLoginToken($user_id){
+    public function createLoginToken($user_id): void{
         $tokenModel = new Token();
         $token = bin2hex(random_bytes(32));
         $expiration_date = strtotime('+30 days');
+
         $tokenModel->createLoginToken($user_id, $token, $expiration_date);
-        // Not implemented as Only HTTP, because the project is simple.
-        setcookie('token', $token, $expiration_date, '/', 'localhost', true, false);
+
+        $is_secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+        setcookie('token', $token, [
+            'expires' => $expiration_date,
+            'path' => '/',
+            'secure' => $is_secure,
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]);
     }
 
-    public function deleteLoginToken($token){
+    public function deleteLoginToken(string $token): void{
         $tokenModel = new Token();
         $tokenModel->deleteLoginToken($token);
-        $expiration_date = strtotime('-360 days');
-        setcookie('token', '', $expiration_date, '/', 'localhost');
+
+        $is_secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+        setcookie('token', '', [
+            'expires' => strtotime('-360 days'),
+            'path' => '/',
+            'secure' => $is_secure,
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]);
     }
 }

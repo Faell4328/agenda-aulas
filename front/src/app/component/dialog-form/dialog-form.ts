@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -13,6 +13,22 @@ import { HotToastService } from '@ngxpert/hot-toast';
 import { Router } from '@angular/router';
 import { ReturnApi } from '@src/app/interfaces_types';
 
+type DialogFormInput = {
+  id: string;
+  label: string;
+  name: string;
+  type: string;
+  default?: string | null;
+};
+
+type DialogFormData = {
+  url_req: string;
+  method_req: 'post' | 'put';
+  title: string;
+  inputs: DialogFormInput[];
+  runAfterSucess?: () => void;
+};
+
 @Component({
   selector: 'dialog-form',
   providers: [provideNativeDateAdapter()],
@@ -24,27 +40,27 @@ import { ReturnApi } from '@src/app/interfaces_types';
 
 export class DialogForm implements AfterViewInit {
   public url_req: string = "";
-  public method_req: string = "";
+  public method_req: 'post' | 'put' = 'post';
   public title: string = "";
-  public inputs: Array<{ id: string, label: string, name: string; type: string, default: string | null }> = [];
+  public inputs: DialogFormInput[] = [];
   private runAfterSucess: (() => void) | null = null;
   
   public form_value: { [key: string]: string | number } = {};
   private old_length_time: number = 0;
   private old_length_date: number = 0;
 
-  constructor(private http: Http, private router: Router, private toast: HotToastService, @Inject(MAT_DIALOG_DATA) public data: any) {
+  constructor(private http: Http, private router: Router, private toast: HotToastService, @Inject(MAT_DIALOG_DATA) public data: DialogFormData) {
     this.url_req = this.data.url_req;
     this.method_req = this.data.method_req;
     this.title = this.data.title;
     this.inputs = this.data.inputs;
-    this.runAfterSucess = this.data.runAfterSucess;
+    this.runAfterSucess = this.data.runAfterSucess ?? null;
   }
 
   formSubmit() {
     if (this.form_value["time"] && this.form_value["date"]) {
 
-      if(typeof(this.form_value["time"]) !== "string" || typeof(this.form_value["date"]) !== "string") {
+      if (typeof(this.form_value["time"]) !== "string" || typeof(this.form_value["date"]) !== "string") {
         this.toast.error("Data e/ou hora está incorreta");
         return;
       }
@@ -62,9 +78,10 @@ export class DialogForm implements AfterViewInit {
     }
     else {
       this.toast.error("Não foi enviado a data e/ou hora");
+      return;
     }
 
-    if (this.method_req == "post") {
+    if (this.method_req === "post") {
       this.http.post<null>(this.url_req, this.form_value).subscribe({
         next: (return_api: ReturnApi<null>) => {
           if (return_api?.message != null) {
@@ -75,7 +92,7 @@ export class DialogForm implements AfterViewInit {
             this.router.navigate([return_api.redirect]);
           }
 
-          if(this.runAfterSucess) {
+          if (this.runAfterSucess) {
             this.runAfterSucess();
           }
         },
@@ -86,7 +103,7 @@ export class DialogForm implements AfterViewInit {
         }
       });
     }
-    else if (this.method_req == "put") {
+    else if (this.method_req === "put") {
       this.http.put<null>(this.url_req, this.form_value).subscribe({
         next: (return_api: ReturnApi<null>) => {
           if (return_api?.message != null) {
@@ -97,7 +114,7 @@ export class DialogForm implements AfterViewInit {
             this.router.navigate([return_api.redirect]);
           }
 
-          if(this.runAfterSucess) {
+          if (this.runAfterSucess) {
             this.runAfterSucess();
           }
         },
@@ -118,19 +135,19 @@ export class DialogForm implements AfterViewInit {
       return;
     }
 
-    if ((this.old_length_date < value?.length) && (value?.length == 2 || value?.length == 5)) {
+    if ((this.old_length_date < value.length) && (value.length === 2 || value.length === 5)) {
       input.value = value + "/";
     }
-    else if (value.length == 3 && value[2] != "/") {
+    else if (value.length === 3 && value[2] !== "/") {
       let new_value = value.split("");
       input.value = `${new_value[0]}${new_value[1]}/${new_value[2]}`;
     }
-    else if (value.length == 6 && value[5] != "/") {
+    else if (value.length === 6 && value[5] !== "/") {
       let new_value = value.split("");
-      input.value = `${new_value[0]}${new_value[1]}${new_value[2]}${new_value[3]}${new_value[4]}/${new_value[4]}`;
+      input.value = `${new_value[0]}${new_value[1]}/${new_value[2]}${new_value[3]}/${new_value[4]}${new_value[5]}`;
     }
 
-    this.old_length_date = value.length;
+    this.old_length_date = input.value.length;
   }
 
   formatTime(element_id: string) {
@@ -141,26 +158,24 @@ export class DialogForm implements AfterViewInit {
       return;
     }
 
-    if ((this.old_length_time < value?.length) && (value?.length == 2)) {
+    if ((this.old_length_time < value.length) && (value.length === 2)) {
       input.value = value + ":";
     }
-    else if (value.length == 3 && value[2] != ":") {
+    else if (value.length === 3 && value[2] !== ":") {
       let new_value = value.split("");
       input.value = `${new_value[0]}${new_value[1]}:${new_value[2]}`;
     }
 
-    this.old_length_time = value.length;
+    this.old_length_time = input.value.length;
   }
-
-  @Input() component!: any;
 
   ngAfterViewInit() {
     let inputs = [...this.inputs];
     inputs = inputs.reverse();
     inputs.forEach(input => {
-      if(input.default) {
+      if (input.default) {
         this.form_value[input.name] = input.default;
       }
-    })
+    });
   }
 }

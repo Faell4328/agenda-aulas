@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { RoleService } from '../../service/role.service';
 import { Http } from '../../service/http.service';
 import { DialogConfirmation } from '../dialog-confirmation/dialog-confirmation';
@@ -32,13 +32,16 @@ export class Header {
       });
   }
 
-  public current_route = "";
   public current_url: string;
 
   readonly dialog = inject(MatDialog);
 
+  public isAuthPage(): boolean {
+    return this.current_url === '/login' || this.current_url === '/cadastrar';
+  }
+
   previousMonth() {
-    if(this.lessonService.selected_month == 1) {
+    if (this.lessonService.selected_month === 1) {
       this.lessonService.selected_month = 13;
     }
 
@@ -47,7 +50,7 @@ export class Header {
   }
 
   nextMonth() {
-    if(this.lessonService.selected_month == 12) {
+    if (this.lessonService.selected_month === 12) {
       this.lessonService.selected_month = 0;
     }
 
@@ -106,10 +109,10 @@ export class Header {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result == true) {
+      if (result === true) {
         this.http.post<null>("/logout", null).subscribe({
           next: (return_api: ReturnApi<null>) => {
-            if ((typeof return_api.message) == "string") {
+            if ((typeof return_api.message) === "string") {
               this.toast.success(return_api.message);
             }
 
