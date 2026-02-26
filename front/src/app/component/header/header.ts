@@ -25,12 +25,12 @@ export class Header {
     this.currentUrl = this.router.url;
 
     this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
+      .pipe(filter(event => event instanceof NavigationEnd), takeUntilDestroyed())
       .subscribe((event: NavigationEnd) => {
         this.currentUrl = event.urlAfterRedirects;
         console.log('URL mudou:', this.currentUrl);
         console.log('URL atual:', this.router.url == "/login");
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
       });
   }
 

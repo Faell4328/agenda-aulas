@@ -130,7 +130,7 @@ export class Index implements OnInit {
     });
   }
 
-  deleteLesson(lesson_id: string, timestamp_lesson_start: number) {
+  deleteLesson(lesson_id: string) {
     const dialogRef = this.dialog.open(DialogConfirmation, {
       data: {
         title: "Deseja realmente deletar?",

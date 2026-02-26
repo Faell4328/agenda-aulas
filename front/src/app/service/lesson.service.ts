@@ -30,8 +30,8 @@ export class LessonService {
   public months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
   public getAllLessons(is_update: boolean = false) {
-    this.http.get<AllLessons>(`/aulas?month=${this.months[this.selected_month - 1]}`).subscribe({
-      next: (return_api: ReturnApi<AllLessons>) => {
+    this.http.get<AllLessons[]>(`/aulas?month=${this.months[this.selected_month - 1]}`).subscribe({
+      next: (return_api: ReturnApi<AllLessons[]>) => {
         if (return_api.data !== null) {
           this.all_lessons = return_api.data;
           console.log("all")
@@ -58,8 +58,8 @@ export class LessonService {
   }
 
   public getYourLessons(is_update: boolean = false) {
-    this.http.get<YourLessons>("/aulas/ingressadas").subscribe({
-      next: (return_api: ReturnApi<YourLessons>) => {
+    this.http.get<YourLessons[]>("/aulas/ingressadas").subscribe({
+      next: (return_api: ReturnApi<YourLessons[]>) => {
         if (return_api.data != null) {
           this.your_lessons = return_api.data;
           console.log("your")
@@ -251,7 +251,7 @@ export class LessonService {
   public loadMenu(day: number){
     console.log("Carregando menu");
 
-    const lessons_of_the_day = this.all_lessons.filter((lesson: any) => {
+    let lessons_of_the_day = this.all_lessons.filter((lesson: any) => {
       console.log(`${new Date(lesson.timestamp_lesson_start).getDate()} - ${day}`)
       return new Date(lesson.timestamp_lesson_start).getDate() === day;
     });

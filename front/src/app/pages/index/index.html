@@ -41,7 +41,7 @@
                     <button (click)="joinLesson(lesson.id)" class="button-lesson-actions-blue" mat-raised-button *ngIf="(lesson.is_ingressed == undefined) && (roleService.role() == 'student')">Ingressar</button>
                     <button (click)="leaveLesson(lesson.id)" class="button-lesson-actions-red" mat-raised-button *ngIf="((lesson.is_ingressed == true) && (roleService.role() == 'student'))">Desingressar</button>
                     <button (click)="editLesson(lesson.id)" class="button-lesson-actions-blue" mat-raised-button *ngIf="(roleService.role() == 'teacher')">Editar</button>
-                    <button (click)="deleteLesson(lesson.id, lesson.timestamp_lesson_start)" class="button-lesson-actions-red" mat-raised-button *ngIf="(roleService.role() == 'teacher')">Deletar</button>
+                    <button (click)="deleteLesson(lesson.id)" class="button-lesson-actions-red" mat-raised-button *ngIf="(roleService.role() == 'teacher')">Deletar</button>
                 </div>
                 <hr />
             </div>
