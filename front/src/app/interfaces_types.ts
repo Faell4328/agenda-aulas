@@ -15,6 +15,8 @@ export type AllLessons = {
     max_quantity: number;
     teacher: string;
     students: string[];
+    
+    is_ingressed?: boolean;
 }
 
 export type YourLessons = {

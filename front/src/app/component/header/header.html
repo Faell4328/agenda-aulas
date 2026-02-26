@@ -1,26 +1,26 @@
 <div id="header">
-    <a  class="{{(currentUrl == '/login' || currentUrl == '/cadastrar') ? 'middle' : ''}}" routerLink="/">
+    <a  class="{{(current_url == '/login' || current_url == '/cadastrar') ? 'middle' : ''}}" routerLink="/">
         <img id="logo" src="/logo.png" />
     </a>
 
-    <div class="{{(currentUrl == '/login' || currentUrl == '/cadastrar') ? 'hidden' : ''}} container-month">
+    <div class="container-month {{(current_url == '/login' || current_url == '/cadastrar') ? 'hidden' : ''}}">
         <img (click)="previousMonth()" class="arrow" src="/seta-esquerda.svg" />
-        <h1>{{ lessonService.months[lessonService.selected_month - 1] }} {{ lessonService.ano_atual }}</h1>
+        <h1>{{ lessonService.months_in_portugues[lessonService.selected_month - 1] }} {{ lessonService.current_year }}</h1>
         <img (click)="nextMonth()" class="arrow" src="/seta-direita.svg" />
     </div>
     
-    <div class="{{(currentUrl == '/login' || currentUrl == '/cadastrar') ? 'hidden' : ''}}" style="display: flex; align-items: center;">
-        <button style="display: flex; width: auto; height: 50px; padding: 20px; border-radius: 10px; background-color: #638cd9;" *ngIf="roleService.role() === 'teacher'" (click)="addLesson()">
+    <div class="container-actions {{(current_url == '/login' || current_url == '/cadastrar') ? 'hidden' : ''}}">
+        <button id="button-add-lesson" *ngIf="roleService.role() === 'teacher'" (click)="addLesson()">
             <img id="plus" src="/plus.svg" />
             <span class="text-menu">Nova Aula</span>
         </button>
 
         <button *ngIf="roleService.role() === 'off'"(click)="login()">
-            <img id="auth" src="/person.svg" />
+            <img class="auth" src="/person.svg" />
         </button>
 
         <button *ngIf="roleService.role() !== 'off'"(click)="logout()">
-            <img id="auth" src="/logout.svg" />
+            <img class="auth" src="/logout.svg" />
         </button>
     </div>
 </div>

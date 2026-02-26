@@ -1,24 +1,21 @@
 <div id="container">
     <div id="container-calendar">
         <div id="calendar">
-            <div style="border-radius: 10px 0px 0px 0px" class="day-of-the-week">Dom</div>
-            <div class="day-of-the-week">Seg</div>
-            <div class="day-of-the-week">Ter</div>
-            <div class="day-of-the-week">Qua</div>
-            <div class="day-of-the-week">Qui</div>
-            <div class="day-of-the-week">Sex</div>
-            <div style="border-radius: 0px 10px 0px 0px" class="day-of-the-week">Sáb</div>
-            <div id="day-{{element_information.day}}" class="container-days {{((lessonService.current_day == element_information.day) && (lessonService.lesson_selected == null) || (lessonService.lesson_selected == element_information.day)) ? 'lesson-selected' : ''}} {{ element_information.current_month ? '' : 'outside-month' }}" (click)="lessonService.selectLesson(element_information.day, element_information.current_month)" *ngFor="let element_information of lessonService.elements_information()">
+            <div *ngFor="let day of ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']" class="day-of-the-week">{{day}}</div>
+            <div id="day-{{lesson_info.day}}"
+                class="container-days {{((lessonService.current_day == lesson_info.day) && (lessonService.lesson_selected == null) || (lessonService.lesson_selected == lesson_info.day)) ? 'lesson-selected' : ''}} {{ lesson_info.current_month ? '' : 'days-outside-month' }}"
+                (click)="lessonService.selectLesson(lesson_info.day, lesson_info.current_month)"
+                *ngFor="let lesson_info of lessonService.lessons_calender()">
                 <div class="days">
-                    <p>{{(element_information.day < 10) ? ('0' + element_information.day) : element_information.day}}</p>
+                    <p>{{(lesson_info.day < 10) ? ('0' + lesson_info.day) : lesson_info.day}}</p>
                 </div>
-                <div style="position: absolute; top: 10px; right: 5px;" class="with-lesson" *ngIf="element_information.lesson == true"></div>
+                <div class="notification-with-lesson" *ngIf="lesson_info.with_lesson == true"></div>
             </div>
         </div>
     </div>
     <div id="container-menu">
         <h2>Detalhes da Aula</h2>
-        <br /><hr /><br />
+        <br /><hr />
         <p *ngIf="lessonService.lesson_of_the_day.length === 0">Não tem lição nesse dia</p>
         <div *ngIf="lessonService.lesson_of_the_day.length > 0">
             <div class="container-menu-lesson" *ngFor="let lesson of lessonService.lesson_of_the_day">
@@ -43,7 +40,7 @@
                     <button (click)="editLesson(lesson.id)" class="button-lesson-actions-blue" mat-raised-button *ngIf="(roleService.role() == 'teacher')">Editar</button>
                     <button (click)="deleteLesson(lesson.id)" class="button-lesson-actions-red" mat-raised-button *ngIf="(roleService.role() == 'teacher')">Deletar</button>
                 </div>
-                <hr />
+                <br /><hr /><br />
             </div>
         </div>
     </div>

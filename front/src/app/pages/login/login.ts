@@ -17,8 +17,8 @@ import { ReturnApi } from '@src/app/interfaces_types';
   styleUrl: './login.scss',
 })
 export class Login {
-  email: string = '';
-  password: string = '';
+  protected email: string = '';
+  protected password: string = '';
 
   constructor(private http: Http, private router: Router, private roleService: RoleService, private toast: HotToastService){}
 

@@ -16,9 +16,11 @@ import { MatIconModule } from '@angular/material/icon';
   encapsulation: ViewEncapsulation.None,
 })
 export class DialogConfirmation {
+
   public title = "";
   public message = "";
   public button_text = "";
+
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
     this.title = this.data.title;
     this.message = this.data.message;

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { Router } from '@angular/router';
@@ -18,7 +18,7 @@ import { ReturnApi } from '@src/app/interfaces_types';
   templateUrl: './index.html',
   styleUrl: './index.scss',
 })
-export class Index implements OnInit {
+export class Index {
 
   constructor(private http: Http, private router: Router, public roleService: RoleService, private toast: HotToastService, public lessonService: LessonService) { }
 
@@ -33,7 +33,7 @@ export class Index implements OnInit {
       next: (return_api: ReturnApi<null>) => {
         if (return_api.message) {
           this.toast.success(return_api.message);
-          // AQUI
+
           this.lessonService.getAllLessons(true);
           this.lessonService.getYourLessons(true);
         }
@@ -63,7 +63,7 @@ export class Index implements OnInit {
           next: (return_api) => {
             if (return_api.message) {
               this.toast.success(return_api.message);
-              // AQUI
+              
               this.lessonService.getAllLessons(true);
               this.lessonService.getYourLessons(true);
             }
@@ -89,7 +89,7 @@ export class Index implements OnInit {
 
     this.dialog.open(DialogForm, {
       data: {
-        dialog: [
+        inputs: [
           {
             "id": "input1",
             "label": "Nome",
@@ -120,8 +120,8 @@ export class Index implements OnInit {
           }
         ],
         title: "Atualizar aula",
-        method: "put",
-        url: `/aulas/atualizar?id=${lesson_id}`,
+        method_req: "put",
+        url_req: `/aulas/atualizar?id=${lesson_id}`,
         runAfterSucess: () => {
           this.lessonService.getAllLessons();
           this.lessonService.getYourLessons();
@@ -166,8 +166,4 @@ export class Index implements OnInit {
       }
     })
   };
-
-  ngOnInit(): void {
-    //this.getAllLessons();
-  }
 }

@@ -2,16 +2,16 @@
   <form #frm="ngForm">
       <h3>{{title}}</h3>
       <hr />
-      <div id="container-form">
-        <div *ngFor="let element of dialog">
-          <mat-form-field class="input-form">
+      <div>
+        <div *ngFor="let input of inputs">
+          <mat-form-field>
 
-            <mat-label>{{element.label}}</mat-label>
+            <mat-label>{{input.label}}</mat-label>
 
             <div>
-              <input *ngIf="element.type != 'time' && element.type != 'date'" [(ngModel)]="formValue[element.name]" id={{element.id}} type={element.type}} name={{element.name}} required matInput>
-              <input *ngIf="element.type == 'date'" (ngModelChange)="correctDate(element.id)" [(ngModel)]="formValue[element.name]" maxlength="10" pattern="[0-9]:[0-9]" id={{element.id}} type={element.type}} name={{element.name}} required matInput>
-              <input *ngIf="element.type == 'time'" (ngModelChange)="correctTime(element.id)" [(ngModel)]="formValue[element.name]" maxlength="5" id={{element.id}} type={element.type}} name={{element.name}} required matInput>
+              <input *ngIf="input.type != 'time' && input.type != 'date'" [(ngModel)]="form_value[input.name]" id={{input.id}} type={{input.type}} name={{input.name}} required matInput>
+              <input *ngIf="input.type == 'date'" (ngModelChange)="formatDate(input.id)" [(ngModel)]="form_value[input.name]" maxlength="10" pattern="[0-9]:[0-9]" id={{input.id}} type='text'name={{input.name}} required matInput>
+              <input *ngIf="input.type == 'time'" (ngModelChange)="formatTime(input.id)" [(ngModel)]="form_value[input.name]" maxlength="5" id={{input.id}} type='text' name={{input.name}} required matInput>
             </div>
 
           </mat-form-field>

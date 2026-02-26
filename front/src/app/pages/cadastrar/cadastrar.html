@@ -2,8 +2,8 @@
     <form #frm="ngForm">
         <h3>Cadastro</h3>
         <hr />
-        <div id="container-form">
-            <mat-form-field class="input-form">
+        <div id="container-form-elements">
+            <mat-form-field class="input">
                 <mat-label>Nome</mat-label>
                 <input [(ngModel)]="name" type="text" name='name' matInput>
             </mat-form-field>
@@ -25,16 +25,15 @@
                 <button
                     matIconButton
                     matSuffix
-                    (click)="clickEvent($event)"
+                    (click)="changePasswordVisibility($event)"
                     [attr.aria-label]="'Hide password'"
                     [attr.aria-pressed]="hide()"
-                    style="border: 0px"
                 >
                     <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
                 </button>
             </mat-form-field>
             <button id="btn-submit" (click)="formSubmit()" mat-raised-button color="primary">Cadastrar</button>
+            <a routerLink="/login">Já tem conta?</a>
         </div>
-        <a routerLink="/login">Já tem conta?</a>
     </form>
 </div>

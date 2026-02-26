@@ -1,20 +1,5 @@
 @use '../../../variables' as variable;
 
-.hidden{
-    display: none !important;
-}
-
-.middle{
-    margin: auto;
-}
-
-button{
-    background-color: transparent;
-    border: 0px;
-    height: 40px;
-    width: 100px;
-}
-
 #header{
     width: 90%;
     background-color: variable.$background-color-secondary;
@@ -26,65 +11,89 @@ button{
 
     border: 1px solid variable.$border-color;
     padding: 20px;
-}
 
-#logo{
-    width: 60px;
-    height: 60px;
-    margin: 0px 30px;
+    .hidden{
+        display: none !important;
+    }
 
-    user-select: none;
-    filter: invert(1);
-}
+    .middle{
+        margin: auto;
+    }
 
-#plus{
-    display: flex;
-    flex-direction: row;
-    align-self: center;
+    #logo{
+        width: 60px;
+        height: 60px;
+        margin: 0px 30px;
 
-    width: 20px;
-    height: 20px;
-    margin: 0px 12px 0px 0px;
+        user-select: none;
+        filter: invert(1);
+    }
 
-    user-select: none;
-    filter: invert(1);
-}
+    .container-month{
+        display: flex;
+        align-items: center;
 
-#auth{
-    display: flex;
-    flex-direction: row;
-    align-self: center;
+        user-select: none;
 
-    width: 46px;
-    height: 46px;
-    margin: 0px 0px 0px 50px;
+        .arrow{
+            width: 40px;
+            height: 40px;
+            padding: 30px;
 
-    user-select: none;
-    filter: invert(0);
-}
+            cursor: pointer;
+        }
+    }
 
-.arrow{
-    width: 40px;
-    height: 40px;
+    .container-actions{
+        display: flex;
+        align-items: center;
+        gap: 30px;
 
-    cursor: pointer;
-}
+        #button-add-lesson{
+            display: flex;
+            width: auto;
+            height: 50px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: variable.$blue;
 
-.container-month{
-    display: flex;
-    flex-direction: row;
-    align-self: center;
-    gap: 15px;
+            #plus{
+                display: flex;
+                flex-direction: row;
+                align-self: center;
 
-    user-select: none;
-}
+                width: 20px;
+                height: 20px;
+                margin-right: 12px;
 
-.text-menu{
-    display: flex;
-    align-self: center;
-    font-size: 18px;
-    color: #fff;
-    margin: 0px 6px 0px 0px;
+                user-select: none;
+                filter: invert(1);
+            }
 
-    user-select: none;
+            .text-menu{
+                display: flex;
+                align-self: center;
+                font-size: 18px;
+                color: #fff;
+                margin: 0px 6px 0px 0px;
+
+                user-select: none;
+            }
+        }
+
+        .auth{
+            width: 46px;
+            height: 46px;
+
+            user-select: none;
+            filter: invert(0);
+        }
+
+        button{
+            background-color: transparent;
+            border: 0px;
+            height: 40px;
+            width: 100px;
+        }
+    }
 }

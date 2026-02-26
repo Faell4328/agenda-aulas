@@ -23,43 +23,50 @@ import { ReturnApi } from '@src/app/interfaces_types';
 })
 
 export class DialogForm implements AfterViewInit {
-  public url: string = "";
-  public method: string = "";
+  public url_req: string = "";
+  public method_req: string = "";
   public title: string = "";
-  public dialog: Array<{ id: string, label: string, name: string; type: string, default: string | null }> = [];
-  public formValue: { [key: string]: any } = {};
-  private oldLengthTime: number = 0;
-  private oldLengthDate: number = 0;
-  private runAfterSucess: any = null;
+  public inputs: Array<{ id: string, label: string, name: string; type: string, default: string | null }> = [];
+  private runAfterSucess: (() => void) | null = null;
+  
+  public form_value: { [key: string]: string | number } = {};
+  private old_length_time: number = 0;
+  private old_length_date: number = 0;
 
   constructor(private http: Http, private router: Router, private toast: HotToastService, @Inject(MAT_DIALOG_DATA) public data: any) {
-    this.dialog = this.data.dialog;
-    this.method = this.data.method;
-    this.url = this.data.url;
+    this.url_req = this.data.url_req;
+    this.method_req = this.data.method_req;
     this.title = this.data.title;
+    this.inputs = this.data.inputs;
     this.runAfterSucess = this.data.runAfterSucess;
   }
 
   formSubmit() {
-    if (this.formValue["time"] && this.formValue["date"]) {
-      let date = this.formValue["date"].split("/");
-      date = date[1] + "/" + date[0] + "/" + date[2];
-      date = new Date(date + " " + this.formValue["time"]);
-      this.formValue["timestamp"] = Date.parse(date.toString());
+    if (this.form_value["time"] && this.form_value["date"]) {
 
-      if (!this.formValue["timestamp"] || this.formValue["date"].length < 10 || this.formValue["time"].length < 5) {
-        this.toast.error("Data e/ou hora estão inválidos");
+      if(typeof(this.form_value["time"]) !== "string" || typeof(this.form_value["date"]) !== "string") {
+        this.toast.error("Data e/ou hora está incorreta");
         return;
       }
-      console.error("O foi ajustado para: ")
-      console.error(this.formValue["timestamp"]);
+
+      let date: string | string[] = this.form_value["date"].split("/");
+      date = date[1] + "/" + date[0] + "/" + date[2];
+      let timestamp = new Date(date + " " + this.form_value["time"]).toString();
+      console.log(timestamp)
+      this.form_value["timestamp"] = Date.parse(timestamp);
+
+      if (!this.form_value["timestamp"] || this.form_value["date"].length < 10 || this.form_value["time"].length < 5) {
+        this.toast.error("Data e/ou hora está incorreta");
+        return;
+      }
+
     }
     else {
       this.toast.error("Não foi enviado a data e/ou hora");
     }
 
-    if (this.method == "post") {
-      this.http.post<null>(this.url, this.formValue).subscribe({
+    if (this.method_req == "post") {
+      this.http.post<null>(this.url_req, this.form_value).subscribe({
         next: (return_api: ReturnApi<null>) => {
           if (return_api?.message != null) {
             this.toast.success(return_api.message);
@@ -69,7 +76,9 @@ export class DialogForm implements AfterViewInit {
             this.router.navigate([return_api.redirect]);
           }
 
-          this.runAfterSucess();
+          if(this.runAfterSucess) {
+            this.runAfterSucess();
+          }
         },
         error: (error) => {
           console.log(error);
@@ -79,8 +88,8 @@ export class DialogForm implements AfterViewInit {
         }
       });
     }
-    else if (this.method == "put") {
-      this.http.put<null>(this.url, this.formValue).subscribe({
+    else if (this.method_req == "put") {
+      this.http.put<null>(this.url_req, this.form_value).subscribe({
         next: (return_api: ReturnApi<null>) => {
           if (return_api?.message != null) {
             this.toast.success(return_api.message);
@@ -90,7 +99,9 @@ export class DialogForm implements AfterViewInit {
             this.router.navigate([return_api.redirect]);
           }
 
-          this.runAfterSucess();
+          if(this.runAfterSucess) {
+            this.runAfterSucess();
+          }
         },
         error: (error) => {
           console.log(error);
@@ -102,59 +113,57 @@ export class DialogForm implements AfterViewInit {
     }
   }
 
-  correctDate(nameElement: string) {
-    const element: any = document.getElementById(nameElement);
-    const value: string | null = element.value;
-
-    if (!value) {
+  formatDate(element_id: string) {
+    const input: HTMLInputElement | null = document.getElementById(element_id) as HTMLInputElement | null;
+    const value: string | null = input?.value ?? null;
+    
+    if (input == null || value == null) {
       return;
     }
 
-    if ((this.oldLengthDate < value?.length) && (value?.length == 2 || value?.length == 5)) {
-      element.value = value + "/";
+    if ((this.old_length_date < value?.length) && (value?.length == 2 || value?.length == 5)) {
+      input.value = value + "/";
     }
     else if (value.length == 3 && value[2] != "/") {
-      let newValue = value.split("");
-      element.value = `${newValue[0]}${newValue[1]}/${newValue[2]}`;
+      let new_value = value.split("");
+      input.value = `${new_value[0]}${new_value[1]}/${new_value[2]}`;
     }
     else if (value.length == 6 && value[5] != "/") {
-      let newValue = value.split("");
-      element.value = `${newValue[0]}${newValue[1]}${newValue[2]}${newValue[3]}${newValue[4]}/${newValue[4]}`;
+      let new_value = value.split("");
+      input.value = `${new_value[0]}${new_value[1]}${new_value[2]}${new_value[3]}${new_value[4]}/${new_value[4]}`;
     }
 
-    this.oldLengthDate = value.length;
+    this.old_length_date = value.length;
   }
 
-  correctTime(nameElement: string) {
-    console.log("Chamou time");
-    const element: any = document.getElementById(nameElement);
-    const value: string | null = element.value;
-
-    if (!value) {
+  formatTime(element_id: string) {
+    const input: HTMLInputElement | null = document.getElementById(element_id) as HTMLInputElement | null;
+    const value: string | null = input?.value ?? null;
+    
+    if (input == null || value == null) {
       return;
     }
 
-    console.log(value?.length);
-    console.log(this.oldLengthTime)
-
-    if ((this.oldLengthTime < value?.length) && (value?.length == 2)) {
-      element.value = value + ":";
+    if ((this.old_length_time < value?.length) && (value?.length == 2)) {
+      input.value = value + ":";
     }
     else if (value.length == 3 && value[2] != ":") {
-      let newValue = value.split("");
-      element.value = `${newValue[0]}${newValue[1]}:${newValue[2]}`;
+      let new_value = value.split("");
+      input.value = `${new_value[0]}${new_value[1]}:${new_value[2]}`;
     }
 
-    this.oldLengthTime = value.length;
+    this.old_length_time = value.length;
   }
 
   @Input() component!: any;
 
   ngAfterViewInit() {
-    let elements = [...this.dialog];
-    elements = elements.reverse();
-    elements.forEach(element => {
-      this.formValue[element.name] = element.default;
+    let inputs = [...this.inputs];
+    inputs = inputs.reverse();
+    inputs.forEach(input => {
+      if(input.default) {
+        this.form_value[input.name] = input.default;
+      }
     })
   }
 }

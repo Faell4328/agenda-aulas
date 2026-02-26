@@ -22,20 +22,21 @@ import { ChangeDetectorRef } from '@angular/core';
 })
 export class Header {
   constructor(private router: Router, public roleService: RoleService, private http: Http, private toast: HotToastService, public lessonService: LessonService, private cdr: ChangeDetectorRef) {
-    this.currentUrl = this.router.url;
+    this.current_url = this.router.url;
 
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd), takeUntilDestroyed())
       .subscribe((event: NavigationEnd) => {
-        this.currentUrl = event.urlAfterRedirects;
-        console.log('URL mudou:', this.currentUrl);
+        this.current_url = event.urlAfterRedirects;
+        console.log('URL mudou:', this.current_url);
         console.log('URL atual:', this.router.url == "/login");
         this.cdr.markForCheck();
       });
   }
 
   public current_route = "";
-  public currentUrl: string;
+  public current_url: string;
+
   readonly dialog = inject(MatDialog);
 
   previousMonth() {
@@ -44,7 +45,6 @@ export class Header {
     }
 
     this.lessonService.selected_month--;
-
     this.roleService.update_dependencies();
   }
 
@@ -54,19 +54,18 @@ export class Header {
     }
 
     this.lessonService.selected_month++;
-
     this.roleService.update_dependencies();
   }
 
   addLesson() {
     this.dialog.open(DialogForm, {
       data: {
-        dialog: [
+        inputs: [
           {
             "id": "input1",
             "label": "Nome",
             "name": "name",
-            "type": "string",
+            "type": "text",
           },
           {
             "id": "input2",
@@ -88,8 +87,8 @@ export class Header {
           }
         ],
         title: "Cadastrar aula",
-        method: "post",
-        url: "/aulas/adicionar",
+        method_req: "post",
+        url_req: "/aulas/adicionar",
         runAfterSucess: () => { this.lessonService.getAllLessons(); this.lessonService.getYourLessons(); },
       },
     });

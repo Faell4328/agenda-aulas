@@ -20,7 +20,7 @@ export class RoleService {
     this.lessonService.your_lessons = [];
     this.lessonService.getAllLessons();
     this.lessonService.getYourLessons();
-    this.lessonService.elements_information.set([])
+    this.lessonService.lessons_calender.set([])
   }
 
   check(){

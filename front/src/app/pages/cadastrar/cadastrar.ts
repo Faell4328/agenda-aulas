@@ -17,14 +17,14 @@ import { ReturnApi } from '@src/app/interfaces_types';
   styleUrl: './cadastrar.scss',
 })
 export class Cadastrar {
-  name: string = '';
-  role: string = '';
-  email: string = '';
-  password: string = '';
+  protected name: string = '';
+  protected role: string = '';
+  protected email: string = '';
+  protected password: string = '';
 
   constructor(private http: Http, private router: Router, private toast: HotToastService){}
 
-  formSubmit(){
+  public formSubmit(){
     const data = {
       "name": this.name,
       "role": this.role,
@@ -43,13 +43,12 @@ export class Cadastrar {
         if((typeof error.error.message) == "string"){
           this.toast.error(error.error.message);
         }
-        //this.router.navigate([erro.error.redirect]);
       }
     });
   }
 
-  hide = signal(true);
-  clickEvent(event: MouseEvent){
+  public hide = signal(true);
+  public changePasswordVisibility(event: MouseEvent){
     this.hide.set(!this.hide());
     event.stopPropagation();
   }
