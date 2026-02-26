@@ -16,8 +16,8 @@ export class LessonService {
   public selected_month = new Date().getMonth() + 1;
   public current_day = new Date().getDate();
 
-  public all_lessons: AllLessons[] = [];
-  public your_lessons: YourLessons[] = [];
+  public all_lessons: AllLessons = [];
+  public your_lessons: YourLessons = [];
 
   public controller_req_all = false;
   public controller_req_your = false;
@@ -26,8 +26,8 @@ export class LessonService {
 
   
   public getAllLessons(is_update: boolean = false) {
-    this.http.get<AllLessons[]>(`/aulas?month=${this.months_in_portugues[this.selected_month - 1]}`).subscribe({
-      next: (return_api: ReturnApi<AllLessons[]>) => {
+    this.http.get<AllLessons>(`/aulas?month=${this.months_in_portugues[this.selected_month - 1]}`).subscribe({
+      next: (return_api: ReturnApi<AllLessons>) => {
         if (return_api.data !== null) {
           this.all_lessons = return_api.data;
         }
@@ -52,8 +52,8 @@ export class LessonService {
   }
 
   public getYourLessons(is_update: boolean = false) {
-    this.http.get<YourLessons[]>("/aulas/ingressadas").subscribe({
-      next: (return_api: ReturnApi<YourLessons[]>) => {
+    this.http.get<YourLessons>("/aulas/ingressadas").subscribe({
+      next: (return_api: ReturnApi<YourLessons>) => {
         if (return_api.data != null) {
           this.your_lessons = return_api.data;
         }
@@ -223,7 +223,6 @@ export class LessonService {
   public loadMenu(day: number){
 
     let lessons_of_the_day = this.all_lessons.filter((lesson: any) => {
-      console.log(`${new Date(lesson.timestamp_lesson_start).getDate()} - ${day}`)
       return new Date(lesson.timestamp_lesson_start).getDate() === day;
     });
 

@@ -6,24 +6,17 @@ export interface ReturnApi<T> {
 
 export type Roles = "off" | "student" | "teacher";
 
-export type AllLessons = {
+export type Lesson = {
     id: string;
     name: string;
     timestamp_lesson_start: number;
     timestamp_lesson_finish: number;
     current_quantity: number;
     max_quantity: number;
-    teacher: string;
-    students: string[];
-    
+    teacher?: string;
+    students?: string[];
     is_ingressed?: boolean;
 }
 
-export type YourLessons = {
-    id: string;
-    name: string;
-    timestamp_lesson_start: number;
-    timestamp_lesson_finish: number;
-    current_quantity: number;
-    max_quantity: number;
-}
+export type AllLessons = Lesson[];
+export type YourLessons = Lesson[];

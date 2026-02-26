@@ -52,7 +52,6 @@ export class DialogForm implements AfterViewInit {
       let date: string | string[] = this.form_value["date"].split("/");
       date = date[1] + "/" + date[0] + "/" + date[2];
       let timestamp = new Date(date + " " + this.form_value["time"]).toString();
-      console.log(timestamp)
       this.form_value["timestamp"] = Date.parse(timestamp);
 
       if (!this.form_value["timestamp"] || this.form_value["date"].length < 10 || this.form_value["time"].length < 5) {
@@ -81,7 +80,6 @@ export class DialogForm implements AfterViewInit {
           }
         },
         error: (error) => {
-          console.log(error);
           if (error.error.message != null) {
             this.toast.error(error.error.message);
           }
@@ -104,7 +102,6 @@ export class DialogForm implements AfterViewInit {
           }
         },
         error: (error) => {
-          console.log(error);
           if (error.error.message != null) {
             this.toast.error(error.error.message);
           }

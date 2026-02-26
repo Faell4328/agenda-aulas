@@ -28,8 +28,6 @@ export class Header {
       .pipe(filter(event => event instanceof NavigationEnd), takeUntilDestroyed())
       .subscribe((event: NavigationEnd) => {
         this.current_url = event.urlAfterRedirects;
-        console.log('URL mudou:', this.current_url);
-        console.log('URL atual:', this.router.url == "/login");
         this.cdr.markForCheck();
       });
   }

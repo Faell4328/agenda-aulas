@@ -27,8 +27,6 @@ export class RoleService {
     this.http.get<Roles>("/").subscribe({
       next: (return_api: ReturnApi<Roles>) => {
         if(return_api?.data !== null){
-          console.log("Role atualizada");
-          console.log(return_api.data);
           this.role.set(return_api.data);
           this.update_dependencies();
         }
