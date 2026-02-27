@@ -94,7 +94,7 @@ export class Index {
             "id": "input1",
             "label": "Nome",
             "name": "name",
-            "type": "string",
+            "type": "text",
             "default": informationLesson?.name,
           },
           {

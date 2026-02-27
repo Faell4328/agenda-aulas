@@ -164,9 +164,9 @@ export class LessonService {
 
     const lessons_of_the_day = this.all_lessons
       .filter((lesson) => new Date(lesson.timestamp_lesson_start).getDate() === day)
-      .map((lesson) => ({ ...lesson, your_lesson: your_lessons_ids.has(lesson.id) }));
+      .map((lesson) => ({ ...lesson, students: lesson.students?.sort().join(', '), your_lesson: your_lessons_ids.has(lesson.id) }));
 
-    this.lesson_of_the_day = lessons_of_the_day;
+    this.lesson_of_the_day = lessons_of_the_day as Lesson[];
   }
 
   public lesson_selected: number | null = null;

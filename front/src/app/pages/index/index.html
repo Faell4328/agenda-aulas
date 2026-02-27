@@ -28,7 +28,7 @@
                     <p class="text-lesson-details">Horário de início: {{lesson.timestamp_lesson_start | date:'HH:mm'}}</p>
                     <p class="text-lesson-details">Horário de término: {{lesson.timestamp_lesson_finish | date:'HH:mm'}}</p>
                     <p class="text-lesson-details">Professor: {{lesson.teacher}}</p>
-                    <p class="text-lesson-details">Aluno ingressados: {{(lesson.students && lesson.students.length > 0) ? lesson.students.sort().join(', ') : 'Nenhum'}}</p>
+                    <p class="text-lesson-details">Aluno ingressados: {{(lesson.students && lesson.students.length > 0) ? lesson.students : 'Nenhum'}}</p>
                     <p class="text-lesson-details">Quantidade ingressada: {{lesson.current_quantity}}</p>
                     <p class="text-lesson-details">Quantidade máxima: {{lesson.max_quantity}}</p>
                 </div>

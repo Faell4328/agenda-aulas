@@ -1,6 +1,6 @@
 <mat-dialog-content>
     <h3>{{title}}</h3>
-    <p>{{message}}</p>
+    <p *ngIf="this.message">{{message}}</p>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <div>
