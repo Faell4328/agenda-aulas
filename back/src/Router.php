@@ -95,13 +95,13 @@ class Router{
             $middleware -> routeForTeachersOnly($user_information);
             
             $lesson_controller = new Lesson();
-            $lesson_controller -> updateLesson($req_body_json);
+            $lesson_controller -> updateLesson($user_information, $req_body_json);
         }
         else if($route == "/aulas/deletar"){
             $middleware -> routeForTeachersOnly($user_information);
             
             $lesson_controller = new Lesson();
-            $lesson_controller -> deleteLesson();
+            $lesson_controller -> deleteLesson($user_information);
         }
         else if($route == "/aulas/ingressar"){
             $middleware -> routeForStudentOnly($user_information);

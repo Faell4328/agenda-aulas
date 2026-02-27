@@ -11,6 +11,7 @@ export class LessonService {
 
   constructor(private http: Http, private router: Router, private toast: HotToastService) { }
 
+  public role = "off";
   public months_in_portugues = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
   private readonly day_of_weeks_in_portugues = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
   public currentTimestamp = Date.now();
@@ -54,20 +55,41 @@ export class LessonService {
   }
 
   public getYourLessons(is_update: boolean = false) {
-    this.http.get<YourLessons>("/aulas/ingressadas").subscribe({
-      next: (return_api: ReturnApi<YourLessons>) => {
-        if (return_api.data != null) {
-          this.your_lessons = return_api.data;
+    if(this.role == "student"){
+      this.http.get<YourLessons>("/aulas/ingressadas").subscribe({
+        next: (return_api: ReturnApi<YourLessons>) => {
+          if (return_api.data != null) {
+            this.your_lessons = return_api.data;
+          }
+          
+          this.controller_req_your = true;
+          this.loadLessons(is_update);
+        },
+        error: error => {
+          this.controller_req_your = true;
+          this.loadLessons(is_update);
         }
-        
-        this.controller_req_your = true;
-        this.loadLessons(is_update);
-      },
-      error: error => {
-        this.controller_req_your = true;
-        this.loadLessons(is_update);
-      }
-    });
+      });
+    }
+    else if(this.role == "teacher"){
+      this.http.get<YourLessons>("/aulas/cadastradas").subscribe({
+        next: (return_api: ReturnApi<YourLessons>) => {
+          if (return_api.data != null) {
+            this.your_lessons = return_api.data;
+          }
+          
+          this.controller_req_your = true;
+          this.loadLessons(is_update);
+        },
+        error: error => {
+          this.controller_req_your = true;
+          this.loadLessons(is_update);
+        }
+      });
+    }
+    else{
+      this.controller_req_your = true;
+    }
   }
 
   public loadLessons(is_update: boolean = false) {
@@ -142,7 +164,7 @@ export class LessonService {
 
     const lessons_of_the_day = this.all_lessons
       .filter((lesson) => new Date(lesson.timestamp_lesson_start).getDate() === day)
-      .map((lesson) => ({ ...lesson, is_ingressed: your_lessons_ids.has(lesson.id) }));
+      .map((lesson) => ({ ...lesson, your_lesson: your_lessons_ids.has(lesson.id) }));
 
     this.lesson_of_the_day = lessons_of_the_day;
   }

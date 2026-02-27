@@ -14,7 +14,10 @@ export class RoleService {
 
   public role = signal<Roles>("off");
 
-  public update_dependencies() {
+  public update_dependencies(role?: Roles) {
+    if(role){
+      this.lessonService.role = role;
+    }
     this.lessonService.lesson_of_the_day = [];
     this.lessonService.all_lessons = [];
     this.lessonService.your_lessons = [];
@@ -28,7 +31,7 @@ export class RoleService {
       next: (return_api: ReturnApi<Roles>) => {
         if (return_api?.data !== null) {
           this.role.set(return_api.data);
-          this.update_dependencies();
+          this.update_dependencies(return_api.data);
         }
       },
       error: error => {

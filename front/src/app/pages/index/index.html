@@ -21,8 +21,8 @@
         <p *ngIf="lessonService.lesson_of_the_day.length === 0">Não tem lição nesse dia</p>
         <div *ngIf="lessonService.lesson_of_the_day.length > 0">
             <div class="container-menu-lesson" *ngFor="let lesson of lessonService.lesson_of_the_day">
-                <div class="notificaion" *ngIf="lesson.is_ingressed">Ingressado</div>
-                <div class="notificaion" *ngIf="(!lesson.is_ingressed && (lesson.current_quantity >= lesson.max_quantity))">Aula cheia</div>
+                <div class="notificaion" *ngIf="lesson.your_lesson">Ingressado</div>
+                <div class="notificaion" *ngIf="(!lesson.your_lesson && (lesson.current_quantity >= lesson.max_quantity))">Aula cheia</div>
                 <h3 class="lesson-name">Aula: {{lesson.name}}</h3>
                 <div class="container-lesson-details">
                     <p class="text-lesson-details">Horário de início: {{lesson.timestamp_lesson_start | date:'HH:mm'}}</p>
@@ -33,10 +33,10 @@
                     <p class="text-lesson-details">Quantidade máxima: {{lesson.max_quantity}}</p>
                 </div>
                 <div class="container-lesson-actions">
-                    <button (click)="joinLesson(lesson.id)" class="button-lesson-actions-blue" mat-raised-button *ngIf="(lesson.is_ingressed == false) && (roleService.role() == 'student') && (lesson.timestamp_lesson_start > lessonService.currentTimestamp)">Ingressar</button>
-                    <button (click)="leaveLesson(lesson.id)" class="button-lesson-actions-red" mat-raised-button *ngIf="((lesson.is_ingressed == true) && (roleService.role() == 'student') && (lesson.timestamp_lesson_start > lessonService.currentTimestamp))">Desingressar</button>
-                    <button (click)="editLesson(lesson.id)" class="button-lesson-actions-blue" mat-raised-button *ngIf="(roleService.role() == 'teacher')">Editar</button>
-                    <button (click)="deleteLesson(lesson.id)" class="button-lesson-actions-red" mat-raised-button *ngIf="(roleService.role() == 'teacher')">Deletar</button>
+                    <button (click)="joinLesson(lesson.id)" class="button-lesson-actions-blue" mat-raised-button *ngIf="(lesson.your_lesson == false) && (roleService.role() == 'student') && (lesson.timestamp_lesson_start > lessonService.currentTimestamp)">Ingressar</button>
+                    <button (click)="leaveLesson(lesson.id)" class="button-lesson-actions-red" mat-raised-button *ngIf="((lesson.your_lesson == true) && (roleService.role() == 'student') && (lesson.timestamp_lesson_start > lessonService.currentTimestamp))">Desingressar</button>
+                    <button (click)="editLesson(lesson.id)" class="button-lesson-actions-blue" mat-raised-button *ngIf="(roleService.role() == 'teacher' && lesson.your_lesson)">Editar</button>
+                    <button (click)="deleteLesson(lesson.id)" class="button-lesson-actions-red" mat-raised-button *ngIf="(roleService.role() == 'teacher' && lesson.your_lesson)">Deletar</button>
                 </div>
                 <br /><hr /><br />
             </div>

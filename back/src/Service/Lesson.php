@@ -116,7 +116,7 @@ class Lesson{
         return ["status" => 201, "message" => "Aula cadastrada", "redirect" => null, "data" => null];
     }
 
-    public function updateLesson($lesson_id, string $name, int $timestamp_lesson_start, int $quantity): array{
+    public function updateLesson($user_information, $lesson_id, string $name, int $timestamp_lesson_start, int $quantity): array{
         $lessonModel = new LessonModel;
 
         if ($quantity <= 0) {
@@ -127,6 +127,11 @@ class Lesson{
 
         try{
             if($lessonModel -> exists($lesson_id) == true){
+                $lessonSpecific = $lessonModel -> findById($lesson_id);
+                if($lessonSpecific["teacher_id"] != $user_information["_id"]){
+                    return ["status" => 403, "message" => "Não tem permissão para atualizar esta aula", "redirect" => null, "data" => null];
+                }
+
                 $lessonModel -> update($lesson_id, $name, $timestamp_lesson_start, $timestamp_lesson_finish, $quantity);
             }
             else{
@@ -134,7 +139,7 @@ class Lesson{
             }
         }
         catch(\Throwable $ex){
-            if($ex -> getMessage() === "Aula não existe" || $ex -> getMessage() === 'A quantidade máxima não pode ser menor que a quantidade atual de alunos inscritos'){
+            if($ex -> getMessage() === "Aula não existe" || $ex -> getMessage() === 'A quantidade máxima não pode ser menor que a quantidade atual de alunos inscritos' || $ex -> getMessage() === "Não tem permissão para atualizar esta aula"){
                 return ["status" => 400, "message" => $ex -> getMessage(), "redirect" => null, "data" => null];
             }
 
@@ -144,11 +149,16 @@ class Lesson{
         return ["status" => 200, "message" => "Aula atualizada", "redirect" => null, "data" => null];
     }
 
-    public function deleteLesson($lesson_id): array{
+    public function deleteLesson($user_information, $lesson_id): array{
         $lessonModel = new LessonModel;
 
         try{
             if($lessonModel -> exists($lesson_id) == true){
+                $lessonSpecific = $lessonModel -> findById($lesson_id);
+                if($lessonSpecific["teacher_id"] != $user_information["_id"]){
+                    return ["status" => 403, "message" => "Não tem permissão para atualizar esta aula", "redirect" => null, "data" => null];
+                }
+
                 $lessonModel -> delete($lesson_id);
             }
             else{
@@ -156,7 +166,7 @@ class Lesson{
             }
         }
         catch(\Throwable $ex){
-            if($ex -> getMessage() === "Aula não existe"){
+            if($ex -> getMessage() === "Aula não existe" || $ex -> getMessage() === "Não tem permissão para atualizar esta aula"){
                 return ["status" => 400, "message" => $ex -> getMessage(), "redirect" => null, "data" => null];
             }
 

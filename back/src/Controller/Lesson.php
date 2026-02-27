@@ -63,7 +63,7 @@ class Lesson{
         new SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
 
-    public function updateLesson(?object $req_body_json): void{
+    public function updateLesson($user_information, ?object $req_body_json): void{
         $validation = new Validation;
         $validation -> queryExists("id");
         $lesson_id = (string) $_GET["id"];
@@ -72,18 +72,18 @@ class Lesson{
         $validation -> fieldExists($req_body_json, "quantity");
 
         $service = new LessonService;
-        $return_service = $service -> updateLesson($lesson_id, (string) $req_body_json->name, (int) $req_body_json->timestamp, (int) $req_body_json->quantity);
+        $return_service = $service -> updateLesson($user_information, $lesson_id, (string) $req_body_json->name, (int) $req_body_json->timestamp, (int) $req_body_json->quantity);
         
         new SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
 
-    public function deleteLesson(): void{
+    public function deleteLesson($user_information): void{
         $validation = new Validation;
         $validation -> queryExists("id");
         $lesson_id = (string) $_GET["id"];
 
         $service = new LessonService;
-        $return_service = $service -> deleteLesson($lesson_id);
+        $return_service = $service -> deleteLesson($user_information, $lesson_id);
         
         new SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }

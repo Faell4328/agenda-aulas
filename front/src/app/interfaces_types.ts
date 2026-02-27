@@ -15,7 +15,7 @@ export type Lesson = {
     max_quantity: number;
     teacher?: string;
     students?: string[];
-    is_ingressed?: boolean;
+    your_lesson?: boolean;
 }
 
 export type CalendarDay = {
