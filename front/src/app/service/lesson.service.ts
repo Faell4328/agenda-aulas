@@ -13,6 +13,7 @@ export class LessonService {
 
   public months_in_portugues = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
   private readonly day_of_weeks_in_portugues = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+  public currentTimestamp = Date.now();
   public current_year = new Date().getFullYear();
   public selected_month = new Date().getMonth() + 1;
   public current_day = new Date().getDate();

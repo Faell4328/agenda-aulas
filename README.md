@@ -21,6 +21,11 @@ O arquivo de design é apenas uma inspiração, não é necessário seguir tudo 
 - O aluno não pode ingressar em uma aula lotada.
 - O aluno não pode participar de duas aulas no mesmo horário.
 
+**Requisitos**:
+- Aulas que já passaram não podem ser ingressadas por alunos, o mesmo vale para desingressar.
+- Apenas o professor que criou a aula pode atualizá-la ou deletá-la.
+- O professor não pode definir uma quantidade máxima menor do que a quantidade de alunos já ingressados na aula.
+
 ---
 
 ## Especificações técnicas

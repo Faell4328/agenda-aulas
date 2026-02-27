@@ -177,7 +177,11 @@ class Lesson{
 
             if($lessonModel -> exists($lesson_id) == true){
                 $specific_lesson = $lessonModel -> findById($lesson_id);
-                if($specific_lesson['current_quantity'] >= $specific_lesson['max_quantity']){
+
+                if($specific_lesson["timestamp_lesson_start"] < time()*1000){
+                    throw new \Exception("O prazo para ingressar na aula já passou");
+                }
+                else if($specific_lesson['current_quantity'] >= $specific_lesson['max_quantity']){
                     throw new \Exception("Aula já está cheia");
                 }
             }
@@ -188,7 +192,7 @@ class Lesson{
             $joinModel -> joinLesson($lesson_id, $user_id);
         }
         catch(\Throwable $ex){
-            if(in_array($ex -> getMessage(), ["Já está ingressado na aula", "Aula já está cheia", "Aula não encontrada"], true)){
+            if(in_array($ex -> getMessage(), ["Já está ingressado na aula", "Aula já está cheia", "Aula não encontrada", "O prazo para ingressar na aula já passou"], true)){
                 return ["status" => 400, "message" => $ex -> getMessage(), "redirect" => null, "data" => null];
             }
 
@@ -211,11 +215,16 @@ class Lesson{
             if($lessonModel -> exists($lesson_id) != true){
                 throw new \Exception("Aula não encontrada");
             }
+            
+            $specific_lesson = $lessonModel -> findById($lesson_id);
+            if($specific_lesson["timestamp_lesson_start"] < time()*1000){
+                throw new \Exception("Não é possível desingressar da aula");
+            }
 
             $joinModel -> leaveLesson($lesson_id, $user_id);
         }
         catch(\Throwable $ex){
-            if(in_array($ex -> getMessage(), ["Não está ingressado na aula", "Aula não encontrada"], true)){
+            if(in_array($ex -> getMessage(), ["Não está ingressado na aula", "Aula não encontrada", "Não é possível desingressar da aula"], true)){
                 return ["status" => 400, "message" => $ex -> getMessage(), "redirect" => null, "data" => null];
             }
 
