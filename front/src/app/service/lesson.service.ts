@@ -1,7 +1,8 @@
-import { effect, Injectable, signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Http } from './http.service';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngxpert/hot-toast';
+import { AllLessons, CalendarDay, Lesson, ReturnApi, YourLessons } from '../interfaces_types';
 
 @Injectable({
   providedIn: 'root'
@@ -10,41 +11,42 @@ export class LessonService {
 
   constructor(private http: Http, private router: Router, private toast: HotToastService) { }
 
-  private req_all = false;
-  private all_lessons: any = [];
-  private req_your = false;
-  private your_lessons: any = [];
+  public role = "off";
+  public months_in_portugues = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+  private readonly day_of_weeks_in_portugues = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+  public currentTimestamp = Date.now();
+  public current_year = new Date().getFullYear();
+  public selected_month = new Date().getMonth() + 1;
+  public current_day = new Date().getDate();
 
-  public elements_information = signal<any>([]);
+  public all_lessons: AllLessons = [];
+  public your_lessons: YourLessons = [];
 
-  private lessons: any | null = null;
-  private quantidade_dias_mes: number = 0;
+  public controller_req_all = false;
+  public controller_req_your = false;
 
-  private mes_atual: number = (new Date().getMonth() + 1);
-  private ano_atual: number = new Date().getFullYear();
-  private quantidade: number = 0;
+  public lessons_calender = signal<CalendarDay[]>([]);
 
-  public async getAllLessons() {
-    this.http.get("/aulas").subscribe({
-      next: (return_api: ReturnApi) => {
+  
+  public getAllLessons(is_update: boolean = false) {
+    this.http.get<AllLessons>(`/aulas?month=${this.months_in_portugues[this.selected_month - 1]}`).subscribe({
+      next: (return_api: ReturnApi<AllLessons>) => {
         if (return_api.data !== null) {
-          this.all_lessons = return_api.data;
-          console.log("all")
-          console.log(return_api.data);
+          this.all_lessons = [...return_api.data].sort((lesson_a, lesson_b) => lesson_a.timestamp_lesson_start - lesson_b.timestamp_lesson_start);
         }
 
-        this.req_all = true;
-        this.loadLessons();
+        this.controller_req_all = true;
+        this.loadLessons(is_update);
       },
       error: error => {
-        this.req_all = true;
-        this.loadLessons();
+        this.controller_req_all = true;
+        this.loadLessons(is_update);
 
         if (error.error.message != null) {
           this.toast.success(error.error.message);
         }
 
-        if (error.errror.redirect !== null) {
+        if (error.error.redirect !== null) {
           this.router.navigate([error.error.redirect]);
         }
       }
@@ -52,94 +54,141 @@ export class LessonService {
 
   }
 
-  public async getYourLessons() {
-    this.http.get("/aulas/ingressadas").subscribe({
-      next: (return_api: ReturnApi) => {
-        if (return_api.data != null) {
-          this.your_lessons = return_api.data;
-          console.log("your")
-          console.log(return_api.data);
+  public getYourLessons(is_update: boolean = false) {
+    if(this.role == "student"){
+      this.http.get<YourLessons>("/aulas/ingressadas").subscribe({
+        next: (return_api: ReturnApi<YourLessons>) => {
+          if (return_api.data != null) {
+            this.your_lessons = return_api.data;
+          }
+          
+          this.controller_req_your = true;
+          this.loadLessons(is_update);
+        },
+        error: error => {
+          this.controller_req_your = true;
+          this.loadLessons(is_update);
         }
-
-        this.req_your = true;
-        this.loadLessons();
-      },
-      error: error => {
-        this.req_your = true;
-        this.loadLessons();
-      }
-    });
+      });
+    }
+    else if(this.role == "teacher"){
+      this.http.get<YourLessons>("/aulas/cadastradas").subscribe({
+        next: (return_api: ReturnApi<YourLessons>) => {
+          if (return_api.data != null) {
+            this.your_lessons = return_api.data;
+          }
+          
+          this.controller_req_your = true;
+          this.loadLessons(is_update);
+        },
+        error: error => {
+          this.controller_req_your = true;
+          this.loadLessons(is_update);
+        }
+      });
+    }
+    else{
+      this.controller_req_your = true;
+    }
   }
 
-  public loadLessons() {
-    if (this.req_all == false || this.req_your == false) {
+  public loadLessons(is_update: boolean = false) {
+    if (this.controller_req_all === false || this.controller_req_your === false) {
       return;
     }
 
-    console.log("Lições");
-    this.all_lessons.map((lesson: any) => {
-      console.log((lesson.timestamp_lesson_start))
-      console.log(new Date(lesson.timestamp_lesson_start))
-    })
+    const last_day_of_last_month = new Date(this.current_year, this.selected_month - 1, 0).getDate();
+    const first_day_weekday = new Date(this.current_year, this.selected_month - 1, 1).getDay();
+    const last_day_of_month = new Date(this.current_year, this.selected_month, 0).getDate();
 
-    this.elements_information.set([]);
+    const lessons: CalendarDay[] = [];
+    let cont_lessons = 0;
 
-    // ex: 30
-    this.quantidade_dias_mes = new Date(this.ano_atual, this.mes_atual, 0).getDate();
+    for (let weekday = 0; weekday < first_day_weekday; weekday++) {
+      lessons.push({
+        day: last_day_of_last_month - first_day_weekday + weekday + 1,
+        day_of_the_week: this.day_of_weeks_in_portugues[weekday],
+        current_month: false,
+      });
+    }
 
-    let index_all = 0;
-    let index_your = 0;
-    let elements = [];
-    for (let present_day = 1; present_day <= this.quantidade_dias_mes; present_day++) {
+    for (let day = 1; day <= last_day_of_month; day++) {
+      let with_lesson = false;
 
-      let lessons: any = []
-
-      console.log("Dia presente é ");
-      console.log(present_day);
-
-      while (index_all < this.all_lessons.length) {
-
-        console.log("Indice")
-        console.log(index_all);
-        console.log("Dia da aula testada é: ")
-        console.log(new Date(this.all_lessons[index_all].timestamp_lesson_start).getDate());
-
-        if ((new Date(this.all_lessons[index_all].timestamp_lesson_start)).getDate() == present_day) {
-
-          const date = new Date(this.all_lessons[index_all].timestamp_lesson_start);
-          const time = `${(date.getHours()).toString().padStart(2, '0')}:${(date.getMinutes()).toString().padStart(2, '0')}`
-
-          if (this.all_lessons[index_all].id == this.your_lessons[index_your]?.id) {
-            lessons.push({ ...this.all_lessons[index_all], time: time, "registered": true });
-            index_your++;
-          }
-          else {
-            lessons.push({ ...this.all_lessons[index_all], time: time, "registered": false });
-          }
-          index_all++;
-        }
-        else {
-          break;
-        }
+      while (
+        cont_lessons < this.all_lessons.length &&
+        new Date(this.all_lessons[cont_lessons].timestamp_lesson_start).getDate() === day
+      ) {
+        with_lesson = true;
+        cont_lessons++;
       }
 
-      let elemento: any = null;
-      if (lessons[0] != undefined) {
-        elemento = { "day": present_day, "lessons": lessons }
+      lessons.push({
+        day,
+        day_of_the_week: this.day_of_weeks_in_portugues[(first_day_weekday + day - 1) % 7],
+        current_month: true,
+        with_lesson,
+      });
+    }
+
+    const remaining_days = (7 - (lessons.length % 7)) % 7;
+    for (let day = 1; day <= remaining_days; day++) {
+      lessons.push({
+        day,
+        day_of_the_week: this.day_of_weeks_in_portugues[(first_day_weekday + last_day_of_month - 1 + day) % 7],
+        current_month: false,
+      });
+    }
+
+    this.controller_req_all = false;
+    this.controller_req_your = false;
+
+    if (is_update === false) {
+      this.lessons_calender.set(lessons);
+      if (this.lesson_selected === null) {
+        this.selectLesson(this.current_day, true);
       }
       else {
-        elemento = { "day": present_day }
+        this.loadMenu(this.lesson_selected);
       }
-
-      elements.push(elemento);
     }
-    console.log(elements);
-    this.elements_information.set(elements);
+    else if (this.lesson_selected !== null) {
+      this.selectLesson(this.lesson_selected, true);
+    }
+  }
 
+  public lesson_of_the_day: Lesson[] = [];
+  public loadMenu(day: number) {
 
-    this.all_lessons = [];
-    this.your_lessons = [];
-    this.req_all = false;
-    this.req_your = false;
+    const your_lessons_ids = new Set(this.your_lessons.map((lesson) => lesson.id));
+
+    const lessons_of_the_day = this.all_lessons
+      .filter((lesson) => new Date(lesson.timestamp_lesson_start).getDate() === day)
+      .map((lesson) => ({ ...lesson, students: lesson.students?.sort().join(', '), your_lesson: your_lessons_ids.has(lesson.id) }));
+
+    this.lesson_of_the_day = lessons_of_the_day as Lesson[];
+  }
+
+  public lesson_selected: number | null = null;
+  public isLessonSelected(day: number, current_month: boolean): boolean {
+    if (!current_month) {
+      return false;
+    }
+
+    if (this.lesson_selected !== null) {
+      return this.lesson_selected === day;
+    }
+
+    return this.current_day === day;
+  }
+
+  public selectLesson(day_selected: number, current_month: boolean) {
+
+    if (current_month === false) {
+      return;
+    }
+
+    this.lesson_selected = day_selected;
+    this.loadMenu(day_selected);
   }
 }

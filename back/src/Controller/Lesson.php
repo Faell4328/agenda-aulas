@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Tools\Validation;
@@ -7,85 +9,131 @@ use App\Tools\SendingPattern;
 use App\Service\Lesson as LessonService;
 
 class Lesson{
-    public function listLessons($user_information){
-        $validation = new Validation;
+    private const MONTHS = [
+        "janeiro" => "january",
+        "fevereiro" => "february",
+        "março" => "march",
+        "abril" => "april",
+        "maio" => "may",
+        "junho" => "june",
+        "julho" => "july",
+        "agosto" => "august",
+        "setembro" => "september",
+        "outubro" => "october",
+        "novembro" => "november",
+        "dezembro" => "december",
+    ];
 
-        $lesson_id = $_GET["id"] ?? null;
+    public function listLessons(): void{
+        $months_of_number = array_keys(self::MONTHS);
+        $current_month = self::MONTHS[$months_of_number[date('n') - 1]];
+
+        $month_key = isset($_GET["month"]) ? strtolower((string) $_GET["month"]) : null;
+        $month = ($month_key !== null && isset(self::MONTHS[$month_key])) ? self::MONTHS[$month_key] : $current_month;
 
         $service = new LessonService;
-        $return_service = $service -> listLessons($lesson_id, $user_information);
+        $return_service = $service -> listLessons($month);
 
         new SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
 
-    public function listCreatedLessons($user_id){
+    public function listCreatedLessons($user_id): void{
         $service = new LessonService;
         $return_service = $service -> listCreatedLessons($user_id);
 
         new SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
 
-    public function listEnrolledLessons($user_id){
+    public function listEnrolledLessons($user_id): void{
         $service = new LessonService;
         $return_service = $service -> listEnrolledLessons($user_id);
 
         new SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
 
-    public function createLesson($req_body_json, $teacher_id){
+    public function createLesson(?object $req_body_json, $teacher_id): void{
         $validation = new Validation;
         $validation -> fieldExists($req_body_json, "name");
         $validation -> fieldExists($req_body_json, "timestamp");
         $validation -> fieldExists($req_body_json, "quantity");
 
         $service = new LessonService;
-        $return_service = $service -> createLesson($req_body_json->name, $req_body_json->timestamp, $req_body_json->quantity, $teacher_id);
+        $return_service = $service -> createLesson((string) $req_body_json->name, (int) $req_body_json->timestamp, (int) $req_body_json->quantity, $teacher_id);
 
         new SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
 
-    public function updateLesson($req_body_json){
+    public function updateLesson($user_information, ?object $req_body_json): void{
         $validation = new Validation;
         $validation -> queryExists("id");
+        $lesson_id = (string) $_GET["id"];
         $validation -> fieldExists($req_body_json, "name");
         $validation -> fieldExists($req_body_json, "timestamp");
         $validation -> fieldExists($req_body_json, "quantity");
 
-        $lesson_id = $_GET["id"];
-
         $service = new LessonService;
-        $return_service = $service -> updateLesson($lesson_id, $req_body_json->name, $req_body_json->timestamp, $req_body_json->quantity);
+        $return_service = $service -> updateLesson($user_information, $lesson_id, (string) $req_body_json->name, (int) $req_body_json->timestamp, (int) $req_body_json->quantity);
         
         new SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
 
-    public function deleteLesson(){
+    public function deleteLesson($user_information): void{
         $validation = new Validation;
         $validation -> queryExists("id");
+        $lesson_id = (string) $_GET["id"];
 
         $service = new LessonService;
-        $return_service = $service -> deleteLesson($_GET["id"]);
+        $return_service = $service -> deleteLesson($user_information, $lesson_id);
         
         new SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
 
-    public function joinLesson($user_information){
+    public function joinLesson($user_information): void{
         $validation = new Validation;
         $validation -> queryExists("id");
+        $lesson_id = (string) $_GET["id"];
+
+        $user_id = $this->extractUserId($user_information);
+        if ($user_id === null) {
+            new SendingPattern(401, "Usuário não autenticado", "/login");
+        }
 
         $service = new LessonService;
-        $return_service = $service -> joinLesson($user_information["_id"]);
+        $return_service = $service -> joinLesson($user_id, $lesson_id);
 
         new SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
     }
 
-    public function leaveLesson($user_information){
+    public function leaveLesson($user_information): void{
         $validation = new Validation;
         $validation -> queryExists("id");
+        $lesson_id = (string) $_GET["id"];
+
+        $user_id = $this->extractUserId($user_information);
+        if ($user_id === null) {
+            new SendingPattern(401, "Usuário não autenticado", "/login");
+        }
 
         $service = new LessonService;
-        $return_service = $service -> leaveLesson($user_information["_id"]);
+        $return_service = $service -> leaveLesson($user_id, $lesson_id);
 
         new SendingPattern($return_service["status"], $return_service["message"], $return_service["redirect"], $return_service["data"]);
+    }
+
+    private function extractUserId($user_information): ?string
+    {
+        if (is_array($user_information) && isset($user_information['_id'])) {
+            return (string) $user_information['_id'];
+        }
+
+        if ($user_information instanceof \ArrayAccess && isset($user_information['_id'])) {
+            return (string) $user_information['_id'];
+        }
+
+        if (is_object($user_information) && isset($user_information->_id)) {
+            return (string) $user_information->_id;
+        }
+
+        return null;
     }
 }

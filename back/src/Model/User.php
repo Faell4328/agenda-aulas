@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Model;
+declare(strict_types=1);
 
-use MongoDB\BSON\ObjectId;
+namespace App\Model;
 
 class User extends BaseModel
 {
@@ -18,18 +18,45 @@ class User extends BaseModel
 
     public function create(string $name, string $role, string $email, string $password): void{
         $col = $this->collection('user');
-        // Not implemented hashpassword, because the project is simple.
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
         $col->insertOne([
             'name' => $name,
             'role' => $role,
             'email' => $email,
-            'password' => $password,
+            'password' => $hashed_password,
         ]);
+    }
+
+    public function findByEmail(string $email){
+        $col = $this->collection('user');
+        return $col->findOne(['email' => $email]);
     }
 
     public function findByEmailAndPassword(string $email, string $password){
         $col = $this->collection('user');
-        return $col->findOne(['email' => $email, 'password' => $password]);
+        $user = $this->findByEmail($email);
+
+        if (!$user || !isset($user['password'])) {
+            return null;
+        }
+
+        $stored_password = (string) $user['password'];
+        $is_plain_text_match = hash_equals($stored_password, $password);
+
+        if (password_verify($password, $stored_password)) {
+            return $user;
+        }
+
+        if ($is_plain_text_match) {
+            $col->updateOne(
+                ['_id' => $user['_id']],
+                ['$set' => ['password' => password_hash($password, PASSWORD_DEFAULT)]]
+            );
+            return $user;
+        }
+
+        return null;
     }
 
     public function getTeacherById($teacher_id) {

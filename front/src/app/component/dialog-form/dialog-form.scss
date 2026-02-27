@@ -1,31 +1,12 @@
+@use '../../../variables' as variables;
+
 form{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
     padding: 10px;
-}
-
-#container-form, #container-extra{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.container-datetime{
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-#btn-submit{
-    background-color: #aaa;
-    border-radius: 10px;
-}
-
-#btn-extra{
-    margin-top: 20px;
-    color: #fff;
-    background-color: #e00;
-    border-radius: 10px;
+    
+    #btn-submit{
+        width: 100%;
+        background-color: variables.$blue;
+        border-radius: 10px;
+        color: #fff;
+    }
 }

@@ -3,6 +3,7 @@ import { Http } from './http.service';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { LessonService } from './lesson.service';
+import { ReturnApi, Roles } from '../interfaces_types';
 
 @Injectable({
   providedIn: 'root'
@@ -11,29 +12,34 @@ export class RoleService {
 
   constructor(private http: Http, private router: Router, private toast: HotToastService, private lessonService: LessonService){}
 
-  public role = signal<string>("off");
+  public role = signal<Roles>("off");
 
-  update_dependencies(){
+  public update_dependencies(role?: Roles) {
+    if(role){
+      this.lessonService.role = role;
+    }
+    this.lessonService.lesson_of_the_day = [];
+    this.lessonService.all_lessons = [];
+    this.lessonService.your_lessons = [];
     this.lessonService.getAllLessons();
     this.lessonService.getYourLessons();
+    this.lessonService.lessons_calender.set([]);
   }
 
-  check(){
-    this.http.get("/").subscribe({
-      next: (return_api: ReturnApi) => {
-        if(return_api?.data !== null){
-          console.log("Role atualizada");
-          console.log(return_api.data);
+  check() {
+    this.http.get<Roles>("/").subscribe({
+      next: (return_api: ReturnApi<Roles>) => {
+        if (return_api?.data !== null) {
           this.role.set(return_api.data);
-          this.update_dependencies();
+          this.update_dependencies(return_api.data);
         }
       },
       error: error => {
-        if(error.error.message != null){
+        if (error.error.message != null) {
           this.toast.error(error.error.message);
         }
 
-        if(error.error.redirect != null){
+        if (error.error.redirect != null) {
           this.router.navigate([error.error.redirect]);
         }
       }

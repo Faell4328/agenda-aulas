@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { Router, RouterLink } from '@angular/router';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { RoleService } from '../../service/role.service';
 import { Http } from '../../service/http.service';
 import { DialogConfirmation } from '../dialog-confirmation/dialog-confirmation';
@@ -8,6 +8,10 @@ import { DialogForm } from '../dialog-form/dialog-form';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { CommonModule } from '@angular/common';
 import { LessonService } from '@src/app/service/lesson.service';
+import { ReturnApi } from '@src/app/interfaces_types';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter } from 'rxjs';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'header',
@@ -17,19 +21,52 @@ import { LessonService } from '@src/app/service/lesson.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Header {
-  constructor(private router: Router, public roleService: RoleService, private http: Http, private toast: HotToastService, private lessonService: LessonService) { }
+  constructor(private router: Router, public roleService: RoleService, private http: Http, private toast: HotToastService, public lessonService: LessonService, private cdr: ChangeDetectorRef) {
+    this.current_url = this.router.url;
+
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd), takeUntilDestroyed())
+      .subscribe((event: NavigationEnd) => {
+        this.current_url = event.urlAfterRedirects;
+        this.cdr.markForCheck();
+      });
+  }
+
+  public current_url: string;
 
   readonly dialog = inject(MatDialog);
+
+  public isAuthPage(): boolean {
+    return this.current_url === '/login' || this.current_url === '/cadastrar';
+  }
+
+  previousMonth() {
+    if (this.lessonService.selected_month === 1) {
+      this.lessonService.selected_month = 13;
+    }
+
+    this.lessonService.selected_month--;
+    this.roleService.update_dependencies();
+  }
+
+  nextMonth() {
+    if (this.lessonService.selected_month === 12) {
+      this.lessonService.selected_month = 0;
+    }
+
+    this.lessonService.selected_month++;
+    this.roleService.update_dependencies();
+  }
 
   addLesson() {
     this.dialog.open(DialogForm, {
       data: {
-        dialog: [
+        inputs: [
           {
             "id": "input1",
             "label": "Nome",
             "name": "name",
-            "type": "string",
+            "type": "text",
           },
           {
             "id": "input2",
@@ -51,8 +88,8 @@ export class Header {
           }
         ],
         title: "Cadastrar aula",
-        method: "post",
-        url: "/aulas/adicionar",
+        method_req: "post",
+        url_req: "/aulas/adicionar",
         runAfterSucess: () => { this.lessonService.getAllLessons(); this.lessonService.getYourLessons(); },
       },
     });
@@ -65,15 +102,17 @@ export class Header {
   logout() {
     const dialogRef = this.dialog.open(DialogConfirmation, {
       data: {
-        dialog: "deslogar",
+        title: "Deseja realmente deslogar?",
+        message: "Você terá que logar novamente para acessar as funcionalidades do site.",
+        button_text: "Deslogar",
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result == true) {
-        this.http.post("/logout", null).subscribe({
-          next: (return_api) => {
-            if ((typeof return_api.message) == "string") {
+      if (result === true) {
+        this.http.post<null>("/logout", null).subscribe({
+          next: (return_api: ReturnApi<null>) => {
+            if ((typeof return_api.message) === "string") {
               this.toast.success(return_api.message);
             }
 

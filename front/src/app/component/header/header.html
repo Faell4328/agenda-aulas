@@ -1,19 +1,26 @@
 <div id="header">
-    <a routerLink="/">
+    <a [class.middle]="isAuthPage()" routerLink="/">
         <img id="logo" src="/logo.png" />
     </a>
 
-    <div style="display: flex; align-items: center;">
-        <button *ngIf="roleService.role() === 'teacher'" (click)="addLesson()">
+    <div class="container-month" [class.hidden]="isAuthPage()">
+        <img (click)="previousMonth()" class="arrow" src="/seta-esquerda.svg" />
+        <h1>{{ lessonService.months_in_portugues[lessonService.selected_month - 1] }} {{ lessonService.current_year }}</h1>
+        <img (click)="nextMonth()" class="arrow" src="/seta-direita.svg" />
+    </div>
+    
+    <div class="container-actions" [class.hidden]="isAuthPage()">
+        <button id="button-add-lesson" *ngIf="roleService.role() === 'teacher'" (click)="addLesson()">
             <img id="plus" src="/plus.svg" />
+            <span class="text-menu">Nova Aula</span>
         </button>
 
-        <button *ngIf="roleService.role() === 'off'"(click)="login()">
-            <img id="auth" src="/person.svg" />
+        <button *ngIf="roleService.role() === 'off'" (click)="login()">
+            <img class="auth" src="/person.svg" />
         </button>
 
-        <button *ngIf="roleService.role() !== 'off'"(click)="logout()">
-            <img id="auth" src="/logout.svg" />
+        <button *ngIf="roleService.role() !== 'off'" (click)="logout()">
+            <img class="auth" src="/logout.svg" />
         </button>
     </div>
 </div>

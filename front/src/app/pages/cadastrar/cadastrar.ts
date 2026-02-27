@@ -1,54 +1,56 @@
 import { Component, signal } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router, RouterLink } from '@angular/router';
-import { MatSelectModule } from '@angular/material/select';
 import { Http } from '../../service/http.service';
 import { HotToastService } from '@ngxpert/hot-toast';
+import { ReturnApi } from '@src/app/interfaces_types';
 
 @Component({
   selector: 'app-cadastrar',
-  imports: [FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatIconModule, MatButtonModule, MatSelectModule, RouterLink],
+  imports: [FormsModule, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule, RouterLink],
   templateUrl: './cadastrar.html',
   styleUrl: './cadastrar.scss',
 })
 export class Cadastrar {
-  name: string = '';
-  role: string = '';
-  email: string = '';
-  password: string = '';
+  protected name: string = '';
+  protected role: string = '';
+  protected email: string = '';
+  protected password: string = '';
 
   constructor(private http: Http, private router: Router, private toast: HotToastService){}
 
-  formSubmit(){
+  public formSubmit(){
     const data = {
-      "name": this.name,
-      "role": this.role,
-      "email": this.email,
-      "password": this.password
-    }
+      name: this.name,
+      role: this.role,
+      email: this.email,
+      password: this.password
+    };
 
-    this.http.post("/cadastrar", data).subscribe({
-      next: (return_api) => {
-        if((typeof return_api.message) == "string"){
+    this.http.post<null>("/cadastrar", data).subscribe({
+      next: (return_api: ReturnApi<null>) => {
+        if ((typeof return_api.message) === "string") {
           this.toast.success(return_api.message);
         }
-        this.router.navigate([return_api.redirect]);
+
+        if (typeof return_api.redirect === 'string') {
+          this.router.navigate([return_api.redirect]);
+        }
       },
       error: (error) => {
-        if((typeof error.error.message) == "string"){
+        if ((typeof error.error.message) === "string") {
           this.toast.error(error.error.message);
         }
-        //this.router.navigate([erro.error.redirect]);
       }
     });
   }
 
-  hide = signal(true);
-  clickEvent(event: MouseEvent){
+  public hide = signal(true);
+  public changePasswordVisibility(event: MouseEvent) {
     this.hide.set(!this.hide());
     event.stopPropagation();
   }

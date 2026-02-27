@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Model;
+declare(strict_types=1);
 
-use MongoDB\BSON\ObjectId;
+namespace App\Model;
+use App\Model\JoinLesson as JoinLessonModel;
 
 class Lesson extends BaseModel
 {
@@ -16,9 +17,34 @@ class Lesson extends BaseModel
         return ($col->countDocuments(['_id' => $this->toObjectId($lesson_id)]) > 0);
     }
 
-    public function listAll(): array{
+    public function listAll(int $timestamp_start_month, int $timestamp_end_month): array{
         $col = $this->collection('lessons');
-        return iterator_to_array($col->find([], ['sort' => ['timestamp_lesson_start' => 1, 'id' => 1]]));
+
+        return iterator_to_array($col->aggregate([
+            ['$match' => [
+                'timestamp_lesson_start' => ['$gte' => $timestamp_start_month],
+                'timestamp_lesson_finish' => ['$lte' => $timestamp_end_month]
+            ]],
+            ['$lookup' => [
+                'from' => 'user',
+                'localField' => 'teacher_id',
+                'foreignField' => '_id',
+                'as' => 'teacher'
+            ]],
+            ['$lookup' => [
+                'from' => 'join_lesson',
+                'localField' => '_id',
+                'foreignField' => 'lesson_id',
+                'as' => 'students'
+            ]],
+            ['$lookup' => [
+                'from' => 'user',
+                'localField' => 'students.id_student',
+                'foreignField' => '_id',
+                'as' => 'student_names'
+            ]],
+            ['$sort' => ['timestamp_lesson_start' => 1, 'id' => 1]]
+        ]));
     }
 
     public function create(string $name, $timestamp_lesson_start, $timestamp_lesson_finish, int $quantity, $teacher_id): void{
@@ -54,7 +80,7 @@ class Lesson extends BaseModel
         $col = $this->collection('lessons');
         $col->deleteOne(['_id' => $this->toObjectId($lesson_id)]);
         // remove related join records
-        $join = new JoinLesson();
+        $join = new JoinLessonModel();
         $join->removeAllStudentsFromLesson($lesson_id);
     }
 
