@@ -13,21 +13,29 @@
     display: flex;
     justify-content: space-between;
     width: 90%;
+    max-width: 1600px;
     margin: auto;
     padding: 30px;
+    gap: 24px;
+}
+
+h2{
+    text-align: center;
 }
 
 #container-calendar{
     width: 60%;
+    min-width: 0;
 
     user-select: none;
 
     #calendar{
-        display: inline-grid;
+        display: grid;
         grid-template-columns: repeat(7, auto);
-        justify-content: center;
+        width: 100%;
         background-color: variable.$background-color-secondary;
         border-radius: 10px;
+        border: 1px solid variable.$border-color;
 
         .day-of-the-week{
             display: flex;
@@ -36,6 +44,8 @@
             text-align: center;
             padding: 10px;
             border: 1px solid variable.$border-color;
+            border-top: 0px;
+            border-left: 0px;
         }
         
         .day-of-the-week:nth-child(1){
@@ -50,7 +60,10 @@
             position: relative;
 
             border: 1px solid variable.$border-color;
-            padding: 40px;
+            border-left: 0px;
+            border-top: 0px;
+            min-height: 84px;
+            padding: 10px 8px;
 
             cursor: pointer;
         }
@@ -64,17 +77,17 @@
         }
 
         .notification-with-lesson{
-            width: 15px;
-            height: 15px;
+            width: 10px;
+            height: 10px;
 
             display: block;
-            padding: 4px;
+            padding: 2px;
             border-radius: 30px;
             background-color: variable.$green;
 
             position: absolute;
-            top: 10px;
-            right: 5px;
+            bottom: 8px;
+            left: calc(50% - 7px);
         }
 
         .days-outside-month{
@@ -85,7 +98,8 @@
 
 
         .lesson-selected{
-            border: 1px solid variable.$blue;
+            border: 1px solid variable.$blue !important;
+            z-index: 1;
         }
 
         .days{
@@ -94,14 +108,14 @@
             justify-content: center;
             font-size: 20px;
             text-align: center;
-            margin-top: 5px;
+            margin-top: 2px;
         }
     }
 }
 
 #container-menu{
     width: 35%;
-    max-height: 600px;
+    max-height: 680px;
     overflow-y: auto;
     background-color: variable.$background-color-secondary;
     padding: 30px;
@@ -128,9 +142,10 @@
     }
     
     .container-lesson-details{
-        display: flex;
-        justify-content: space-around;
-        gap: 20px;
+        display: grid;
+        grid-template-columns: repeat(2, auto);
+        // display: flex;
+        // justify-content: space-around;
     }
 
     .lesson-details-col-1, .lesson-details-col-2{
@@ -148,6 +163,7 @@
         display: flex;
         justify-content: space-evenly;
         gap: 20px;
+        flex-wrap: wrap;
     }
 
     .button-lesson-actions{
@@ -170,4 +186,204 @@
 
 hr{
     margin-bottom: 30px;
+}
+
+@media (max-width: 1440px) {
+    #container {
+        width: calc(100% - 70px);
+        padding: 20px;
+    }
+
+    #container-calendar {
+        width: 62%;
+
+        #calendar {
+            .day-of-the-week {
+                font-size: 16px;
+                padding: 8px;
+            }
+
+            .container-days {
+                min-height: 72px;
+                padding: 8px;
+            }
+
+            .days {
+                font-size: 18px;
+            }
+        }
+    }
+
+    #container-menu {
+        width: 38%;
+        padding: 22px;
+
+        .text-lesson-details {
+            font-size: 14px;
+            margin-bottom: 14px;
+        }
+    }
+}
+
+@media (max-width: 1024px) {
+    #container {
+        width: calc(100% - 44px);
+        padding: 16px 0px 24px 0px;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    #container-calendar,
+    #container-menu {
+        width: 100%;
+    }
+
+    #container-calendar {
+        #calendar {
+            .day-of-the-week {
+                font-size: 14px;
+                padding: 6px;
+            }
+
+            .container-days {
+                min-height: 60px;
+                padding: 6px;
+            }
+
+            .days {
+                font-size: 16px;
+            }
+        }
+    }
+
+    #container-menu {
+        max-height: none;
+        padding: 18px;
+        border-radius: 12px;
+
+        h2 {
+            font-size: 24px;
+        }
+
+        .container-lesson-details {
+            text-align: center;
+        }
+
+        .lesson-details-col-1,
+        .lesson-details-col-2 {
+            width: calc(50% - 6px);
+            align-items: center;
+        }
+
+        .text-lesson-details {
+            margin-bottom: 10px;
+        }
+
+        .container-lesson-actions {
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .button-lesson-actions {
+            margin: 0px;
+            padding: 10px 16px;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    #container {
+        width: calc(90% - 24px);
+        gap: 14px;
+    }
+
+    #container-calendar {
+        #calendar {
+            border-radius: 12px;
+
+            .day-of-the-week {
+                font-size: 11px;
+                padding: 6px 2px;
+            }
+
+            .container-days {
+                min-height: 46px;
+                padding: 4px;
+            }
+
+            .days {
+                font-size: 13px;
+            }
+
+            .notification-with-lesson {
+                width: 8px;
+                height: 8px;
+                padding: 1px;
+                bottom: 5px;
+                left: calc(50% - 5px);
+            }
+        }
+    }
+
+    #container-menu {
+        padding: 14px;
+
+        h2 {
+            font-size: 20px;
+        }
+
+        .lesson-name {
+            width: 100%;
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 12px;
+            padding-right: 78px;
+        }
+
+        .notificaion {
+            top: -4px;
+            font-size: 12px;
+        }
+
+        .container-lesson-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0px;
+        }
+
+        .lesson-details-col-1,
+        .lesson-details-col-2 {
+            display: flex;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .text-lesson-details {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .container-lesson-actions {
+            margin-top: 10px;
+            gap: 10px;
+        }
+
+        .button-lesson-actions {
+            width: 100%;
+            text-align: center;
+            padding: 10px 12px;
+        }
+    }
+
+    hr {
+        margin-bottom: 20px;
+    }
+}
+
+#container-menu {
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
 }

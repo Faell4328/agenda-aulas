@@ -2,6 +2,7 @@
 
 #header{
     width: 90%;
+    max-width: 1600px;
     background-color: variable.$background-color-secondary;
     display: flex;
     justify-content: space-between;
@@ -32,8 +33,15 @@
     .container-month{
         display: flex;
         align-items: center;
+        gap: 4px;
 
         user-select: none;
+
+        h1{
+            font-size: 28px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
 
         .arrow{
             width: 40px;
@@ -94,6 +102,158 @@
             border: 0px;
             height: 40px;
             width: 100px;
+        }
+    }
+}
+
+@media (max-width: 1440px) {
+    #header {
+        padding: 16px;
+
+        #logo {
+            width: 52px;
+            height: 52px;
+            margin: 0px 20px;
+        }
+
+        .container-month {
+            h1 {
+                font-size: 24px;
+            }
+
+            .arrow {
+                width: 34px;
+                height: 34px;
+                padding: 20px;
+            }
+        }
+
+        .container-actions {
+            gap: 20px;
+
+            #button-add-lesson {
+                height: 46px;
+                padding: 16px;
+
+                .text-menu {
+                    font-size: 16px;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 1024px) {
+    #header {
+        width: calc(100% - 36px);
+        border-radius: 16px;
+        padding: 14px;
+
+        #logo {
+            width: 44px;
+            height: 44px;
+            margin: 0px 8px 0px 4px;
+        }
+
+        .container-month {
+            flex: 1;
+            justify-content: center;
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .arrow {
+                width: 28px;
+                height: 28px;
+                padding: 12px;
+            }
+        }
+
+        .container-actions {
+            gap: 12px;
+
+            #button-add-lesson {
+                height: 40px;
+                padding: 12px;
+                border-radius: 8px;
+
+                #plus {
+                    width: 16px;
+                    height: 16px;
+                    margin-right: 8px;
+                }
+
+                .text-menu {
+                    font-size: 14px;
+                }
+            }
+
+            .auth {
+                width: 36px;
+                height: 36px;
+            }
+
+            button {
+                width: auto;
+                height: auto;
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    #header {
+        width: calc(100% - 24px);
+        border-radius: 12px;
+        padding: 10px;
+
+        #logo {
+            width: 34px;
+            height: 34px;
+            margin: 0px 4px;
+        }
+
+        .container-month {
+            min-width: 0;
+
+            h1 {
+                font-size: 14px;
+                max-width: 132px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .arrow {
+                width: 18px;
+                height: 18px;
+                padding: 6px;
+            }
+        }
+
+        .container-actions {
+            gap: 18px;
+
+            #button-add-lesson {
+                min-width: 42px;
+                height: 34px;
+                padding: 0px 10px;
+
+                #plus {
+                    width: 14px;
+                    height: 14px;
+                    margin-right: 0px;
+                }
+
+                .text-menu {
+                    display: none;
+                }
+            }
+
+            .auth {
+                width: 30px;
+                height: 30px;
+            }
         }
     }
 }

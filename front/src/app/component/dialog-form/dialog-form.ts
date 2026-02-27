@@ -127,6 +127,7 @@ export class DialogForm implements AfterViewInit {
     }
   }
 
+  private controller_date_notification = false;
   formatDate(element_id: string) {
     const input: HTMLInputElement | null = document.getElementById(element_id) as HTMLInputElement | null;
     const value: string | null = input?.value ?? null;
@@ -135,6 +136,15 @@ export class DialogForm implements AfterViewInit {
       return;
     }
 
+    if(value.split("").filter(char =>{
+      return char != "0" && char != "1" && char != "2" && char != "3" && char != "4" && char != "5" && char != "6" && char != "7" && char != "8" && char != "9" && char != "/";
+    }).length > 0) {
+      if (!this.controller_date_notification) {
+        this.toast.error("Data está com formatação incorreta");
+        this.controller_date_notification = true;
+      }
+    }
+    
     if ((this.old_length_date < value.length) && (value.length === 2 || value.length === 5)) {
       input.value = value + "/";
     }
@@ -150,12 +160,22 @@ export class DialogForm implements AfterViewInit {
     this.old_length_date = input.value.length;
   }
 
+  private controller_time_notification = false;
   formatTime(element_id: string) {
     const input: HTMLInputElement | null = document.getElementById(element_id) as HTMLInputElement | null;
     const value: string | null = input?.value ?? null;
     
     if (input == null || value == null) {
       return;
+    }
+
+    if(value.split("").filter(char =>{
+      return char != "0" && char != "1" && char != "2" && char != "3" && char != "4" && char != "5" && char != "6" && char != "7" && char != "8" && char != "9" && char != ":";
+    }).length > 0) {
+      if (!this.controller_time_notification) {
+        this.toast.error("Hora está com formatação incorreta");
+        this.controller_time_notification = true;
+      }
     }
 
     if ((this.old_length_time < value.length) && (value.length === 2)) {

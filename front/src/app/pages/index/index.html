@@ -25,16 +25,12 @@
                 <div class="notificaion" *ngIf="(!lesson.is_ingressed && (lesson.current_quantity >= lesson.max_quantity))">Aula cheia</div>
                 <h3 class="lesson-name">Aula: {{lesson.name}}</h3>
                 <div class="container-lesson-details">
-                    <div class="lesson-details-col-1">
-                        <p class="text-lesson-details">Quantidade ingressada: {{lesson.current_quantity}}</p>
-                        <p class="text-lesson-details">Horário de início: {{lesson.timestamp_lesson_start | date:'HH:mm'}}</p>
-                        <p class="text-lesson-details">Professor: {{lesson.teacher}}</p>
-                    </div>
-                    <div class="lesson-details-col-2">
-                        <p class="text-lesson-details">Quantidade máxima: {{lesson.max_quantity}}</p>
-                        <p class="text-lesson-details">Horário de término: {{lesson.timestamp_lesson_finish | date:'HH:mm'}}</p>
-                        <p class="text-lesson-details">Aluno ingressados: {{(lesson.students && lesson.students.length > 0) ? lesson.students.sort().join(', ') : 'Nenhum'}}</p>
-                    </div>
+                    <p class="text-lesson-details">Horário de início: {{lesson.timestamp_lesson_start | date:'HH:mm'}}</p>
+                    <p class="text-lesson-details">Horário de término: {{lesson.timestamp_lesson_finish | date:'HH:mm'}}</p>
+                    <p class="text-lesson-details">Professor: {{lesson.teacher}}</p>
+                    <p class="text-lesson-details">Aluno ingressados: {{(lesson.students && lesson.students.length > 0) ? lesson.students.sort().join(', ') : 'Nenhum'}}</p>
+                    <p class="text-lesson-details">Quantidade ingressada: {{lesson.current_quantity}}</p>
+                    <p class="text-lesson-details">Quantidade máxima: {{lesson.max_quantity}}</p>
                 </div>
                 <div class="container-lesson-actions">
                     <button (click)="joinLesson(lesson.id)" class="button-lesson-actions-blue" mat-raised-button *ngIf="(lesson.is_ingressed == false) && (roleService.role() == 'student')">Ingressar</button>

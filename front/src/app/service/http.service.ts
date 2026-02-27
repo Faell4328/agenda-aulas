@@ -9,7 +9,7 @@ import { ReturnApi } from '../interfaces_types';
 
 export class Http {
 
-  baseURL: string = 'http://localhost:8080';
+  baseURL: string = 'http://192.168.100.117:8080';
 
   constructor(private http: HttpClient){} 
 
