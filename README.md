@@ -1,6 +1,8 @@
-Um projeto simples desenvolvido para praticar Angular.js e PHP, executado em containers Docker.
+Um projeto simples desenvolvido para praticar Angular e PHP, executado em containers Docker.
 
 O arquivo de design é apenas uma inspiração, não é necessário seguir tudo a risca.
+
+<img src="demonstracao.gif" alt="demonstracao">
 
 ## Funcionalidades
 
@@ -30,10 +32,27 @@ O arquivo de design é apenas uma inspiração, não é necessário seguir tudo 
 
 ## Especificações técnicas
 
-**Front-end:** Desenvolvido em Angular.js com Angular Material.
+**Front-end:** Desenvolvido em Angular com Angular Material.
 
 **Back-end:** Implementado em PHP.
 
 **Banco de Dados:** Utiliza MongoDB.
 
-**Infraestrutura (CI):** Todos os serviços executam em containers Docker.
+**Infraestrutura:** Todos os serviços executam em containers Docker.
+
+---
+
+## Como rodar?
+
+```bash
+npm run dev
+```
+Executa no diretório raiz. Ele faz:
+- sobe o container do back-end e do banco;
+- instala as dependências do front;
+- sobe o servidor de desenvolvimento do front;
+
+```bash
+sudo docker compose down
+```
+Esse comando é necessário para parar a execução do docker compose, que fica em segundo plano.

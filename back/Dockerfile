@@ -22,3 +22,5 @@ RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
 RUN composer dump-autoload
 RUN composer install
+
+COPY ../front/dist/front/browser /var/www/html

@@ -1,0 +1,19 @@
+{
+  "name": "agenda-aulas",
+  "version": "1.0.0",
+  "description": "Um projeto simples desenvolvido para praticar Angular.js e PHP, executado em containers Docker.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "sudo docker compose up -d && cd front && npm install && npm run ng serve"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Faell4328/agenda-aulas.git"
+  },
+  "keywords": [],
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Faell4328/agenda-aulas/issues"
+  },
+  "homepage": "https://github.com/Faell4328/agenda-aulas#readme"
+}
